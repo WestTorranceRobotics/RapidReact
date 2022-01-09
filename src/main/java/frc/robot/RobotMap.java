@@ -7,4 +7,16 @@ public class RobotMap {
         public static final int leftLeaderCanID = 3;
         public static final int leftFollowerCanID = 4;
     }
+
+    public static class ElevatorMap {
+
+    }
+
+    public static class IntakeMap {
+
+    }
+
+    public static class ShooterMap {
+        
+    }
 }
