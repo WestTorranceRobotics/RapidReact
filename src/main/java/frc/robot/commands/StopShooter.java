@@ -10,13 +10,13 @@ import frc.robot.subsystems.Shooter;
 
 public class StopShooter extends CommandBase {
 //making shooter for stopping
-private Shooter shooterStop;
+private Shooter aShooter;
 
 
 
   /** Creates a new StopShooter. */
   public StopShooter(Shooter shooter) {
-shooterStop = shooter;
+aShooter = shooter;
 addRequirements(shooter);
 
     // Use addRequirements() here to declare subsystem dependencies.
