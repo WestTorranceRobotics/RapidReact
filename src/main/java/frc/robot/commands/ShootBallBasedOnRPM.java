@@ -5,16 +5,24 @@
 package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.CommandBase;
+import frc.robot.subsystems.Shooter;
 
 public class ShootBallBasedOnRPM extends CommandBase {
+  private Shooter bShooter;
   /** Creates a new ShootBallBasedOnRPM. */
-  public ShootBallBasedOnRPM() {
+  public ShootBallBasedOnRPM(Shooter shooter) {
+bShooter = shooter;
+addRequirements(bShooter);
     // Use addRequirements() here to declare subsystem dependencies.
   }
 
   // Called when the command is initially scheduled.
   @Override
-  public void initialize() {}
+  public void initialize() {
+    //put rpm value in ()
+bShooter.startShooter();
+
+  }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
@@ -22,11 +30,14 @@ public class ShootBallBasedOnRPM extends CommandBase {
 
   // Called once the command ends or is interrupted.
   @Override
-  public void end(boolean interrupted) {}
+  public void end(boolean interrupted) {
+    bShooter.stopShooter();
+  }
 
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
+  
     return false;
   }
 }
