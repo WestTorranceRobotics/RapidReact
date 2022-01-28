@@ -5,10 +5,10 @@
 /* the project.                                                               */
 /*----------------------------------------------------------------------------*/
 
-package frc5124.robot2020.subsystems;
+package frc.robot.subsystems;
 
 import edu.wpi.first.wpilibj2.command.Subsystem;
-import frc5124.robot2020.RobotMap;
+import frc.robot.RobotMap;
 
 import com.revrobotics.CANPIDController;
 import com.revrobotics.CANSparkMax;
@@ -30,7 +30,6 @@ public class Shooter extends SubsystemBase {
   private CANSparkMax shootMotorLeader = new CANSparkMax(RobotMap.ShooterMap.shootLeaderCanID, MotorType.kBrushless);
   private CANPIDController shootPID;
   private boolean atSpeed;
-  private Solenoid shootSolenoid = new Solenoid(RobotMap.modNumSolenoid, RobotMap.ShooterMap.shootSolenoid);
   private int ballsShot = 0;
   private boolean passedBallCurrent = false;
  
@@ -87,7 +86,7 @@ public class Shooter extends SubsystemBase {
    * @param targetRPM desired RPM of shooter
    */
   public void startShooter() {
-    enablePID();
+   // enablePID();
     shootPID.setReference(RobotMap.ShooterMap.lineShootRPM, ControlType.kVelocity);
   }
 
@@ -96,7 +95,7 @@ public class Shooter extends SubsystemBase {
   }
 
     public void stopShooter () {
-      disablePID();
+     // disablePID();
      shootMotorLeader.set(0);
     }
   
@@ -122,6 +121,7 @@ public class Shooter extends SubsystemBase {
   /**
    * @deprecated Unreliable with higher loader speeds at the present
    */
+  /*
   public void currentWatch(double targetRPM) {
     if (shootMotorLeader.getOutputCurrent() >= RobotMap.ShooterMap.ballCurrent && passedBallCurrent == false) {
       passedBallCurrent = true;
@@ -130,7 +130,7 @@ public class Shooter extends SubsystemBase {
       passedBallCurrent = false;
     }
   }
-
+*/
   public void directVolts(double volts) {
     shootMotorLeader.setVoltage(volts);
   }
