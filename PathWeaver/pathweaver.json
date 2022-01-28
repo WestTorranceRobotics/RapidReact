@@ -1,0 +1,9 @@
+{
+  "lengthUnit": "Inch",
+  "exportUnit": "Same as Project",
+  "maxVelocity": 10.0,
+  "maxAcceleration": 2.0,
+  "trackWidth": 42.0,
+  "gameName": "Infinite Recharge 2021",
+  "outputDir": "../pathWeaverTests"
+}
