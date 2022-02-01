@@ -118,13 +118,7 @@ public class Shooter extends SubsystemBase {
   public void directPower (double power) {
     shootMotorLeader.set(power);
   }
-  public void isAutomatic(boolean automatic) {
-    this.automatic = automatic;
-  }
-  
-  public boolean isAutomatic() {
-    return automatic;
-  }
+ 
   /**
    * @deprecated Unreliable with higher loader speeds at the present
    */

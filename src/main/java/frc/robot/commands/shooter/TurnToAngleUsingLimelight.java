@@ -6,17 +6,19 @@ package frc.robot.commands.shooter;
 
 import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj2.command.CommandBase;
+import frc.robot.subsystems.DriveTrain;
 import frc.robot.subsystems.Shooter;
 
 public class TurnToAngleUsingLimelight extends CommandBase {
-private Shooter subsystem;
+private DriveTrain subsystem;
 
   /** Creates a new TurnToAngleUsingLimelight. */
-  public TurnToAngleUsingLimelight(Shooter subsystem) {
+  public TurnToAngleUsingLimelight(DriveTrain subsystem) {
 
     this.subsystem = subsystem;
     
     // Use addRequirements() here to declare subsystem dependencies.
+    addRequirements(this.subsystem);
   }
 
   // Called when the command is initially scheduled.
