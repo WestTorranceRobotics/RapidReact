@@ -4,25 +4,52 @@
 
 package frc.robot.commands.shooter;
 
+import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj2.command.CommandBase;
+import frc.robot.subsystems.Shooter;
 
 public class TurnToAngleUsingLimelight extends CommandBase {
+private Shooter subsystem;
+
   /** Creates a new TurnToAngleUsingLimelight. */
-  public TurnToAngleUsingLimelight() {
+  public TurnToAngleUsingLimelight(Shooter subsystem) {
+
+    this.subsystem = subsystem;
+    
     // Use addRequirements() here to declare subsystem dependencies.
   }
 
   // Called when the command is initially scheduled.
   @Override
-  public void initialize() {}
+  public void initialize() {
+    //getting epic stuff from the network table
+    NetworkTableInstance.getDefault().getTable("rpi").getEntry("aimbot").setDouble(1);
+    NetworkTableInstance.getDefault().getTable("limelight").getEntry("pipeline").setNumber(0.0);
+    
+    subsystem.isAutomatic(true);
+  }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
-  public void execute() {}
+  public void execute() {
+
+//this part needs a thing in the shooter subsystem
+    /*double target = subsystem.getDegrees() - 
+    NetworkTableInstance.getDefault().getTable("limelight")
+    .getEntry("tx").getDouble(0);
+    subsystem.setShooterDegrees(target); */
+
+  }
 
   // Called once the command ends or is interrupted.
   @Override
-  public void end(boolean interrupted) {}
+  public void end(boolean interrupted) {
+
+    subsystem.isAutomatic(false);
+    NetworkTableInstance.getDefault().getTable("rpi").getEntry("aimbot").setDouble(0);
+    NetworkTableInstance.getDefault().getTable("limelight").getEntry("pipeline").setNumber(1.0);
+
+  }
 
   // Returns true when the command should end.
   @Override
