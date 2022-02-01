@@ -11,13 +11,12 @@ import frc.robot.subsystems.Shooter;
 
 public class TurnToAngleUsingLimelight extends CommandBase {
 private DriveTrain subsystem;
+double Kp = 0.1;
+
 
   /** Creates a new TurnToAngleUsingLimelight. */
   public TurnToAngleUsingLimelight(DriveTrain subsystem) {
-
     this.subsystem = subsystem;
-    
-    // Use addRequirements() here to declare subsystem dependencies.
     addRequirements(this.subsystem);
   }
 
@@ -34,13 +33,10 @@ private DriveTrain subsystem;
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-
-//this part needs a thing in the shooter subsystem
-    /*double target = subsystem.getDegrees() - 
-    NetworkTableInstance.getDefault().getTable("limelight")
+    double tx = NetworkTableInstance.getDefault().getTable("limelight")
     .getEntry("tx").getDouble(0);
-    subsystem.setShooterDegrees(target); */
-
+    double steeringAdjust = Kp * tx;
+    subsystem.tankDrive(steeringAdjust, -steeringAdjust);
   }
 
   // Called once the command ends or is interrupted.
