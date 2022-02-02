@@ -4,6 +4,9 @@
 
 package frc.robot;
 
+import java.util.Arrays;
+
+import edu.wpi.first.math.trajectory.TrajectoryGenerator;
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.XboxController;
@@ -11,7 +14,14 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import frc.robot.commands.JoystickTankDrive;
 import frc.robot.subsystems.DriveTrain;
-
+import edu.wpi.first.math.controller.RamseteController;
+import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.math.kinematics.DifferentialDriveKinematics;
+import edu.wpi.first.math.kinematics.DifferentialDriveOdometry;
+import edu.wpi.first.math.trajectory.TrajectoryConfig;
+import edu.wpi.first.wpilibj2.command.RamseteCommand;
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a
  * "declarative" paradigm, very little robot logic should actually be handled in the {@link Robot}
@@ -81,6 +91,18 @@ public class RobotContainer {
    */
   public Command getAutonomousCommand() {
     // An ExampleCommand will run in autonomous
-    return null;
+    return new RamseteCommand(
+      TrajectoryGenerator.generateTrajectory(
+        new Pose2d(0.0, 0.0, new Rotation2d(0)), 
+        Arrays.asList(new Translation2d(10, 20)), 
+        new Pose2d(20, 10, new Rotation2d(0)), 
+        new TrajectoryConfig(2, 4)), 
+        new DifferentialDriveOdometry(new Rotation2d())::getPoseMeters,
+        new RamseteController(),
+        new DifferentialDriveKinematics(0.66),
+        (Double leftWheelSpeed, Double rightWheelSpeed) -> {
+          //TODO figure out wtf this is for
+        }
+    );
   }
 }
