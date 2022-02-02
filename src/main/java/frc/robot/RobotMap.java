@@ -15,7 +15,12 @@ public class RobotMap {
         public static final double midTrenchShootRPM = 7150;
         public static final double maxShootRPM = 7300;
         public static final double gearRatio = .75;
+    }
 
-       
+    public static class DriveTrainMap {
+        public static final int rightLeaderCanID = 1;
+        public static final int rightFollowerCanID = 2;
+        public static final int leftLeaderCanID = 4;
+        public static final int leftFollowerCanID = 3;
     }
 }

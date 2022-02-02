@@ -7,6 +7,7 @@ package frc.robot.subsystems;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
 
+import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.RobotMap;
@@ -18,6 +19,11 @@ public class DriveTrain extends SubsystemBase {
   private WPI_TalonFX leftFollower;
 
   private DifferentialDrive differentialDrive;
+  private PIDController controller;
+
+  private double kP = 0;
+  private double kI = 0;
+  private double kD = 0;
 
   /** Creates a new DriveTrain. */
   public DriveTrain() {
@@ -39,6 +45,8 @@ public class DriveTrain extends SubsystemBase {
 
     differentialDrive = new DifferentialDrive(leftLeader, rightLeader);
     differentialDrive.setSafetyEnabled(true);
+
+    controller = new PIDController(kP, kI, kD);
   }
 
   @Override
@@ -48,5 +56,49 @@ public class DriveTrain extends SubsystemBase {
 
   public void tankDrive(double left, double right) {
     differentialDrive.tankDrive(left, -right);   
- }
+  }
+
+  public PIDController getController() {
+    return controller;
+  }
+
+  public void setP(double kP) {
+    this.kP = kP;
+    controller.setP(kP);
+  }
+
+  public double getP() {
+    return kP;
+  }
+
+  public void setI(double kI) {
+    this.kI = kI;
+    controller.setP(kI);
+  }
+
+  public double getI() {
+    return kI;
+  }
+
+  public void setD(double kD) {
+    this.kD = kD;
+    controller.setP(kD);
+  }
+
+  public double getD() {
+    return kD;
+  }
+
+  public void enablePID() {
+    controller.setP(kP);
+    controller.setI(kI);
+    controller.setD(kD);
+  }
+
+  public void disablePID() {
+    controller.setP(0.0);
+    controller.setI(0.0);
+    controller.setD(0.0);
+  }
+
 }

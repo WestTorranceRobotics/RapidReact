@@ -4,9 +4,19 @@
 
 package frc.robot;
 
+import edu.wpi.first.cameraserver.CameraServer;
+import edu.wpi.first.networktables.NetworkTableEntry;
+import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj.GenericHID;
+import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.XboxController;
+import edu.wpi.first.wpilibj.shuffleboard.BuiltInWidgets;
+import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
+import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.button.JoystickButton;
+import frc.robot.commands.shooter.TurnToAngleUsingLimelight;
+import frc.robot.subsystems.DriveTrain;
 
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a
@@ -16,6 +26,14 @@ import edu.wpi.first.wpilibj2.command.Command;
  */
 public class RobotContainer {
   // The robot's subsystems and commands are defined here...
+  private ShuffleboardTab display;
+  private DriveTrain driveTrain;
+
+  public static final Joystick driverLeft = new Joystick(0);
+  public static final Joystick driverRight = new Joystick(1);
+  public XboxController operator = new XboxController(2);
+  
+  public JoystickButton operatorA = new JoystickButton(operator, 2);
 
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
@@ -32,15 +50,32 @@ public class RobotContainer {
    * edu.wpi.first.wpilibj2.command.button.JoystickButton}.
    */
   private void configureButtonBindings() {
-
+    operatorA.toggleWhenPressed(new TurnToAngleUsingLimelight(driveTrain));
   }
 
   private void configureSubsystems(){
-    
+    driveTrain = new DriveTrain();
   }
   
   private void configureShuffleboard(){
+    CameraServer.startAutomaticCapture();
+    display = Shuffleboard.getTab("Driving Display");
+    Shuffleboard.selectTab(display.getTitle());
+
+    NetworkTableEntry pipeEntry = NetworkTableInstance.getDefault().getTable("limelight").getEntry("pipeline");
+
+    display.addBoolean("Limelight On?",() -> (int) pipeEntry.getDouble(-1) == 0)
+    .withPosition(4, 1).withSize(1, 1).withWidget(BuiltInWidgets.kBooleanBox);
+
+
+    display.addNumber("kP", driveTrain::getP)
+    .withPosition(3, 2).withSize(1, 1).withWidget(BuiltInWidgets.kBooleanBox);
     
+    display.addNumber("kI", driveTrain::getI)
+    .withPosition(4, 2).withSize(1, 1).withWidget(BuiltInWidgets.kBooleanBox);
+
+    display.addNumber("kD", driveTrain::getD)
+    .withPosition(5, 2).withSize(1, 1).withWidget(BuiltInWidgets.kBooleanBox);
   }
 
   /**
