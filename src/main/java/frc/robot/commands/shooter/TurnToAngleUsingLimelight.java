@@ -17,7 +17,7 @@ public class TurnToAngleUsingLimelight extends CommandBase {
   /** Creates a new TurnToAngleUsingLimelight. */
   public TurnToAngleUsingLimelight(DriveTrain subsystem) {
     this.subsystem = subsystem;
-    subsystem.setP(0.3);
+    subsystem.setP(0.052);
     controller = subsystem.getController();
     addRequirements(this.subsystem);
   }
@@ -38,14 +38,24 @@ public class TurnToAngleUsingLimelight extends CommandBase {
   public void execute() {
     double tx = NetworkTableInstance.getDefault().getTable("limelight")
     .getEntry("tx").getDouble(0);
-    double steeringAdjust = controller.calculate(tx);
-    subsystem.tankDrive(steeringAdjust, -steeringAdjust);
+    System.out.println(tx);
+    // System.out.println(subsystem.getP());
+    double steeringAdjust;
+    if (Math.abs(subsystem.getP() * tx) < 0.45) {
+      steeringAdjust = subsystem.getP() * tx;
+    }
+    else {
+      steeringAdjust = 0.45;
+    }
+    steeringAdjust = Math.signum(subsystem.getP() * tx) * Math.min(Math.abs(subsystem.getP() * tx), 0.45);
+    // subsystem.tankDrive(0.5, 0.5);
+    subsystem.tankDrive(steeringAdjust, steeringAdjust);
   }
 
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-
+    
     // subsystem.isAutomatic(false);
     subsystem.disablePID();
     NetworkTableInstance.getDefault().getTable("rpi").getEntry("aimbot").setDouble(0);

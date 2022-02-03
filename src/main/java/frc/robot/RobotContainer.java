@@ -34,6 +34,7 @@ public class RobotContainer {
   public XboxController operator = new XboxController(2);
   
   public JoystickButton operatorA = new JoystickButton(operator, 2);
+  public JoystickButton trigger = new JoystickButton(driverRight, 1);
 
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
@@ -50,7 +51,8 @@ public class RobotContainer {
    * edu.wpi.first.wpilibj2.command.button.JoystickButton}.
    */
   private void configureButtonBindings() {
-    operatorA.toggleWhenPressed(new TurnToAngleUsingLimelight(driveTrain));
+    // operatorA.toggleWhenPressed(new TurnToAngleUsingLimelight(driveTrain));
+    trigger.toggleWhenPressed(new TurnToAngleUsingLimelight(driveTrain));
   }
 
   private void configureSubsystems(){
