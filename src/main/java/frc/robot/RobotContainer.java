@@ -15,6 +15,7 @@ import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
+import frc.robot.commands.drivetrain.JoystickDrive;
 import frc.robot.commands.shooter.TurnToAngleUsingLimelight;
 import frc.robot.subsystems.DriveTrain;
 
@@ -42,6 +43,7 @@ public class RobotContainer {
     configureSubsystems();
     configureButtonBindings();
     configureShuffleboard();
+    configureDefaultCommands();
   }
 
   /**
@@ -78,6 +80,10 @@ public class RobotContainer {
 
     display.addNumber("kD", driveTrain::getD)
     .withPosition(5, 2).withSize(1, 1).withWidget(BuiltInWidgets.kBooleanBox);
+  }
+
+  private void configureDefaultCommands(){
+    driveTrain.setDefaultCommand(new JoystickDrive(driveTrain, driverLeft, driverRight));
   }
 
   /**

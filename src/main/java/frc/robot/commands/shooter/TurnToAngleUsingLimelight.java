@@ -8,11 +8,11 @@ import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.subsystems.DriveTrain;
-import frc.robot.subsystems.Shooter;
 
 public class TurnToAngleUsingLimelight extends CommandBase {
   private DriveTrain subsystem;
   private PIDController controller;
+  private double kPDistance = 0.054;
 
   /** Creates a new TurnToAngleUsingLimelight. */
   public TurnToAngleUsingLimelight(DriveTrain subsystem) {
@@ -30,37 +30,44 @@ public class TurnToAngleUsingLimelight extends CommandBase {
     NetworkTableInstance.getDefault().getTable("rpi").getEntry("aimbot").setDouble(1);
     NetworkTableInstance.getDefault().getTable("limelight").getEntry("pipeline").setNumber(0.0);
     
-    // subsystem.isAutomatic(true);
+    subsystem.setAutomatic(true);
   }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    double tx = NetworkTableInstance.getDefault().getTable("limelight")
-    .getEntry("tx").getDouble(0);
-    System.out.println(tx);
-    // System.out.println(subsystem.getP());
-    double steeringAdjust;
-    if (Math.abs(subsystem.getP() * tx) < 0.45) {
-      steeringAdjust = subsystem.getP() * tx;
-    }
-    else {
-      steeringAdjust = 0.45;
-    }
-    steeringAdjust = Math.signum(subsystem.getP() * tx) * Math.min(Math.abs(subsystem.getP() * tx), 0.45);
-    // subsystem.tankDrive(0.5, 0.5);
-    subsystem.tankDrive(steeringAdjust, steeringAdjust);
+    double leftCommand = 0;
+    double rightCommand = 0;
+    /* turn to face the target */ 
+    /* double tx = NetworkTableInstance.getDefault().getTable("limelight")
+    // .getEntry("tx").getDouble(0);
+    // System.out.println(tx);
+    // double steeringAdjust = Math.signum(tx) * Math.min(Math.abs(subsystem.getP() * tx), 0.45);
+
+    // attempt with built-in pid controller
+    // // double steeringAdjust = Math.signum(tx) * Math.min(Math.abs(controller.calculate(tx, 0)), 0.45);
+    // leftCommand += steeringAdjust;
+    // rightCommand += steeringAdjust; */
+
+
+    /* drive to correct distance from target */
+
+    double ty = NetworkTableInstance.getDefault().getTable("limelight")
+    .getEntry("ty").getDouble(0);
+
+    leftCommand += Math.signum(ty) * Math.min(Math.abs(kPDistance * ty), 0.35);
+    rightCommand -= Math.signum(ty) * Math.min(Math.abs(kPDistance * ty), 0.35);
+
+    subsystem.tankDrive(leftCommand, rightCommand);
   }
 
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-    
-    // subsystem.isAutomatic(false);
+    subsystem.setAutomatic(false);
     subsystem.disablePID();
     NetworkTableInstance.getDefault().getTable("rpi").getEntry("aimbot").setDouble(0);
     NetworkTableInstance.getDefault().getTable("limelight").getEntry("pipeline").setNumber(1.0);
-
   }
 
   // Returns true when the command should end.

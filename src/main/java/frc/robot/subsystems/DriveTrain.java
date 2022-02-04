@@ -26,6 +26,8 @@ public class DriveTrain extends SubsystemBase {
   private double kI = 0;
   private double kD = 0;
 
+  private boolean isAutomatic = false;
+
   /** Creates a new DriveTrain. */
   public DriveTrain() {
     rightLeader = new WPI_TalonFX(RobotMap.DriveTrainMap.rightLeaderCanID);
@@ -59,6 +61,14 @@ public class DriveTrain extends SubsystemBase {
 
   public void tankDrive(double left, double right) {
     differentialDrive.tankDrive(left, -right);   
+  }
+
+  public void setAutomatic(boolean auto) {
+    isAutomatic = auto;
+  }
+  
+  public boolean isAutomatic() {
+    return isAutomatic;
   }
 
   public PIDController getController() {
