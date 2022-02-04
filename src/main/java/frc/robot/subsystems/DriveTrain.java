@@ -77,6 +77,10 @@ public class DriveTrain extends SubsystemBase {
     return anglePID;
   }
 
+  public PIDController getDistanceController() {
+    return distancePID;
+  }
+
   public void setP(double kP) {
     this.kP = kP;
     anglePID.setP(kP);
@@ -108,9 +112,9 @@ public class DriveTrain extends SubsystemBase {
     anglePID.setP(RobotMap.DriveTrainMap.kP);
     anglePID.setI(RobotMap.DriveTrainMap.kI);
     anglePID.setD(RobotMap.DriveTrainMap.kD);
-    // distancePID.setP(0.0);
-    // distancePID.setI(0.0);
-    // distancePID.setD(0.0);
+    distancePID.setP(0.0);
+    distancePID.setI(0.0);
+    distancePID.setD(0.0);
   }
 
   public void disablePID() {

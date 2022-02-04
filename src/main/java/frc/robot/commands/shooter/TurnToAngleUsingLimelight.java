@@ -13,15 +13,22 @@ import frc.robot.subsystems.DriveTrain;
 
 public class TurnToAngleUsingLimelight extends CommandBase {
   private DriveTrain subsystem;
+
   private PIDController anglePID;
-  private double kPDistance = 0.07;
   private double kP = 0.052;
   private double kI = 0;
+  private double kD = 0;
+
+  private PIDController distancePID;
+  private double kPDist = 0.07;
+  private double kIDist = 0;
+  private double kDDist = 0;
 
   /** Creates a new TurnToAngleUsingLimelight. */
   public TurnToAngleUsingLimelight(DriveTrain subsystem) {
     this.subsystem = subsystem;
     anglePID = subsystem.getAngleController();
+    distancePID = subsystem.getDistanceController();
     addRequirements(this.subsystem);
   }
 
@@ -30,8 +37,10 @@ public class TurnToAngleUsingLimelight extends CommandBase {
   public void initialize() {
     subsystem.setP(kP);
     anglePID.setP(kP);
+    anglePID.setI(kI);
+    anglePID.setD(kD);
     anglePID.setSetpoint(0);
-    subsystem.enablePID();
+    // subsystem.enablePID();
     //getting epic stuff from the network table
     NetworkTableInstance.getDefault().getTable("rpi").getEntry("aimbot").setDouble(1);
     NetworkTableInstance.getDefault().getTable("limelight").getEntry("pipeline").setNumber(0.0);
@@ -60,6 +69,8 @@ public class TurnToAngleUsingLimelight extends CommandBase {
     //   anglePID.reset();
     //   anglePID.setI(0);
     // }
+
+    // anglePID.setD(kD);
     double steeringAdjust = MathUtil.clamp(anglePID.calculate(tx, 0), -0.45, 0.45);
     leftCommand += steeringAdjust;
     rightCommand += steeringAdjust;
