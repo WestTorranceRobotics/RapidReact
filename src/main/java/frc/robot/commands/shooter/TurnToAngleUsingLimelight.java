@@ -12,7 +12,7 @@ import frc.robot.subsystems.DriveTrain;
 public class TurnToAngleUsingLimelight extends CommandBase {
   private DriveTrain subsystem;
   private PIDController controller;
-  private double kPDistance = 0.054;
+  private double kPDistance = 0.07;
 
   /** Creates a new TurnToAngleUsingLimelight. */
   public TurnToAngleUsingLimelight(DriveTrain subsystem) {
@@ -38,22 +38,23 @@ public class TurnToAngleUsingLimelight extends CommandBase {
   public void execute() {
     double leftCommand = 0;
     double rightCommand = 0;
-    /* turn to face the target */ 
-    /* double tx = NetworkTableInstance.getDefault().getTable("limelight")
+    // /* turn to face the target */ 
+    // double tx = NetworkTableInstance.getDefault().getTable("limelight")
     // .getEntry("tx").getDouble(0);
     // System.out.println(tx);
     // double steeringAdjust = Math.signum(tx) * Math.min(Math.abs(subsystem.getP() * tx), 0.45);
 
-    // attempt with built-in pid controller
+    // // attempt with built-in pid controller
     // // double steeringAdjust = Math.signum(tx) * Math.min(Math.abs(controller.calculate(tx, 0)), 0.45);
     // leftCommand += steeringAdjust;
-    // rightCommand += steeringAdjust; */
+    // rightCommand += steeringAdjust;
 
 
     /* drive to correct distance from target */
 
     double ty = NetworkTableInstance.getDefault().getTable("limelight")
     .getEntry("ty").getDouble(0);
+    System.out.println(ty);
 
     leftCommand += Math.signum(ty) * Math.min(Math.abs(kPDistance * ty), 0.35);
     rightCommand -= Math.signum(ty) * Math.min(Math.abs(kPDistance * ty), 0.35);

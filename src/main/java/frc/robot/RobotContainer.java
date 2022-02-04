@@ -82,7 +82,7 @@ public class RobotContainer {
     .withPosition(5, 2).withSize(1, 1).withWidget(BuiltInWidgets.kBooleanBox);
   }
 
-  private void configureDefaultCommands(){
+  public void configureDefaultCommands() {
     driveTrain.setDefaultCommand(new JoystickDrive(driveTrain, driverLeft, driverRight));
   }
 

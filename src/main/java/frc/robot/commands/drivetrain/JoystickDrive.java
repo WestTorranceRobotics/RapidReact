@@ -37,7 +37,7 @@ public class JoystickDrive extends CommandBase {
   public void execute() {
     if (!driveTrain.isAutomatic()) {
         if (leftJoystick.getY() > 0.1 || rightJoystick.getY() > 0.1 || rightJoystick.getY() < -0.1 || leftJoystick.getY() < -0.1){
-            driveTrain.tankDrive(-leftJoystick.getY(), -rightJoystick.getY());
+            driveTrain.tankDrive(leftJoystick.getY(), -rightJoystick.getY());
         }
     }
   }
