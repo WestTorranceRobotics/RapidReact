@@ -20,7 +20,8 @@ public class DriveTrain extends SubsystemBase {
   private WPI_TalonFX leftFollower;
 
   private DifferentialDrive differentialDrive;
-  private PIDController controller;
+  private PIDController anglePID;
+  private PIDController distancePID;
 
   private double kP = 0;
   private double kI = 0;
@@ -51,7 +52,8 @@ public class DriveTrain extends SubsystemBase {
     differentialDrive = new DifferentialDrive(leftLeader, rightLeader);
     differentialDrive.setSafetyEnabled(true);
 
-    controller = new PIDController(kP, kI, kD);
+    anglePID = new PIDController(kP, kI, kD);
+    distancePID = new PIDController(0, 0, 0);
   }
 
   @Override
@@ -71,13 +73,13 @@ public class DriveTrain extends SubsystemBase {
     return isAutomatic;
   }
 
-  public PIDController getController() {
-    return controller;
+  public PIDController getAngleController() {
+    return anglePID;
   }
 
   public void setP(double kP) {
     this.kP = kP;
-    controller.setP(kP);
+    anglePID.setP(kP);
   }
 
   public double getP() {
@@ -86,7 +88,7 @@ public class DriveTrain extends SubsystemBase {
 
   public void setI(double kI) {
     this.kI = kI;
-    controller.setP(kI);
+    anglePID.setP(kI);
   }
 
   public double getI() {
@@ -95,7 +97,7 @@ public class DriveTrain extends SubsystemBase {
 
   public void setD(double kD) {
     this.kD = kD;
-    controller.setP(kD);
+    anglePID.setP(kD);
   }
 
   public double getD() {
@@ -103,15 +105,21 @@ public class DriveTrain extends SubsystemBase {
   }
 
   public void enablePID() {
-    controller.setP(kP);
-    controller.setI(kI);
-    controller.setD(kD);
+    anglePID.setP(RobotMap.DriveTrainMap.kP);
+    anglePID.setI(RobotMap.DriveTrainMap.kI);
+    anglePID.setD(RobotMap.DriveTrainMap.kD);
+    // distancePID.setP(0.0);
+    // distancePID.setI(0.0);
+    // distancePID.setD(0.0);
   }
 
   public void disablePID() {
-    controller.setP(0.0);
-    controller.setI(0.0);
-    controller.setD(0.0);
+    anglePID.setP(0.0);
+    anglePID.setI(0.0);
+    anglePID.setD(0.0);
+    distancePID.setP(0.0);
+    distancePID.setI(0.0);
+    distancePID.setD(0.0);
   }
 
   public void isAutomatic(boolean b) {

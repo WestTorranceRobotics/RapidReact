@@ -4,27 +4,33 @@
 
 package frc.robot.commands.shooter;
 
+import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj2.command.CommandBase;
+import frc.robot.RobotMap;
 import frc.robot.subsystems.DriveTrain;
 
 public class TurnToAngleUsingLimelight extends CommandBase {
   private DriveTrain subsystem;
-  private PIDController controller;
+  private PIDController anglePID;
   private double kPDistance = 0.07;
+  private double kP = 0.052;
+  private double kI = 0;
 
   /** Creates a new TurnToAngleUsingLimelight. */
   public TurnToAngleUsingLimelight(DriveTrain subsystem) {
     this.subsystem = subsystem;
-    subsystem.setP(0.052);
-    controller = subsystem.getController();
+    anglePID = subsystem.getAngleController();
     addRequirements(this.subsystem);
   }
 
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
+    subsystem.setP(kP);
+    anglePID.setP(kP);
+    anglePID.setSetpoint(0);
     subsystem.enablePID();
     //getting epic stuff from the network table
     NetworkTableInstance.getDefault().getTable("rpi").getEntry("aimbot").setDouble(1);
@@ -38,26 +44,35 @@ public class TurnToAngleUsingLimelight extends CommandBase {
   public void execute() {
     double leftCommand = 0;
     double rightCommand = 0;
-    // /* turn to face the target */ 
-    // double tx = NetworkTableInstance.getDefault().getTable("limelight")
-    // .getEntry("tx").getDouble(0);
-    // System.out.println(tx);
+    /* turn to face the target */ 
+    double tx = NetworkTableInstance.getDefault().getTable("limelight").getEntry("tx").getDouble(0);
+    System.out.println("tx: " + tx);
     // double steeringAdjust = Math.signum(tx) * Math.min(Math.abs(subsystem.getP() * tx), 0.45);
 
-    // // attempt with built-in pid controller
-    // // double steeringAdjust = Math.signum(tx) * Math.min(Math.abs(controller.calculate(tx, 0)), 0.45);
-    // leftCommand += steeringAdjust;
-    // rightCommand += steeringAdjust;
+    // attempt with built-in pid controller
+    // izone because there is no built-in izone function for PIDController
+    // if (Math.abs(tx) <= RobotMap.DriveTrainMap.izOne) {
+    //   if (anglePID.getI() == 0.0) {
+    //     anglePID.setI(kI);
+    //   }
+    // }
+    // else {
+    //   anglePID.reset();
+    //   anglePID.setI(0);
+    // }
+    double steeringAdjust = MathUtil.clamp(anglePID.calculate(tx, 0), -0.45, 0.45);
+    leftCommand += steeringAdjust;
+    rightCommand += steeringAdjust;
 
 
     /* drive to correct distance from target */
 
-    double ty = NetworkTableInstance.getDefault().getTable("limelight")
-    .getEntry("ty").getDouble(0);
-    System.out.println(ty);
+    // double ty = NetworkTableInstance.getDefault().getTable("limelight")
+    // .getEntry("ty").getDouble(0);
+    // System.out.println("ty: " + ty);
 
-    leftCommand += Math.signum(ty) * Math.min(Math.abs(kPDistance * ty), 0.35);
-    rightCommand -= Math.signum(ty) * Math.min(Math.abs(kPDistance * ty), 0.35);
+    // leftCommand += Math.signum(ty) * Math.min(Math.abs(kPDistance * ty), 0.35);
+    // rightCommand -= Math.signum(ty) * Math.min(Math.abs(kPDistance * ty), 0.35);
 
     subsystem.tankDrive(leftCommand, rightCommand);
   }
