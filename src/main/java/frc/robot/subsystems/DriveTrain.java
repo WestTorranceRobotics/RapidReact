@@ -114,4 +114,7 @@ public class DriveTrain extends SubsystemBase {
     controller.setD(0.0);
   }
 
+  public void isAutomatic(boolean b) {
+  }
+
 }
