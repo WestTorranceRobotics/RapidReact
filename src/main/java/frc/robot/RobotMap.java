@@ -27,6 +27,7 @@ public class RobotMap {
         public static final double kI = 0.0;
         public static final double kD = 0.0;
         public static final double izOne = 5; // la vie en rose
+        // public static final double izOneDist = 
 
     }
 }

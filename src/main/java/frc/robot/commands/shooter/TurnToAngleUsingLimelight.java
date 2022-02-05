@@ -21,7 +21,7 @@ public class TurnToAngleUsingLimelight extends CommandBase {
 
   private PIDController distancePID;
   private double kPDist = 0.07;
-  private double kIDist = 0;
+  private double kIDist = 0.09;
   private double kDDist = 0;
 
   /** Creates a new TurnToAngleUsingLimelight. */
@@ -40,6 +40,7 @@ public class TurnToAngleUsingLimelight extends CommandBase {
     anglePID.setI(kI);
     anglePID.setD(kD);
     anglePID.setSetpoint(0);
+    distancePID.setP(kPDist);
     // subsystem.enablePID();
     //getting epic stuff from the network table
     NetworkTableInstance.getDefault().getTable("rpi").getEntry("aimbot").setDouble(1);
@@ -53,14 +54,34 @@ public class TurnToAngleUsingLimelight extends CommandBase {
   public void execute() {
     double leftCommand = 0;
     double rightCommand = 0;
+
+    /* drive to correct distance from target */
+    double ty = NetworkTableInstance.getDefault().getTable("limelight").getEntry("ty").getDouble(0);
+    // System.out.println("ty: " + ty);
+    
+    double tySteeringAdjust = MathUtil.clamp(distancePID.calculate(ty, 0), -0.7, 0.7);
+
+    // izone because there is no built-in izone function for PIDController
+    if (Math.abs(ty) <= 10) {
+      if (distancePID.getI() == 0.0) {
+        distancePID.setI(kIDist);
+      }
+    }
+    else {
+      distancePID.reset();
+      distancePID.setI(0);
+    }
+    leftCommand -= tySteeringAdjust;
+    rightCommand += tySteeringAdjust;
+
     /* turn to face the target */ 
     double tx = NetworkTableInstance.getDefault().getTable("limelight").getEntry("tx").getDouble(0);
-    System.out.println("tx: " + tx);
+    // System.out.println("tx: " + tx);
     // double steeringAdjust = Math.signum(tx) * Math.min(Math.abs(subsystem.getP() * tx), 0.45);
 
     // attempt with built-in pid controller
     // izone because there is no built-in izone function for PIDController
-    // if (Math.abs(tx) <= RobotMap.DriveTrainMap.izOne) {
+    // if (Math.abs(tx) <= 10) {
     //   if (anglePID.getI() == 0.0) {
     //     anglePID.setI(kI);
     //   }
@@ -70,20 +91,21 @@ public class TurnToAngleUsingLimelight extends CommandBase {
     //   anglePID.setI(0);
     // }
 
-    // anglePID.setD(kD);
-    double steeringAdjust = MathUtil.clamp(anglePID.calculate(tx, 0), -0.45, 0.45);
-    leftCommand += steeringAdjust;
-    rightCommand += steeringAdjust;
+    // // anglePID.setD(kD);
+    double steeringAdjust = MathUtil.clamp(anglePID.calculate(tx, 0), -0.05, 0.05);
+    // if (Math.abs(ty) <= 1.5) {
+    //   leftCommand -= steeringAdjust * 3.5;
+    //   rightCommand -= steeringAdjust * 3.5;
+    // }
+    // else {
+    //   leftCommand -= steeringAdjust;
+    //   rightCommand -= steeringAdjust;
+    // }
+    leftCommand -= steeringAdjust;
+      rightCommand -= steeringAdjust;
+    
 
-
-    /* drive to correct distance from target */
-
-    // double ty = NetworkTableInstance.getDefault().getTable("limelight")
-    // .getEntry("ty").getDouble(0);
-    // System.out.println("ty: " + ty);
-
-    // leftCommand += Math.signum(ty) * Math.min(Math.abs(kPDistance * ty), 0.35);
-    // rightCommand -= Math.signum(ty) * Math.min(Math.abs(kPDistance * ty), 0.35);
+    System.out.println("tx: " + tx + " |\t\t " + "ty: " + ty);
 
     subsystem.tankDrive(leftCommand, rightCommand);
   }

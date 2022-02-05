@@ -18,7 +18,7 @@ public class DriveDistanceUsingLimelight extends CommandBase {
   public DriveDistanceUsingLimelight(DriveTrain subsystem) {
     this.subsystem = subsystem;
     subsystem.setP(0.052);
-    controller = subsystem.getController();
+    controller = subsystem.getAngleController();
     addRequirements(this.subsystem);
   }
 
