@@ -15,3 +15,5 @@ Shooter:
 7-shooterFollower
 Elevator:
 8-elevatorMotor
+9-elevatorTurningLeader
+10-elevatorTurningFollower
