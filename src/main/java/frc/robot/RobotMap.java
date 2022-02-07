@@ -11,12 +11,12 @@ public class RobotMap {
 
         // The Robot Characterization Toolsuite provides a convenient tool for obtaining these
         // values for your robot.
-        public static final double ksVolts = 0.66904;
-        public static final double kvVoltSecondsPerMeter = 0.022005;
-        public static final double kaVoltSecondsSquaredPerMeter = 0.002674;
+        public static final double ksVolts = 0.66904; //0.6384
+        public static final double kvVoltSecondsPerMeter = 0.022005; //0.023005
+        public static final double kaVoltSecondsSquaredPerMeter = 0.002674; //0.0014474
 
         // Example value only - as above, this must be tuned for your drive!
-        public static final double kPDriveVel = 0.029217;
+        public static final double kPDriveVel = 0.029217;  //0.061451
         public static final double kTrackwidthMeters = 0.6604;
 
         public static final double kMaxSpeedMetersPerSecond = 3;
