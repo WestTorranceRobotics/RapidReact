@@ -26,7 +26,7 @@ public class AutonomousPhaseCommandGroup extends SequentialCommandGroup {
   public AutonomousPhaseCommandGroup() {
     // Add your commands in the addCommands() call, e.g.
     // addCommands(new FooCommand(), new BarCommand());
-    addCommands(
+    addCommands();
       
   }
 }

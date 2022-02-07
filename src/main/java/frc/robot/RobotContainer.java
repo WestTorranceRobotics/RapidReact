@@ -5,21 +5,30 @@
 package frc.robot;
 
 import java.util.Arrays;
+import java.util.List;
 
 import edu.wpi.first.math.trajectory.TrajectoryGenerator;
+import edu.wpi.first.math.trajectory.constraint.DifferentialDriveVoltageConstraint;
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.XboxController;
+import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
+import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
+import frc.robot.RobotMap.DriveTrainMap;
 import frc.robot.commands.JoystickTankDrive;
 import frc.robot.subsystems.DriveTrain;
+import frc.robot.subsystems.Intake;
+import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.RamseteController;
+import edu.wpi.first.math.controller.SimpleMotorFeedforward;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.DifferentialDriveKinematics;
 import edu.wpi.first.math.kinematics.DifferentialDriveOdometry;
+import edu.wpi.first.math.trajectory.Trajectory;
 import edu.wpi.first.math.trajectory.TrajectoryConfig;
 import edu.wpi.first.wpilibj2.command.RamseteCommand;
 /**
@@ -31,6 +40,8 @@ import edu.wpi.first.wpilibj2.command.RamseteCommand;
 public class RobotContainer {
   // The robot's subsystems and commands are defined here...
   private DriveTrain driveTrain;
+  private ShuffleboardTab display;
+  private Intake intake;
 
   public static final Joystick driverLeft = new Joystick(0);
   public static final Joystick driverRight = new Joystick(1);
@@ -74,11 +85,27 @@ public class RobotContainer {
 
   private void configureSubsystems(){
     driveTrain = new DriveTrain();
+    intake = new Intake();
   }
   
   private void configureShuffleboard(){
-    
+    display = Shuffleboard.getTab("Driving Display");
+    Shuffleboard.selectTab(display.getTitle());
+
+    display.addNumber("Current Robot Angle", driveTrain::getAngle)
+    .withPosition(3, 1).withSize(2, 2);
+
+    display.addNumber("Current Robot left encoder", driveTrain::getLeftEncoderTicks)
+    .withPosition(0, 1).withSize(2, 2);
+
+    display.addNumber("Current Robot right encoder", driveTrain::getRightEncoderTicks)
+    .withPosition(0, 3).withSize(2, 2);
+  
+    display.addBoolean("Limit Swich works", intake::isActiviated);
+  
+    display.addNumber("Left Voltage", driveTrain::getVoltage);
   }
+
 
   private void configureDefaultCommands() {
     driveTrain.setDefaultCommand(new JoystickTankDrive(driverLeft, driverRight, driveTrain));
@@ -91,18 +118,52 @@ public class RobotContainer {
    */
   public Command getAutonomousCommand() {
     // An ExampleCommand will run in autonomous
-    return new RamseteCommand(
+    DifferentialDriveVoltageConstraint autoVoltageConstraint = 
+    new DifferentialDriveVoltageConstraint(
+      new SimpleMotorFeedforward(
+      RobotMap.DriveTrainMap.ksVolts, 
+      RobotMap.DriveTrainMap.kvVoltSecondsPerMeter,
+      RobotMap.DriveTrainMap.kaVoltSecondsSquaredPerMeter),
+      RobotMap.DriveTrainMap.dKINEMATICS, 
+      8);
+    
+    TrajectoryConfig config = 
+    new TrajectoryConfig(
+      RobotMap.DriveTrainMap.kMaxSpeedMetersPerSecond,
+      RobotMap.DriveTrainMap.kMaxAccelerationMetersPerSecondSquared)
+      .addConstraint(autoVoltageConstraint)
+      .setKinematics(RobotMap.DriveTrainMap.dKINEMATICS);
+
+      Trajectory exampleTrajectory =
       TrajectoryGenerator.generateTrajectory(
-        new Pose2d(0.0, 0.0, new Rotation2d(0)), 
-        Arrays.asList(new Translation2d(10, 20)), 
-        new Pose2d(20, 10, new Rotation2d(0)), 
-        new TrajectoryConfig(2, 4)), 
-        new DifferentialDriveOdometry(new Rotation2d())::getPoseMeters,
-        new RamseteController(),
-        new DifferentialDriveKinematics(0.66),
-        (Double leftWheelSpeed, Double rightWheelSpeed) -> {
-          //TODO figure out wtf this is for
-        }
-    );
+          // Start at the origin facing the +X direction
+          new Pose2d(0, 0, new Rotation2d(0)),
+          // Pass through these two interior waypoints, making an 's' curve path
+          List.of(new Translation2d(0.5, 0), new Translation2d(1, 0)),
+          // End 3 meters straight ahead of where we started, facing forward
+          new Pose2d(1.5, 0, new Rotation2d(0)),
+          // Pass config
+          config);
+      
+      RamseteCommand ramseteCommand =
+        new RamseteCommand(exampleTrajectory,
+         driveTrain::getPose2d, 
+         new RamseteController(), 
+         new SimpleMotorFeedforward(
+        RobotMap.DriveTrainMap.ksVolts, 
+        RobotMap.DriveTrainMap.kvVoltSecondsPerMeter,
+        RobotMap.DriveTrainMap.kaVoltSecondsSquaredPerMeter),
+        RobotMap.DriveTrainMap.dKINEMATICS,
+        driveTrain::getWheelSpeeds,
+        new PIDController(RobotMap.DriveTrainMap.kPDriveVel, 0, 0),
+        new PIDController(RobotMap.DriveTrainMap.kPDriveVel, 0, 0),
+         driveTrain::tankDriveVolts, 
+         driveTrain);
+
+         System.out.println("I AM RUNNING AUTO COMMAND");
+
+    driveTrain.resetOdometry(exampleTrajectory.getInitialPose());
+
+    return ramseteCommand.andThen(() -> driveTrain.tankDriveVolts(0, 0));
   }
 }

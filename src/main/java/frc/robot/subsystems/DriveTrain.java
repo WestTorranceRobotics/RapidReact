@@ -6,8 +6,15 @@ package frc.robot.subsystems;
 
 import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
+import com.kauailabs.navx.frc.AHRS;
 
+import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.kinematics.DifferentialDriveKinematics;
+import edu.wpi.first.math.kinematics.DifferentialDriveOdometry;
+import edu.wpi.first.math.kinematics.DifferentialDriveWheelSpeeds;
+import edu.wpi.first.wpilibj.SPI;
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
+import edu.wpi.first.wpilibj.motorcontrol.MotorControllerGroup;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.RobotMap;
 
@@ -17,17 +24,24 @@ public class DriveTrain extends SubsystemBase {
   private WPI_TalonFX leftLeader;
   private WPI_TalonFX leftFollower;
 
+  private AHRS gyro;
+
+  private DifferentialDriveOdometry odometry;
+
   private DifferentialDrive differentialDrive;
+  private DifferentialDriveKinematics differentialDriveKinematics;
 
   /** Creates a new DriveTrain. */
   public DriveTrain() {
+
+    
     rightLeader = new WPI_TalonFX(RobotMap.DriveTrainMap.rightLeaderCanID);
     leftLeader = new WPI_TalonFX(RobotMap.DriveTrainMap.leftLeaderCanID);
 
     leftFollower = new WPI_TalonFX(RobotMap.DriveTrainMap.leftFollowerCanID);
-    leftFollower.follow(leftLeader);
+    // leftFollower.follow(leftLeader);
     rightFollower = new WPI_TalonFX(RobotMap.DriveTrainMap.rightFollowerCanID);
-    rightFollower.follow(rightLeader);
+    // rightFollower.follow(rightLeader);
 
     rightLeader.setNeutralMode(NeutralMode.Brake);
     rightFollower.setNeutralMode(NeutralMode.Coast);
@@ -35,18 +49,93 @@ public class DriveTrain extends SubsystemBase {
     leftFollower.setNeutralMode(NeutralMode.Coast);
 
     leftLeader.setInverted(true);
+    leftFollower.setInverted(true);
+    rightLeader.setInverted(false);
     rightLeader.setInverted(false);
 
-    differentialDrive = new DifferentialDrive(leftLeader, rightLeader);
+    MotorControllerGroup leftSide = new MotorControllerGroup(leftLeader, leftFollower);
+    MotorControllerGroup rightSide = new MotorControllerGroup(rightLeader, rightFollower);
+
+    gyro = new AHRS(SPI.Port.kMXP);
+
+    odometry = new DifferentialDriveOdometry(gyro.getRotation2d());
+
+    differentialDrive = new DifferentialDrive(leftSide, rightSide);
     differentialDrive.setSafetyEnabled(true);
+
+    differentialDriveKinematics = new DifferentialDriveKinematics(RobotMap.DriveTrainMap.kTrackwidthMeters);
+    resetEncoders();
+    gyro.reset();
   }
 
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
+  
+    odometry.update(
+        gyro.getRotation2d(), 
+        leftLeader.getSelectedSensorPosition() * RobotMap.DriveTrainMap.ticksToMeters, 
+        rightLeader.getSelectedSensorPosition() * RobotMap.DriveTrainMap.ticksToMeters
+        );
+
+  }
+
+  public double getVoltage(){
+    return leftLeader.getMotorOutputVoltage();
   }
 
   public void tankDrive(double left, double right) {
     differentialDrive.tankDrive(left, -right);   
  }
+
+ public double getAngle(){
+   return gyro.getAngle();
+ }
+
+ public double getLeftEncoderTicks(){
+   return leftLeader.getSelectedSensorPosition();
+ }
+
+ public double getRightEncoderTicks(){
+  return rightLeader.getSelectedSensorPosition();
+ }
+
+ public AHRS getGyro(){
+   return gyro;
+ }
+
+ public Pose2d getPose2d(){
+   return odometry.getPoseMeters();
+ }
+
+ public DifferentialDriveKinematics getKinematics(){
+  return differentialDriveKinematics;
+ }
+
+ public DifferentialDriveWheelSpeeds getWheelSpeeds() {
+  return new DifferentialDriveWheelSpeeds(
+    leftLeader.getSelectedSensorVelocity() * RobotMap.DriveTrainMap.ticksToMeters, 
+    rightLeader.getSelectedSensorVelocity() * RobotMap.DriveTrainMap.ticksToMeters);
+
+}
+
+public void resetOdometry(Pose2d pose) {
+  resetEncoders();
+  odometry.resetPosition(pose, gyro.getRotation2d());
+}
+
+public void resetEncoders(){
+  leftLeader.setSelectedSensorPosition(0);
+  rightLeader.setSelectedSensorPosition(0);
+  rightFollower.setSelectedSensorPosition(0);
+  leftFollower.setSelectedSensorPosition(0);
+
+}
+
+public void tankDriveVolts(double leftVolts, double rightVolts) {
+  leftLeader.setVoltage(-leftVolts);
+  rightLeader.setVoltage(-rightVolts);
+  differentialDrive.feed();
+}
+
 }
