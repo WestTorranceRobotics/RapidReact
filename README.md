@@ -17,3 +17,8 @@ Elevator:
 8-elevatorMotor
 9-elevatorTurningLeader
 10-elevatorTurningFollower
+
+Encoder Values:
+0,1 leftEncoder
+2,3 rightEncoder
+4,5 intakeDeployerEncoder
