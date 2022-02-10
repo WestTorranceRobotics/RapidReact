@@ -100,6 +100,14 @@ public class DriveTrain extends SubsystemBase {
   return rightLeader.getSelectedSensorPosition();
  }
 
+ public double getLeftFollowerEncoderTicks(){
+  return leftFollower.getSelectedSensorPosition();
+}
+
+public double getRightFollowerEncoderTicks(){
+ return rightFollower.getSelectedSensorPosition();
+}
+
  public AHRS getGyro(){
    return gyro;
  }
@@ -114,8 +122,9 @@ public class DriveTrain extends SubsystemBase {
 
  public DifferentialDriveWheelSpeeds getWheelSpeeds() {
   return new DifferentialDriveWheelSpeeds(
-    leftLeader.getSelectedSensorVelocity() * RobotMap.DriveTrainMap.ticksToMeters, 
-    rightLeader.getSelectedSensorVelocity() * RobotMap.DriveTrainMap.ticksToMeters);
+    leftLeader.getSelectedSensorVelocity() * 1000 * RobotMap.DriveTrainMap.ticksToMeters, 
+    rightLeader.getSelectedSensorVelocity() * 1000 * RobotMap.DriveTrainMap.ticksToMeters
+    );
 
 }
 
@@ -133,8 +142,8 @@ public void resetEncoders(){
 }
 
 public void tankDriveVolts(double leftVolts, double rightVolts) {
-  leftLeader.setVoltage(-leftVolts);
-  rightLeader.setVoltage(-rightVolts);
+  leftLeader.setVoltage(leftVolts);
+  rightLeader.setVoltage(rightVolts);
   differentialDrive.feed();
 }
 

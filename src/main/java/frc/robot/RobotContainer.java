@@ -101,6 +101,12 @@ public class RobotContainer {
     display.addNumber("Current Robot right encoder", driveTrain::getRightEncoderTicks)
     .withPosition(0, 3).withSize(2, 2);
   
+    display.addNumber("Current Robot follower left encoder", driveTrain::getLeftFollowerEncoderTicks)
+    .withPosition(7, 1).withSize(2, 2);
+
+    display.addNumber("Current Robot follower right encoder", driveTrain::getRightFollowerEncoderTicks)
+    .withPosition(7, 3).withSize(2, 2);
+
     display.addBoolean("Limit Swich works", intake::isActiviated);
   
     display.addNumber("Left Voltage", driveTrain::getVoltage);
