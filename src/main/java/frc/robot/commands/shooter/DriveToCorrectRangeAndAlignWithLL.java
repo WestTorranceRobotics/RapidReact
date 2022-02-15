@@ -11,7 +11,7 @@ import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.RobotMap;
 import frc.robot.subsystems.DriveTrain;
 
-public class TurnToAngleUsingLimelight extends CommandBase {
+public class DriveToCorrectRangeAndAlignWithLL extends CommandBase {
   private DriveTrain subsystem;
 
   private PIDController anglePID;
@@ -25,7 +25,7 @@ public class TurnToAngleUsingLimelight extends CommandBase {
   private double kDDist = 0;
 
   /** Creates a new TurnToAngleUsingLimelight. */
-  public TurnToAngleUsingLimelight(DriveTrain subsystem) {
+  public DriveToCorrectRangeAndAlignWithLL(DriveTrain subsystem) {
     this.subsystem = subsystem;
     anglePID = subsystem.getAngleController();
     distancePID = subsystem.getDistanceController();
@@ -59,7 +59,7 @@ public class TurnToAngleUsingLimelight extends CommandBase {
     double ty = NetworkTableInstance.getDefault().getTable("limelight").getEntry("ty").getDouble(0);
     // System.out.println("ty: " + ty);
     
-    double tySteeringAdjust = MathUtil.clamp(distancePID.calculate(ty, 0), -0.7, 0.7);
+    double distAdjust = MathUtil.clamp(distancePID.calculate(ty, 0), -0.45, 0.45);
 
     // izone because there is no built-in izone function for PIDController
     if (Math.abs(ty) <= 10) {
@@ -71,8 +71,8 @@ public class TurnToAngleUsingLimelight extends CommandBase {
       distancePID.reset();
       distancePID.setI(0);
     }
-    leftCommand -= tySteeringAdjust;
-    rightCommand += tySteeringAdjust;
+    leftCommand += distAdjust;
+    rightCommand -= distAdjust;
 
     /* turn to face the target */ 
     double tx = NetworkTableInstance.getDefault().getTable("limelight").getEntry("tx").getDouble(0);
@@ -92,7 +92,7 @@ public class TurnToAngleUsingLimelight extends CommandBase {
     // }
 
     // // anglePID.setD(kD);
-    double steeringAdjust = MathUtil.clamp(anglePID.calculate(tx, 0), -0.05, 0.05);
+    // double steeringAdjust = MathUtil.clamp(anglePID.calculate(tx, 0), -0.05, 0.05);
     // if (Math.abs(ty) <= 1.5) {
     //   leftCommand -= steeringAdjust * 3.5;
     //   rightCommand -= steeringAdjust * 3.5;
@@ -101,12 +101,21 @@ public class TurnToAngleUsingLimelight extends CommandBase {
     //   leftCommand -= steeringAdjust;
     //   rightCommand -= steeringAdjust;
     // }
+
+    // this is simply a minimum command 
+    double steeringAdjust = 0;
+    if (Math.abs(ty) <= 3) {
+      steeringAdjust = MathUtil.clamp(kP * tx, -0.35, 0.35);
+    }
+    else {
+      steeringAdjust = Math.signum(tx) * 0.05;
+    }
+    // steeringAdjust = MathUtil.clamp(kP * tx, -0.65, 0.65);
     leftCommand -= steeringAdjust;
-      rightCommand -= steeringAdjust;
+    rightCommand -= steeringAdjust;
     
 
     System.out.println("tx: " + tx + " |\t\t " + "ty: " + ty);
-
     subsystem.tankDrive(leftCommand, rightCommand);
   }
 
@@ -125,3 +134,16 @@ public class TurnToAngleUsingLimelight extends CommandBase {
     return false;
   }
 }
+
+/*
+There are two pid controllers used in this command: one for the alignment (anglePID) and one for driving to the correct range (distPID). 
+
+These are the problems so far:
+  -If the distance is correct, the proportional angle constant is not enough for the Angle PID
+    to even move the drive train. 
+
+    I think that to correct this, we do not clamp the angle pid output and instead change
+    the kP value to something that makes sense. 
+    We also have to change the integral value again. 
+    However, I believe that the distance pid code is fine. The clamping for that makes sense.
+*/

@@ -9,6 +9,7 @@ import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
 
 import edu.wpi.first.math.controller.PIDController;
+import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.RobotMap;
@@ -31,12 +32,12 @@ public class DriveTrain extends SubsystemBase {
 
   /** Creates a new DriveTrain. */
   public DriveTrain() {
-    rightLeader = new WPI_TalonFX(RobotMap.DriveTrainMap.rightLeaderCanID);
-    leftLeader = new WPI_TalonFX(RobotMap.DriveTrainMap.leftLeaderCanID);
+    rightLeader = new WPI_TalonFX(RobotMap.DriveTrainMap.rightLeaderCANID);
+    leftLeader = new WPI_TalonFX(RobotMap.DriveTrainMap.leftLeaderCANID);
 
-    leftFollower = new WPI_TalonFX(RobotMap.DriveTrainMap.leftFollowerCanID);
+    leftFollower = new WPI_TalonFX(RobotMap.DriveTrainMap.leftFollowerCANID);
     leftFollower.follow(leftLeader);
-    rightFollower = new WPI_TalonFX(RobotMap.DriveTrainMap.rightFollowerCanID);
+    rightFollower = new WPI_TalonFX(RobotMap.DriveTrainMap.rightFollowerCANID);
     rightFollower.follow(rightLeader);
 
     rightLeader.setNeutralMode(NeutralMode.Brake);
@@ -71,6 +72,14 @@ public class DriveTrain extends SubsystemBase {
   
   public boolean isAutomatic() {
     return isAutomatic;
+  }
+
+  public double getX() {
+    return NetworkTableInstance.getDefault().getTable("limelight").getEntry("tx").getDouble(0);
+  }
+
+  public double getY() {
+    return NetworkTableInstance.getDefault().getTable("limelight").getEntry("ty").getDouble(0);
   }
 
   public PIDController getAngleController() {

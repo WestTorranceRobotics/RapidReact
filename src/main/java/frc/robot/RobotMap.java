@@ -18,10 +18,10 @@ public class RobotMap {
     }
 
     public static class DriveTrainMap {
-        public static final int rightLeaderCanID = 1;
-        public static final int rightFollowerCanID = 2;
-        public static final int leftLeaderCanID = 4;
-        public static final int leftFollowerCanID = 3;
+        public static final int leftLeaderCANID = 1;
+        public static final int leftFollowerCANID = 4;
+        public static final int rightLeaderCANID = 2;
+        public static final int rightFollowerCANID = 3;
 
         public static final double kP = 0.052;
         public static final double kI = 0.0;

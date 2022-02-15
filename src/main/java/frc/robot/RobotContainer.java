@@ -16,7 +16,7 @@ import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import frc.robot.commands.drivetrain.JoystickDrive;
-import frc.robot.commands.shooter.TurnToAngleUsingLimelight;
+import frc.robot.commands.shooter.DriveToCorrectRangeAndAlignWithLL;
 import frc.robot.subsystems.DriveTrain;
 
 /**
@@ -32,9 +32,9 @@ public class RobotContainer {
 
   public static final Joystick driverLeft = new Joystick(0);
   public static final Joystick driverRight = new Joystick(1);
-  public XboxController operator = new XboxController(2);
+  // public XboxController operator = new XboxController(0);
   
-  public JoystickButton operatorA = new JoystickButton(operator, 2);
+  // public JoystickButton operatorA = new JoystickButton(operator, 2);
   public JoystickButton trigger = new JoystickButton(driverRight, 1);
 
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
@@ -53,8 +53,8 @@ public class RobotContainer {
    * edu.wpi.first.wpilibj2.command.button.JoystickButton}.
    */
   private void configureButtonBindings() {
-    // operatorA.toggleWhenPressed(new TurnToAngleUsingLimelight(driveTrain));
-    trigger.toggleWhenPressed(new TurnToAngleUsingLimelight(driveTrain));
+    // operatorA.toggleWhenPressed(new DriveToCorrectRangeAndAlignWithLL(driveTrain));
+    trigger.toggleWhenPressed(new DriveToCorrectRangeAndAlignWithLL(driveTrain));
   }
 
   private void configureSubsystems(){
@@ -69,17 +69,21 @@ public class RobotContainer {
     NetworkTableEntry pipeEntry = NetworkTableInstance.getDefault().getTable("limelight").getEntry("pipeline");
 
     display.addBoolean("Limelight On?",() -> (int) pipeEntry.getDouble(-1) == 0)
-    .withPosition(4, 1).withSize(1, 1).withWidget(BuiltInWidgets.kBooleanBox);
+    .withPosition(6, 1).withSize(1, 1).withWidget(BuiltInWidgets.kBooleanBox);
 
 
-    display.addNumber("kP", driveTrain::getP)
-    .withPosition(3, 2).withSize(1, 1).withWidget(BuiltInWidgets.kBooleanBox);
+    // display.addNumber("kP", driveTrain::getP)
+    // .withPosition(3, 2).withSize(1, 1).withWidget(BuiltInWidgets.kBooleanBox);
     
-    display.addNumber("kI", driveTrain::getI)
-    .withPosition(4, 2).withSize(1, 1).withWidget(BuiltInWidgets.kBooleanBox);
+    display.addNumber("tx", driveTrain::getX)
+    .withPosition(6, 2).withSize(1, 1);
 
-    display.addNumber("kD", driveTrain::getD)
-    .withPosition(5, 2).withSize(1, 1).withWidget(BuiltInWidgets.kBooleanBox);
+    display.addNumber("ty", driveTrain::getY)
+    .withPosition(7, 2).withSize(1, 1);
+
+    // display.add(video)
+    display.addCamera("limelight", "limelight", "mjpg:http://10.24.96.10:5800")
+    .withSize(4, 4);
   }
 
   public void configureDefaultCommands() {
