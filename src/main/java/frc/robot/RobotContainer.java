@@ -4,12 +4,27 @@
 
 package frc.robot;
 
+import com.fasterxml.jackson.databind.node.BooleanNode;
+
+import edu.wpi.first.cameraserver.CameraServer;
+import edu.wpi.first.cscore.AxisCamera;
+import edu.wpi.first.cscore.CvSink;
+import edu.wpi.first.cscore.CvSource;
+import edu.wpi.first.cscore.MjpegServer;
+import edu.wpi.first.cscore.UsbCamera;
+import edu.wpi.first.cscore.VideoSink;
+import edu.wpi.first.cscore.VideoMode.PixelFormat;
+import edu.wpi.first.networktables.NetworkTableEntry;
+import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.XboxController;
+import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
+import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
-import frc.robot.commands.JoystickTankDrive;
+import frc.robot.commands.DriveTrain.JoystickTankDrive;
+import frc.robot.commands.DriveTrain.visiondriving;
 import frc.robot.subsystems.DriveTrain;
 
 /**
@@ -42,6 +57,10 @@ public class RobotContainer {
 
   public JoystickButton driverRightTrigger = new JoystickButton(driverRight, 1);
   public JoystickButton driverRightThumb  = new JoystickButton(driverRight, 2);
+
+  UsbCamera camera1;
+  UsbCamera camera2;
+  NetworkTableEntry cameraSelection;
   
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
@@ -59,7 +78,7 @@ public class RobotContainer {
    * edu.wpi.first.wpilibj2.command.button.JoystickButton}.
    */
   private void configureButtonBindings() {
-
+    operatorA.whenPressed(new visiondriving(driveTrain));
   }
 
   private void configureSubsystems(){
@@ -67,7 +86,19 @@ public class RobotContainer {
   }
   
   private void configureShuffleboard(){
-    
+    ShuffleboardTab display = Shuffleboard.getTab("RobotVision");
+    display.addNumber("hi", RobotContainer::x);
+    display.addBoolean("IN CENTER", RobotContainer::isCenter);
+
+  }
+
+  private static boolean isCenter(){
+    return (NetworkTableInstance.getDefault().getTable("Vision").getEntry("Xposition").getDouble(0) < 200 &&
+    NetworkTableInstance.getDefault().getTable("Vision").getEntry("Xposition").getDouble(0) > 130);
+  }
+
+  private static double x(){
+    return NetworkTableInstance.getDefault().getTable("Vision").getEntry("Xposition").getDouble(0);
   }
 
   private void configureDefaultCommands() {

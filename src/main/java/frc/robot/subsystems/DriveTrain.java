@@ -4,6 +4,7 @@
 
 package frc.robot.subsystems;
 
+import com.ctre.phoenix.motorcontrol.InvertType;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
 
@@ -35,7 +36,9 @@ public class DriveTrain extends SubsystemBase {
     leftFollower.setNeutralMode(NeutralMode.Coast);
 
     leftLeader.setInverted(true);
+    leftFollower.setInverted(InvertType.FollowMaster);
     rightLeader.setInverted(false);
+    rightFollower.setInverted(InvertType.FollowMaster);
 
     differentialDrive = new DifferentialDrive(leftLeader, rightLeader);
     differentialDrive.setSafetyEnabled(true);
@@ -47,6 +50,6 @@ public class DriveTrain extends SubsystemBase {
   }
 
   public void tankDrive(double left, double right) {
-    differentialDrive.tankDrive(left, -right);   
+    differentialDrive.tankDrive(left, right);   
  }
 }
