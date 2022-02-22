@@ -88,7 +88,7 @@ public class RobotContainer {
   private void configureShuffleboard(){
     ShuffleboardTab display = Shuffleboard.getTab("RobotVision");
     display.addNumber("hi", RobotContainer::x);
-    display.addBoolean("IN CENTER", RobotContainer::isCenter);
+    // display.addBoolean("IN CENTER", RobotContainer::isCenter);
 
   }
 

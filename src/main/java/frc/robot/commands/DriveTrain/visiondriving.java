@@ -35,15 +35,15 @@ public class visiondriving extends CommandBase {
 
     System.out.println("HIIII");
 
-    if (NetworkTableInstance.getDefault().getTable("Vision").getEntry("Xposition").getDouble(0) > 190) {
+    if (NetworkTableInstance.getDefault().getTable("Vision").getEntry("Xposition").getDouble(0) > 20) {
 
-      m_driveTrain.tankDrive(0.5,-0.5);
+      m_driveTrain.tankDrive(-0.45, 0.45);
 
     }
 
-    else if (NetworkTableInstance.getDefault().getTable("Vision").getEntry("Xposition").getDouble(0) < 130) {
+    else if (NetworkTableInstance.getDefault().getTable("Vision").getEntry("Xposition").getDouble(0) < -20) {
 
-      m_driveTrain.tankDrive(0.5,-0.5);
+      m_driveTrain.tankDrive(0.45, -0.45);
 
     }
 
