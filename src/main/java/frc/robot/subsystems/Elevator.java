@@ -4,14 +4,62 @@
 
 package frc.robot.subsystems;
 
+import com.ctre.phoenix.motorcontrol.ControlMode;
+import com.ctre.phoenix.motorcontrol.can.VictorSPX;
+
+import edu.wpi.first.wpilibj.DigitalInput;
+import edu.wpi.first.wpilibj.PneumaticsModuleType;
+import edu.wpi.first.wpilibj.Solenoid;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.RobotMap;
 
 public class Elevator extends SubsystemBase {
+  //motor for elevator may be victor spx or falcon 500
+  private VictorSPX ElevatorMotor;
+  private DigitalInput TopLimit;
+  private DigitalInput BottomLimit;
+  private Solenoid BreakOff;
+
   /** Creates a new Elevator. */
-  public Elevator() {}
+  public Elevator() {
+    //declaring motor and limits to their can ids
+    ElevatorMotor = new VictorSPX(RobotMap.ElevatorMap.elevatorCANID);
+    TopLimit = new DigitalInput(RobotMap.ElevatorMap.topLimitChannelID);
+    BottomLimit = new DigitalInput(RobotMap.ElevatorMap.bottomLimitChannelID);
+    BreakOff = new Solenoid(PneumaticsModuleType.CTREPCM, RobotMap.ElevatorMap.elevatorSolenoid);
+  }
 
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
+  }
+
+  /*victorspx requires controlmode value (all options can be seen with ctrl + click on ControlMode)
+    typically we use percent output, position is sometimes used for drivedistance, velocity is also sometimes used alongside pid
+    most libraries do not ask for a control mode*/
+
+  //lifts up elevator 
+  public void liftUp(){
+    ElevatorMotor.set(ControlMode.PercentOutput, RobotMap.ElevatorMap.elevatorMotorUp);
+  }
+
+  //lowers down elevator
+  public void liftDown(){
+    ElevatorMotor.set(ControlMode.PercentOutput, RobotMap.ElevatorMap.elevatorMotorDown);
+  }
+
+  //stops elevator
+  public void setNoPower(){
+    ElevatorMotor.set(ControlMode.PercentOutput, RobotMap.ElevatorMap.elevatorHalt);
+  }
+
+  //notifies when top is reached
+  public boolean reachedTopLimit(){
+    return TopLimit.get();
+  }
+
+  //notifies when bottom is reached
+  public boolean reachedBottomLimit(){
+    return BottomLimit.get();
   }
 }
