@@ -7,16 +7,20 @@ DriveTrain:
 1-leftFollower
 2-rightLeader
 3-rightFollower
+
 Intake:
 4-intakeMotor
 5-intakeDeployMotor
+
 Shooter:
 6-shooterLeader
 7-shooterFollower
+
 Elevator:
 8-elevatorMotor
 9-elevatorTurningLeader
 10-elevatorTurningFollower
+
 Loader:
 11-loader
 
