@@ -26,7 +26,7 @@ public class Elevator extends SubsystemBase {
     ElevatorMotor = new VictorSPX(RobotMap.ElevatorMap.elevatorCANID);
     TopLimit = new DigitalInput(RobotMap.ElevatorMap.topLimitChannelID);
     BottomLimit = new DigitalInput(RobotMap.ElevatorMap.bottomLimitChannelID);
-    BreakOff = new Solenoid(PneumaticsModuleType.CTREPCM, RobotMap.ElevatorMap.elevatorSolenoid);
+    // BreakOff = new Solenoid(PneumaticsModuleType.CTREPCM, RobotMap.ElevatorMap.elevatorSolenoid);
   }
 
   @Override

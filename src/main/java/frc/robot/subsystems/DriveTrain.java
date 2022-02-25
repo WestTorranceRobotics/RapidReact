@@ -89,9 +89,9 @@ public class DriveTrain extends SubsystemBase {
       be inverted. For more explanation, please direct message me because it's easier to show in demonstration.
     */
 
-    leftLeader.setInverted(true);
+    leftLeader.setInverted(false);
     leftFollower.setInverted(InvertType.FollowMaster);
-    rightLeader.setInverted(false);
+    rightLeader.setInverted(true);
     rightFollower.setInverted(InvertType.FollowMaster);
 
     /**

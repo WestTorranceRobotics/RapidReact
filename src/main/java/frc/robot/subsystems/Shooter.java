@@ -143,12 +143,4 @@ public class Shooter extends SubsystemBase {
   // public void directVolts(double volts) {
   //   shootMotorLeader.setVoltage(volts);
   // }
-
-  @Override
-  public void periodic() {
-    // double ty = NetworkTableInstance.getDefault().getTable("limelight").getEntry("ty").getDouble(0);
-    // double angle = ty + RobotMap.limelightAngle;
-    // double tan = Math.tan(Math.toRadians(angle));
-    // double dx = (RobotMap.targetHeight - RobotMap.limelightHeight) / tan;
-  }
 }

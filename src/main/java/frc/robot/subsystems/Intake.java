@@ -29,8 +29,6 @@ public class Intake extends SubsystemBase
     intakeMotor.setInverted(true);
 
     deployMotor = new TalonSRX(RobotMap.IntakeMap.intakeDeployMotorCANID);
-    deployEncoder = new Encoder(RobotMap.IntakeMap.deployEncoderChannel1,RobotMap.IntakeMap.deployEncoderChannel2);
-    deployEncoder.reset();
   }
 
   public void RunIntake()
@@ -47,8 +45,6 @@ public class Intake extends SubsystemBase
   {
     intakeMotor.set(ControlMode.PercentOutput, 0);
   }
-
-  public Encoder getDeployEncoder(){return deployEncoder;}
   public TalonSRX getDeployMotor(){return deployMotor;}
 
   public boolean ToggleIsDeployed()

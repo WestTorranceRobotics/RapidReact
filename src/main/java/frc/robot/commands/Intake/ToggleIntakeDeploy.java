@@ -36,7 +36,6 @@ public class ToggleIntakeDeploy extends CommandBase
   public void initialize() 
   {
     isDeployed = intake.ToggleIsDeployed();
-    deployEncoder = intake.getDeployEncoder();
     deployMotor = intake.getDeployMotor();
     currentEncoderPosition = deployEncoder.get();
 
