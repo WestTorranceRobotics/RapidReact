@@ -50,7 +50,7 @@ public class Shooter extends SubsystemBase {
     shootMotorFollower.getPIDController().setD(RobotMap.ShooterMap.kD);
     shootMotorFollower.getPIDController().setOutputRange(-1, 1);
     shootMotorFollower.getPIDController().setReference(0, com.revrobotics.CANSparkMax.ControlType.kVelocity);
-    shootMotorFollower.follow(shootMotorLeader, true);
+    //shootMotorFollower.follow(shootMotorLeader, true);
     
     //shootPID = shootMotorLeader.getPIDController();
     // shootPID.setD(RobotMap.ShooterMap.Kd);
@@ -103,11 +103,12 @@ public class Shooter extends SubsystemBase {
   //   }
   
   public double getVelocity() {
-    return (shootMotorLeader.getEncoder().getVelocity() / RobotMap.ShooterMap.gearRatio); 
+    return (shootMotorLeader.getEncoder().getVelocity() * RobotMap.ShooterMap.gearRatio); 
    }
    
    public void setVelocity(double velocity){
     shootMotorLeader.getPIDController().setReference(velocity, com.revrobotics.CANSparkMax.ControlType.kVelocity);
+    shootMotorFollower.getPIDController().setReference(-velocity, com.revrobotics.CANSparkMax.ControlType.kVelocity);
     
    }
 
@@ -124,6 +125,7 @@ public class Shooter extends SubsystemBase {
 
   public void setPower(double power) {
     shootMotorLeader.set(power);
+    shootMotorFollower.set(-power);
   }
 
   /**

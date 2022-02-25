@@ -38,8 +38,8 @@ public class ShootBallBasedOnRPM extends CommandBase {
   @Override
   public void execute() {
     System.out.println("hiiiiiiii");
-    // bShooter.setVelocity(rpm);
-    bShooter.setPower(-0.4);
+    bShooter.setVelocity(rpm);
+    // bShooter.setPower(-0.4);
 
     // double error = bShooter.getVelocity() - rpm;
     // double comp = -1.2e-5 * Math.pow(error,3);

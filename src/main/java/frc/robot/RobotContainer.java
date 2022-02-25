@@ -116,8 +116,7 @@ public class RobotContainer {
   }
   private void configureButtonBindings() {
     //Shooter
-    operatorA.whenHeld(new ShootBallBasedOnRPM(shooter, 13000));
-    operatorB.whenHeld(new ShootBallBasedOnRPM(shooter, -13000));
+    operatorA.whenHeld(new ShootBallBasedOnRPM(shooter, 5700));
 
     //Intake
     operatorX.whenHeld(new RunIntake(intake));
