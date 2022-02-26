@@ -4,18 +4,20 @@
 
 package frc.robot.subsystems;
 
-import com.ctre.phoenix.motorcontrol.ControlMode;
-import com.ctre.phoenix.motorcontrol.can.VictorSPX;
+
+import com.revrobotics.CANSparkMax;
+import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 
 import edu.wpi.first.wpilibj.DigitalInput;
-import edu.wpi.first.wpilibj.PneumaticsModuleType;
 import edu.wpi.first.wpilibj.Solenoid;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.RobotMap;
 
 public class Elevator extends SubsystemBase {
   //motor for elevator may be victor spx or falcon 500
-  private VictorSPX ElevatorMotor;
+  private CANSparkMax ElevatorMotor;
+  private CANSparkMax ElevatorTurningLeader;
+  private CANSparkMax ElevatorTurningFollower;
   private DigitalInput TopLimit;
   private DigitalInput BottomLimit;
   private Solenoid BreakOff;
@@ -23,10 +25,13 @@ public class Elevator extends SubsystemBase {
   /** Creates a new Elevator. */
   public Elevator() {
     //declaring motor and limits to their can ids
-    ElevatorMotor = new VictorSPX(RobotMap.ElevatorMap.elevatorCANID);
+    ElevatorMotor = new CANSparkMax(RobotMap.ElevatorMap.elevatorCANID, MotorType.kBrushless);
+    ElevatorTurningLeader = new CANSparkMax(RobotMap.ElevatorMap.elevatorCANID, MotorType.kBrushless);
+    ElevatorTurningFollower = new CANSparkMax(RobotMap.ElevatorMap.elevatorCANID, MotorType.kBrushless);
     TopLimit = new DigitalInput(RobotMap.ElevatorMap.topLimitChannelID);
     BottomLimit = new DigitalInput(RobotMap.ElevatorMap.bottomLimitChannelID);
     // BreakOff = new Solenoid(PneumaticsModuleType.CTREPCM, RobotMap.ElevatorMap.elevatorSolenoid);
+    ElevatorTurningFollower.follow(ElevatorTurningLeader);
   }
 
   @Override
@@ -40,17 +45,27 @@ public class Elevator extends SubsystemBase {
 
   //lifts up elevator 
   public void liftUp(){
-    ElevatorMotor.set(ControlMode.PercentOutput, RobotMap.ElevatorMap.elevatorMotorUp);
+    ElevatorMotor.set(RobotMap.ElevatorMap.elevatorMotorUp);
   }
 
   //lowers down elevator
   public void liftDown(){
-    ElevatorMotor.set(ControlMode.PercentOutput, RobotMap.ElevatorMap.elevatorMotorDown);
+    ElevatorMotor.set(RobotMap.ElevatorMap.elevatorMotorDown);
+  }
+
+  public void liftForwards(){
+    ElevatorTurningLeader.set(RobotMap.ElevatorMap.elevatorMotorUp);
+  }
+
+  public void liftBackwards(){
+    ElevatorTurningLeader.set(RobotMap.ElevatorMap.elevatorMotorDown);
   }
 
   //stops elevator
   public void setNoPower(){
-    ElevatorMotor.set(ControlMode.PercentOutput, RobotMap.ElevatorMap.elevatorHalt);
+    ElevatorMotor.set(RobotMap.ElevatorMap.elevatorHalt);
+    ElevatorTurningLeader.set(RobotMap.ElevatorMap.elevatorHalt);
+    ElevatorTurningFollower.set(RobotMap.ElevatorMap.elevatorHalt);
   }
 
   //notifies when top is reached

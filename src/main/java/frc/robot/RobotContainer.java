@@ -20,7 +20,9 @@ import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.POVButton;
 import frc.robot.commands.DriveTrain.JoystickTankDrive;
+import frc.robot.commands.Elevator.LiftBackwards;
 import frc.robot.commands.Elevator.LiftDown;
+import frc.robot.commands.Elevator.LiftForwards;
 import frc.robot.commands.Elevator.LiftUp;
 import frc.robot.commands.Intake.ReverseIntake;
 import frc.robot.commands.Intake.RunIntake;
@@ -126,9 +128,11 @@ public class RobotContainer {
     //Elevator
     operatorUp.whileHeld(new LiftUp(elevator));
     operatorDown.whileHeld(new LiftDown(elevator));
+    operatorLeft.whileHeld(new LiftForwards(elevator));
+    operatorRight.whileHeld(new LiftBackwards(elevator));
 
     //Vision
-    operatorLeft.whenPressed(new visiondriving(driveTrain));
+    operatorLT.whenPressed(new visiondriving(driveTrain));
   }
 
   private void configureSubsystems(){
