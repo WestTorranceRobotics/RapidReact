@@ -51,7 +51,9 @@ public class RobotMap {
         public static final int ShooterLeaderCANID = 6;
         public static final int ShooterFollowerCANID = 7;
         public static final double kP = 0.00061675; //0.00061675
-        public static final double kD = 0.071675; //0.051675
+        public static final double kD = 0.171675; //0.051675
+        public static final double shooterPowerShort = 0.5;
+        public static final double shooterPowerLong = 1;
 
     }
     
@@ -63,6 +65,10 @@ public class RobotMap {
         public static int deployEncoderChannel1 = 4;
         public static int deployEncoderChannel2 = 5;
         public static double deployMotorPower = 0.4;
+
+        public static double voltageValueForDeployed = 0.9;
+        public static double voltageValueForUndeployed = 0.1;
+
     }
 
     public static class LoaderMap{

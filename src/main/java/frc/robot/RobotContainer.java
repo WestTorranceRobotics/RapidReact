@@ -99,6 +99,9 @@ public class RobotContainer {
   private void configureShuffleboard(){
     ShuffleboardTab display = Shuffleboard.getTab("RobotVision");
     display.addNumber("hi", RobotContainer::x);
+
+    display.addNumber("Left Encoder", driveTrain::getLeftEncoderTicks).withPosition(2, 2);
+    display.addNumber("Right Encoder", driveTrain::getRightEncoderTicks).withPosition(3, 2);
     // display.addBoolean("IN CENTER", RobotContainer::isCenter);
 
   }
@@ -150,6 +153,6 @@ public class RobotContainer {
   public Command getAutonomousCommand() 
   {
     // An ExampleCommand will run in autonomous
-    return new ShootBallBasedOnPower(shooter);
+    return new ShootBallBasedOnPower(shooter, 0.5);
   }
 }

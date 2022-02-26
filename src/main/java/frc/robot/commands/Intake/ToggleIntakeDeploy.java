@@ -18,7 +18,8 @@ public class ToggleIntakeDeploy extends CommandBase
   private Encoder deployEncoder;
   private TalonSRX deployMotor;
   private boolean isDeployed;
-  private int currentEncoderPosition;
+  private double currentPotentiometerVoltage;
+  private double deployMotorPower;
   
   private double neededDeployTicks = 90*(1/360)*(4096/1);
 
@@ -37,24 +38,33 @@ public class ToggleIntakeDeploy extends CommandBase
   {
     isDeployed = intake.ToggleIsDeployed();
     deployMotor = intake.getDeployMotor();
-    currentEncoderPosition = deployEncoder.get();
+    currentPotentiometerVoltage = intake.getAnalogIntakeValue();
 
-    double deployMotorPower = RobotMap.IntakeMap.deployMotorPower;
+    deployMotorPower = RobotMap.IntakeMap.deployMotorPower;
+
     if(isDeployed) //If the intake is deployed, retract intake
     {
       deployMotorPower *= -1;
     }
-
-    deployMotor.set(ControlMode.PercentOutput, deployMotorPower);
   }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() 
   {
-    if(Math.abs(currentEncoderPosition - deployEncoder.get()) >= neededDeployTicks)
-    {
-      isFinished = true;
+    deployMotor.set(ControlMode.PercentOutput, deployMotorPower);
+
+    if(isDeployed){
+      if(Math.abs(currentPotentiometerVoltage - intake.getAnalogIntakeValue()) >= RobotMap.IntakeMap.voltageValueForDeployed)
+      {
+        isFinished = true;
+      }
+    }
+    if(!isDeployed){
+      if(Math.abs(currentPotentiometerVoltage - intake.getAnalogIntakeValue()) >= RobotMap.IntakeMap.voltageValueForUndeployed)
+        {
+          isFinished = true;
+        }
     }
   }
 

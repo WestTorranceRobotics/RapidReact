@@ -2,19 +2,18 @@
 // Open Source Software; you can modify and/or share it under the terms of
 // the WPILib BSD license file in the root directory of this project.
 
-package frc.robot.commands.shooter;
+package frc.robot.commands.Loader;
 
 import edu.wpi.first.wpilibj2.command.CommandBase;
-import frc.robot.subsystems.Shooter;
+import frc.robot.subsystems.Loader;
 
-public class ShootBallBasedOnPower extends CommandBase {
-  Shooter mShooter;
-  double mpower;
-  /** Creates a new ShootBallBasedOnPower. */
-  public ShootBallBasedOnPower(Shooter shooter, double power) {
-    mShooter = shooter;
-    mpower = power;
-    addRequirements(mShooter);
+public class ReverseLoader extends CommandBase {
+  Loader mLoader;
+  /** Creates a new ReverseLoader. */
+  public ReverseLoader(Loader loader) {
+    mLoader = loader;
+
+    addRequirements(mLoader);
     // Use addRequirements() here to declare subsystem dependencies.
   }
 
@@ -25,12 +24,14 @@ public class ShootBallBasedOnPower extends CommandBase {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    mShooter.setPower(mpower);
+      mLoader.reverseLoader();
   }
 
   // Called once the command ends or is interrupted.
   @Override
-  public void end(boolean interrupted) {}
+  public void end(boolean interrupted) {
+    mLoader.stopLoader();
+  }
 
   // Returns true when the command should end.
   @Override
