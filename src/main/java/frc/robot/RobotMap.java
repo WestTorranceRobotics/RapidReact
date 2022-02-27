@@ -5,10 +5,10 @@ import edu.wpi.first.wpilibj.PneumaticsModuleType;
 public class RobotMap {
     
     public static class DriveTrainMap{
-        public static int leftLeaderCANID = 0;
-        public static int leftFollowerCANID = 1;
-        public static int rightLeaderCANID = 2;
-        public static int rightFollowerCANID = 3;
+        public static int leftLeaderCANID = 1;
+        public static int leftFollowerCANID = 2;
+        public static int rightLeaderCANID = 3;
+        public static int rightFollowerCANID = 4;
 
         /*CAN-ID VALUES FOR OUR DRIVETRAIN MOTOR CONTROLLORS. CAN-ID values are values we assign to motors for our
         RoboRio to be able to use our motors and know which motors motor controllor needs to be used. 
@@ -17,7 +17,7 @@ public class RobotMap {
         public static double radiusOfWheel = 3;
         //Radius of the wheel of the robot. (In terms of inches)
         
-        public static double ticksToInches = 0.35190777138342676035541298134768;
+        public static double inchesPerPulse = 0.78858884343625044337347446800602;
         //0.04928680271 for quadature.
       
         /*
@@ -32,9 +32,9 @@ public class RobotMap {
     public static class ElevatorMap{
 
         //most are not actual values, will change later when I get a confirmed number for any (most are based off of previous year code)
-        public static final int elevatorCANID = 8;
-        public static final int elevatorTurningLeader = 9;
-        public static final int elevatorTurningFollower = 10;
+        public static final int elevatorCANID = 10;
+        public static final int elevatorTurningLeader = 11;
+        public static final int elevatorTurningFollower = 12;
         public static final int topLimitChannelID = 1;
         public static final int bottomLimitChannelID = 2;
         public static final int elevatorSolenoid = 2;
@@ -54,14 +54,15 @@ public class RobotMap {
         public static final double kD = 0.171675; //0.051675
         public static final double shooterPowerShort = 0.5;
         public static final double shooterPowerLong = 1;
+        public static double ballCurrent = 5;
 
     }
     
     public static class IntakeMap
     {
-        public static int intakeMotorCANID = 4;
-        public static int intakeDeployMotorCANID = 5;
-        public static double intakeMotorPower = 0.6;
+        public static int intakeMotorCANID = 5;
+        public static int intakeDeployMotorCANID = 8;
+        public static double intakeMotorPower = -0.6;
         public static int deployEncoderChannel1 = 4;
         public static int deployEncoderChannel2 = 5;
         public static double deployMotorPower = 0.4;
@@ -72,7 +73,7 @@ public class RobotMap {
     }
 
     public static class LoaderMap{
-        public static int loaderMotorCANID = 11;
+        public static int loaderMotorCANID = 9;
         
 
     }

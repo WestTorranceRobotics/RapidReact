@@ -19,6 +19,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.POVButton;
+import frc.robot.commands.CombindedCommands.MoveBallFromIntakeToShooter;
 import frc.robot.commands.DriveTrain.JoystickTankDrive;
 import frc.robot.commands.Elevator.LiftBackwards;
 import frc.robot.commands.Elevator.LiftDown;
@@ -27,12 +28,16 @@ import frc.robot.commands.Elevator.LiftUp;
 import frc.robot.commands.Intake.ReverseIntake;
 import frc.robot.commands.Intake.RunIntake;
 import frc.robot.commands.Intake.ToggleIntakeDeploy;
+import frc.robot.commands.Intake.UndeployIntake;
+import frc.robot.commands.Loader.ReverseLoader;
+import frc.robot.commands.Loader.RunLoader;
 import frc.robot.commands.shooter.*;
 import frc.robot.commands.VisionProcessing.*;
 import frc.robot.subsystems.DriveTrain;
 import frc.robot.subsystems.Shooter;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import frc.robot.subsystems.Intake;
+import frc.robot.subsystems.Loader;
 import edu.wpi.first.wpilibj2.command.button.POVButton;
 import frc.robot.subsystems.Elevator;
 
@@ -49,9 +54,9 @@ public class RobotContainer {
   public static final Joystick driverRight = new Joystick(1);
   public XboxController operator = new XboxController(2);
 
-  public JoystickButton operatorA = new JoystickButton(operator, 1);
-  public JoystickButton operatorB = new JoystickButton(operator, 2);
-  public JoystickButton operatorX = new JoystickButton(operator, 3);
+  public JoystickButton operatorX = new JoystickButton(operator, 1);
+  public JoystickButton operatorA = new JoystickButton(operator, 2);
+  public JoystickButton operatorB = new JoystickButton(operator, 3);
   public JoystickButton operatorY = new JoystickButton(operator, 4);
   public JoystickButton operatorLB = new JoystickButton(operator, 5);
   public JoystickButton operatorRB = new JoystickButton(operator, 6);
@@ -78,6 +83,7 @@ public class RobotContainer {
   private DriveTrain driveTrain;
   private Intake intake;
   private Elevator elevator;
+  private Loader loader;
   
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() 
@@ -100,8 +106,11 @@ public class RobotContainer {
     ShuffleboardTab display = Shuffleboard.getTab("RobotVision");
     display.addNumber("hi", RobotContainer::x);
 
-    display.addNumber("Left Encoder", driveTrain::getLeftEncoderTicks).withPosition(2, 2);
-    display.addNumber("Right Encoder", driveTrain::getRightEncoderTicks).withPosition(3, 2);
+    display.addNumber("Left Encoder", driveTrain::getLeftEncoderTicks).withPosition(8, 2);
+    display.addNumber("Right Encoder", driveTrain::getRightEncoderTicks).withPosition(9, 2);
+
+    display.addNumber("Applied Power on Shooter", shooter::getCurrent).withWidget(BuiltInWidgets.kGraph).withSize(3, 3);
+    display.addNumber("Applied Power on Shooter", shooter::getVelocity).withWidget(BuiltInWidgets.kGraph).withSize(3, 3).withPosition(4, 1);
     // display.addBoolean("IN CENTER", RobotContainer::isCenter);
 
   }
@@ -121,12 +130,18 @@ public class RobotContainer {
   }
   private void configureButtonBindings() {
     //Shooter
-    operatorA.whenHeld(new ShootBallBasedOnRPM(shooter, 5700));
+    operatorRT.whenHeld(new ShootBallBasedOnPower(shooter, 1.0));
+    operatorRB.whenHeld(new ShootBallBasedOnRPM(shooter, 5600), true);
 
     //Intake
     operatorX.whenHeld(new RunIntake(intake));
-    operatorY.whenHeld(new ReverseIntake(intake));
+    operatorB.whenHeld(new ReverseIntake(intake));
+    operatorA.whenHeld(new RunLoader(loader));
+    operatorY.whenHeld(new ReverseLoader(loader));
+
     operatorBack.whenPressed(new ToggleIntakeDeploy(intake));
+    //operatorRT.whenPressed(new UndeployIntake(intake));
+    //operator.whenHeld(new MoveBallFromIntakeToShooter(loader, intake));
 
     //Elevator
     operatorUp.whileHeld(new LiftUp(elevator));
@@ -143,6 +158,7 @@ public class RobotContainer {
     driveTrain = new DriveTrain();
     intake = new Intake();
     elevator = new Elevator();
+    loader = new Loader();
   }  
 
   /**

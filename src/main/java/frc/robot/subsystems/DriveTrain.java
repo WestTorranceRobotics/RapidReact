@@ -34,8 +34,8 @@ public class DriveTrain extends SubsystemBase {
   * compass heading, fused (9-axis) heading and magnetic disturbance detection.
   */
 
-  Encoder leftEncoder = new Encoder(4,5, false, EncodingType.k4X);
-  Encoder rightEncoder = new Encoder(8,9, false, EncodingType.k4X);
+  Encoder leftEncoder = new Encoder(0,1, false, EncodingType.k4X);
+  Encoder rightEncoder = new Encoder(2,3, false, EncodingType.k4X);
 
   private AHRS gyro;
 
@@ -130,6 +130,12 @@ public class DriveTrain extends SubsystemBase {
     gyro.reset();
     gyro.zeroYaw();
 
+    rightEncoder.setReverseDirection(true);
+    leftEncoder.setDistancePerPulse(RobotMap.DriveTrainMap.inchesPerPulse);
+    rightEncoder.setDistancePerPulse(RobotMap.DriveTrainMap.inchesPerPulse);
+
+    
+
   }
 
    /**
@@ -188,6 +194,11 @@ public class DriveTrain extends SubsystemBase {
 
   public TalonSRX getRightLeader(){
     return rightLeader;
+  }
+
+  public void resetEncoder(){
+    leftEncoder.reset();
+    rightEncoder.reset();
   }
 
   public double getRightEncoderTicks(){

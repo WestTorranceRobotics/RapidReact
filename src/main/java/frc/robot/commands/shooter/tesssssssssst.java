@@ -14,7 +14,7 @@ public class tesssssssssst extends CommandBase {
   /** Creates a new tesssssssssst. */
   public tesssssssssst(double speed) {
 
-    canSparkMax = new CANSparkMax(8, MotorType.kBrushless);
+    canSparkMax = new CANSparkMax(20, MotorType.kBrushless);
 
     // Use addRequirements() here to declare subsystem dependencies.
   }

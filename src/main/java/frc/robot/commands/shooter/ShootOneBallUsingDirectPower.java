@@ -5,16 +5,19 @@
 package frc.robot.commands.shooter;
 
 import edu.wpi.first.wpilibj2.command.CommandBase;
+import frc.robot.subsystems.Loader;
 import frc.robot.subsystems.Shooter;
 
-public class ShootBallBasedOnPower extends CommandBase {
-  Shooter mShooter;
-  double mpower;
-  /** Creates a new ShootBallBasedOnPower. */
-  public ShootBallBasedOnPower(Shooter shooter, double power) {
-    mShooter = shooter;
-    mpower = power;
-    addRequirements(mShooter);
+public class ShootOneBallUsingDirectPower extends CommandBase {
+  private Shooter mshooter;
+  private Loader mLoader;
+  private boolean isDone = false;
+  /** Creates a new ShootOneBallUsingDirectPower. */
+  public ShootOneBallUsingDirectPower(Shooter shooter, Loader loader) {
+    mshooter = shooter;
+    mLoader = loader;
+
+    addRequirements(mshooter);
     // Use addRequirements() here to declare subsystem dependencies.
   }
 
@@ -25,18 +28,26 @@ public class ShootBallBasedOnPower extends CommandBase {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    mShooter.setPower(mpower);
+
+    mshooter.setPower(0.5);
+    
+    if(mshooter.atSpeed() && mLoader.getAppliedOutput() > 0) {
+      mshooter.currentWatch();
+    }
+
+    if (mshooter.getBallsShot() == 1) {
+      isDone = true;
+    }
+
   }
 
   // Called once the command ends or is interrupted.
   @Override
-  public void end(boolean interrupted) {
-    mShooter.setPower(0);
-  }
+  public void end(boolean interrupted) {}
 
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return false;
+    return isDone;
   }
 }

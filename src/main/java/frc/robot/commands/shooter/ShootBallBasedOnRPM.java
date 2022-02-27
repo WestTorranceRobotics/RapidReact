@@ -37,7 +37,6 @@ public class ShootBallBasedOnRPM extends CommandBase {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    System.out.println("hiiiiiiii");
     bShooter.setVelocity(rpm);
     // bShooter.setPower(-0.4);
 

@@ -31,6 +31,8 @@ public class Shooter extends SubsystemBase {
   private CANSparkMax shootMotorLeader = new CANSparkMax(RobotMap.ShooterMap.ShooterLeaderCANID, MotorType.kBrushless);
   // private CANPIDController shootPID;
   private boolean atSpeed;
+  private int ballsShot = 0;
+  private boolean passedBallCurrent = false;
  
   public Shooter() {
 
@@ -41,7 +43,6 @@ public class Shooter extends SubsystemBase {
     shootMotorLeader.getPIDController().setP(RobotMap.ShooterMap.kP);
     shootMotorLeader.getPIDController().setD(RobotMap.ShooterMap.kD);
     shootMotorLeader.getPIDController().setOutputRange(-1, 1);
-    shootMotorLeader.getPIDController().setReference(0, com.revrobotics.CANSparkMax.ControlType.kVelocity);
   //follower
     shootMotorFollower.restoreFactoryDefaults();
     shootMotorFollower.setIdleMode(IdleMode.kCoast);
@@ -49,14 +50,8 @@ public class Shooter extends SubsystemBase {
     shootMotorFollower.getPIDController().setP(RobotMap.ShooterMap.kP);
     shootMotorFollower.getPIDController().setD(RobotMap.ShooterMap.kD);
     shootMotorFollower.getPIDController().setOutputRange(-1, 1);
-    shootMotorFollower.getPIDController().setReference(0, com.revrobotics.CANSparkMax.ControlType.kVelocity);
     //shootMotorFollower.follow(shootMotorLeader, true);
-    
-    //shootPID = shootMotorLeader.getPIDController();
-    // shootPID.setD(RobotMap.ShooterMap.Kd);
-    // shootPID.setP(RobotMap.ShooterMap.Kp);
-    // shootPID.setFF(RobotMap.ShooterMap.Kf);
-    // shootPID.setReference(0, ControlType.kVelocity);
+  
   }
 
   public boolean active() {
@@ -67,7 +62,62 @@ public class Shooter extends SubsystemBase {
     return shootMotorLeader.getOutputCurrent();
   }
 
-  // public void disablePID() {
+  public void currentWatch() {
+    if (shootMotorLeader.getOutputCurrent() >= RobotMap.ShooterMap.ballCurrent && passedBallCurrent == false) {
+      passedBallCurrent = true;
+      ballsShot = ballsShot + 1;
+    } else if (passedBallCurrent == true && shootMotorLeader.getOutputCurrent() < RobotMap.ShooterMap.ballCurrent-7) {
+      passedBallCurrent = false;
+    }
+  }
+  
+  public double getVelocity() {
+    return (shootMotorLeader.getEncoder().getVelocity() * RobotMap.ShooterMap.gearRatio); 
+   }
+   
+   public void setVelocity(double velocity){
+    shootMotorLeader.getPIDController().setReference(-velocity, com.revrobotics.CANSparkMax.ControlType.kVelocity);
+    shootMotorFollower.getPIDController().setReference(-velocity, com.revrobotics.CANSparkMax.ControlType.kVelocity);
+    
+   }
+
+   public double getVoltage() {
+     return shootMotorLeader.getBusVoltage();
+   }
+  
+   public void atSpeed(boolean atSpeed) {
+    this.atSpeed= atSpeed;
+  }
+  public boolean atSpeed() {
+    return this.atSpeed;
+  }
+
+  public void setPower(double power) {
+    shootMotorLeader.set(-power);
+    shootMotorFollower.set(-power);
+  }
+
+  public int getBallsShot() {
+    return ballsShot;
+  }
+
+  /**
+   * @deprecated Unreliable with higher loader speeds at the present
+   */
+  // public void currentWatch(double targetRPM) {
+  //   if (shootMotorLeader.getOutputCurrent() >= RobotMap.ShooterMap.ballCurrent && passedBallCurrent == false) {
+  //     passedBallCurrent = true;
+  //     ballsShot = ballsShot + 1;
+  //   } else if (passedBallCurrent == true && shootMotorLeader.getOutputCurrent() < RobotMap.ShooterMap.ballCurrent-7) {
+  //     passedBallCurrent = false;
+  //   }
+  // }
+
+  // public void directVolts(double volts) {
+  //   shootMotorLeader.setVoltage(volts);
+  // }
+
+    // public void disablePID() {
   //   shootPID.setD(0);
   //   shootPID.setP(0);
   //   shootPID.setFF(0);
@@ -101,46 +151,5 @@ public class Shooter extends SubsystemBase {
   //     disablePID();
   //    shootMotorLeader.set(0);
   //   }
-  
-  public double getVelocity() {
-    return (shootMotorLeader.getEncoder().getVelocity() * RobotMap.ShooterMap.gearRatio); 
-   }
-   
-   public void setVelocity(double velocity){
-    shootMotorLeader.getPIDController().setReference(velocity, com.revrobotics.CANSparkMax.ControlType.kVelocity);
-    shootMotorFollower.getPIDController().setReference(-velocity, com.revrobotics.CANSparkMax.ControlType.kVelocity);
-    
-   }
 
-   public double getVoltage() {
-     return shootMotorLeader.getBusVoltage();
-   }
-  
-   public void atSpeed(boolean atSpeed) {
-    this.atSpeed= atSpeed;
-  }
-  public boolean atSpeed() {
-    return this.atSpeed;
-  }
-
-  public void setPower(double power) {
-    shootMotorLeader.set(power);
-    shootMotorFollower.set(-power);
-  }
-
-  /**
-   * @deprecated Unreliable with higher loader speeds at the present
-   */
-  // public void currentWatch(double targetRPM) {
-  //   if (shootMotorLeader.getOutputCurrent() >= RobotMap.ShooterMap.ballCurrent && passedBallCurrent == false) {
-  //     passedBallCurrent = true;
-  //     ballsShot = ballsShot + 1;
-  //   } else if (passedBallCurrent == true && shootMotorLeader.getOutputCurrent() < RobotMap.ShooterMap.ballCurrent-7) {
-  //     passedBallCurrent = false;
-  //   }
-  // }
-
-  // public void directVolts(double volts) {
-  //   shootMotorLeader.setVoltage(volts);
-  // }
 }

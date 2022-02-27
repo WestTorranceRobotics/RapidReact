@@ -21,7 +21,7 @@ public class Loader extends SubsystemBase {
   }
 
   public void runLoader(){
-    loaderMotor.set(-0.5);
+    loaderMotor.set(-0.40);
   }
 
   public void reverseLoader(){
@@ -36,4 +36,8 @@ public class Loader extends SubsystemBase {
   public void periodic() {
     // This method will be called once per scheduler run
   }
+
+public double getAppliedOutput() {
+    return loaderMotor.getAppliedOutput();
+}
 }

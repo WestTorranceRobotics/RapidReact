@@ -26,10 +26,10 @@ public class Elevator extends SubsystemBase {
   public Elevator() {
     //declaring motor and limits to their can ids
     ElevatorMotor = new CANSparkMax(RobotMap.ElevatorMap.elevatorCANID, MotorType.kBrushless);
-    ElevatorTurningLeader = new CANSparkMax(RobotMap.ElevatorMap.elevatorCANID, MotorType.kBrushless);
-    ElevatorTurningFollower = new CANSparkMax(RobotMap.ElevatorMap.elevatorCANID, MotorType.kBrushless);
-    TopLimit = new DigitalInput(RobotMap.ElevatorMap.topLimitChannelID);
-    BottomLimit = new DigitalInput(RobotMap.ElevatorMap.bottomLimitChannelID);
+    ElevatorTurningLeader = new CANSparkMax(RobotMap.ElevatorMap.elevatorTurningLeader, MotorType.kBrushless);
+    ElevatorTurningFollower = new CANSparkMax(RobotMap.ElevatorMap.elevatorTurningFollower, MotorType.kBrushless);
+    // TopLimit = new DigitalInput(RobotMap.ElevatorMap.topLimitChannelID);
+    // BottomLimit = new DigitalInput(RobotMap.ElevatorMap.bottomLimitChannelID);
     // BreakOff = new Solenoid(PneumaticsModuleType.CTREPCM, RobotMap.ElevatorMap.elevatorSolenoid);
     ElevatorTurningFollower.follow(ElevatorTurningLeader);
   }
