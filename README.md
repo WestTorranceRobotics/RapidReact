@@ -3,26 +3,26 @@ Official 2022 FRC Robot code for 5124
 
 CANID VALUES:
 DriveTrain:
-0-leftLeader
-1-leftFollower
-2-rightLeader
-3-rightFollower
+1-leftLeader
+2-leftFollower
+3-rightLeader
+4-rightFollower
 
 Intake:
-4-intakeMotor
+8-intakeMotor
 5-intakeDeployMotor
 
 Shooter:
 6-shooterLeader
 7-shooterFollower
 
-Elevator:
-8-elevatorMotor
-9-elevatorTurningLeader
-10-elevatorTurningFollower
-
 Loader:
-11-loader
+9-loader
+
+Elevator:
+10-elevatorMotor
+11-elevatorTurningLeader
+12-elevatorTurningFollower
 
 Encoder Values:
 0,1 leftEncoder
