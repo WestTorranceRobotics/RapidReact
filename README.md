@@ -9,8 +9,8 @@ DriveTrain:
 4-rightFollower
 
 Intake:
-8-intakeMotor
-5-intakeDeployMotor
+5-intakeMotor
+8-intakeDeployMotor
 
 Shooter:
 6-shooterLeader
