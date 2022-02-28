@@ -5,6 +5,7 @@
 package frc.robot;
 
 import edu.wpi.first.cameraserver.CameraServer;
+import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj.GenericHID;
@@ -15,7 +16,7 @@ import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
-import frc.robot.commands.drivetrain.JoystickDrive;
+import frc.robot.commands.drivetrain.JoystickTankDrive;
 import frc.robot.commands.shooter.DriveToCorrectRangeAndAlignWithLL;
 import frc.robot.subsystems.DriveTrain;
 
@@ -65,29 +66,36 @@ public class RobotContainer {
     CameraServer.startAutomaticCapture();
     display = Shuffleboard.getTab("Driving Display");
     Shuffleboard.selectTab(display.getTitle());
+    
+    NetworkTable LLTable = NetworkTableInstance.getDefault().getTable("LLPID");
+    LLTable.getEntry("anglekP").setDouble(0.0);
+    LLTable.getEntry("anglekI").setDouble(0.0);
+    LLTable.getEntry("anglekD").setDouble(0.0);
+
+    LLTable.getEntry("distkP").setDouble(0.0);
+    LLTable.getEntry("distkI").setDouble(0.0);
+    LLTable.getEntry("distkD").setDouble(0.0);
+
+    LLTable.getEntry("steeringAdjust").setDouble(0);
+    LLTable.getEntry("distAdjust").setDouble(0);
 
     NetworkTableEntry pipeEntry = NetworkTableInstance.getDefault().getTable("limelight").getEntry("pipeline");
 
     display.addBoolean("Limelight On?",() -> (int) pipeEntry.getDouble(-1) == 0)
     .withPosition(6, 1).withSize(1, 1).withWidget(BuiltInWidgets.kBooleanBox);
 
-
-    // display.addNumber("kP", driveTrain::getP)
-    // .withPosition(3, 2).withSize(1, 1).withWidget(BuiltInWidgets.kBooleanBox);
-    
-    display.addNumber("tx", driveTrain::getX)
+    display.addNumber("tx", () -> NetworkTableInstance.getDefault().getTable("limelight").getEntry("tx").getDouble(0))
     .withPosition(6, 2).withSize(1, 1);
 
-    display.addNumber("ty", driveTrain::getY)
+    display.addNumber("ty", () -> NetworkTableInstance.getDefault().getTable("limelight").getEntry("ty").getDouble(0))
     .withPosition(7, 2).withSize(1, 1);
 
-    // display.add(video)
-    display.addCamera("limelight", "limelight", "mjpg:http://10.24.96.10:5800")
+    display.addCamera("limelight", "limelight", "mjpg:http://10.51.24.10:5800")
     .withSize(4, 4);
   }
 
   public void configureDefaultCommands() {
-    driveTrain.setDefaultCommand(new JoystickDrive(driveTrain, driverLeft, driverRight));
+    driveTrain.setDefaultCommand(new JoystickTankDrive(driverLeft, driverRight, driveTrain));
   }
 
   /**

@@ -7,19 +7,19 @@ package frc.robot.subsystems;
 import com.ctre.phoenix.motorcontrol.InvertType;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
+import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
+import com.kauailabs.navx.frc.AHRS;
 
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.networktables.NetworkTableInstance;
+import edu.wpi.first.wpilibj.SPI;
+import edu.wpi.first.wpilibj.Encoder;
+import edu.wpi.first.wpilibj.CounterBase.EncodingType;
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.RobotMap;
 
 public class DriveTrain extends SubsystemBase {
-  private WPI_TalonFX rightLeader;
-  private WPI_TalonFX rightFollower;
-  private WPI_TalonFX leftLeader;
-  private WPI_TalonFX leftFollower;
-
   private DifferentialDrive differentialDrive;
   private PIDController anglePID;
   private PIDController distancePID;
@@ -29,29 +29,54 @@ public class DriveTrain extends SubsystemBase {
   private double kD = 0;
 
   private boolean isAutomatic = false;
+  public static final String getRightEncoderTicks = null;
+  private WPI_TalonSRX leftLeader;
+  private WPI_TalonSRX rightLeader;
+  private WPI_TalonSRX leftFollower;
+  private WPI_TalonSRX rightFollower;
+
+  /*
+  * The AHRS class enables access to basic connectivity and state information, 
+  * as well as key 6-axis and 9-axis orientation information (yaw, pitch, roll, 
+  * compass heading, fused (9-axis) heading and magnetic disturbance detection.
+  */
+
+  Encoder leftEncoder = new Encoder(4,5, false, EncodingType.k4X);
+  Encoder rightEncoder = new Encoder(8,9, false, EncodingType.k4X);
+
+  private AHRS gyro;
+
+  /*A class for driving differential drive/skid-steer drive platforms such as the Kit of Parts 
+  drive base, "tank drive", or West Coast Drive.*/
 
   /** Creates a new DriveTrain. */
   public DriveTrain() {
-    rightLeader = new WPI_TalonFX(RobotMap.DriveTrainMap.rightLeaderCANID);
-    leftLeader = new WPI_TalonFX(RobotMap.DriveTrainMap.leftLeaderCANID);
 
-    leftFollower = new WPI_TalonFX(RobotMap.DriveTrainMap.leftFollowerCANID);
-    leftFollower.follow(leftLeader);
-    rightFollower = new WPI_TalonFX(RobotMap.DriveTrainMap.rightFollowerCANID);
+    leftLeader = new WPI_TalonSRX(RobotMap.DriveTrainMap.leftLeaderCANID);
+    leftFollower = new WPI_TalonSRX(RobotMap.DriveTrainMap.leftFollowerCANID);
+    rightLeader = new WPI_TalonSRX(RobotMap.DriveTrainMap.rightLeaderCANID);
+    rightFollower = new WPI_TalonSRX(RobotMap.DriveTrainMap.rightFollowerCANID);
+
+    gyro = new AHRS(SPI.Port.kMXP);
+
     rightFollower.follow(rightLeader);
+    leftFollower.follow(leftLeader);
 
-    rightLeader.setNeutralMode(NeutralMode.Brake);
-    rightFollower.setNeutralMode(NeutralMode.Coast);
-    leftLeader.setNeutralMode(NeutralMode.Brake);
-    leftFollower.setNeutralMode(NeutralMode.Coast);
-
-    leftLeader.setInverted(true);
-    rightLeader.setInverted(false);
+    leftLeader.setInverted(false);
     leftFollower.setInverted(InvertType.FollowMaster);
+    rightLeader.setInverted(true);
     rightFollower.setInverted(InvertType.FollowMaster);
 
-    differentialDrive = new DifferentialDrive(leftLeader, rightLeader);
+    leftLeader.setNeutralMode(NeutralMode.Brake);
+    leftFollower.setNeutralMode(NeutralMode.Coast);
+    rightLeader.setNeutralMode(NeutralMode.Brake);
+    rightFollower.setNeutralMode(NeutralMode.Coast);
+
+    differentialDrive = new DifferentialDrive(leftLeader, rightLeader);   
     differentialDrive.setSafetyEnabled(true);
+    
+    gyro.reset();
+    gyro.zeroYaw();
 
     anglePID = new PIDController(kP, kI, kD);
     distancePID = new PIDController(0, 0, 0);
@@ -63,7 +88,7 @@ public class DriveTrain extends SubsystemBase {
   }
 
   public void tankDrive(double left, double right) {
-    differentialDrive.tankDrive(left, -right);   
+    differentialDrive.tankDrive(left, right);   
   }
 
   public void setAutomatic(boolean auto) {
@@ -72,14 +97,6 @@ public class DriveTrain extends SubsystemBase {
   
   public boolean isAutomatic() {
     return isAutomatic;
-  }
-
-  public double getX() {
-    return NetworkTableInstance.getDefault().getTable("limelight").getEntry("tx").getDouble(0);
-  }
-
-  public double getY() {
-    return NetworkTableInstance.getDefault().getTable("limelight").getEntry("ty").getDouble(0);
   }
 
   public PIDController getAngleController() {

@@ -6,7 +6,9 @@ package frc.robot.commands.shooter;
 
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.PIDController;
+import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableInstance;
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.RobotMap;
 import frc.robot.subsystems.DriveTrain;
@@ -15,14 +17,18 @@ public class DriveToCorrectRangeAndAlignWithLL extends CommandBase {
   private DriveTrain subsystem;
 
   private PIDController anglePID;
-  private double kP = 0.052;
+  private double kP = 0.1945392;
   private double kI = 0;
-  private double kD = 0;
+  private double kD = 0.00323242;
 
   private PIDController distancePID;
   private double kPDist = 0.07;
   private double kIDist = 0.09;
   private double kDDist = 0;
+  // Timer timer = new Timer();
+  private double initTY;
+
+  private NetworkTable LLTable = NetworkTableInstance.getDefault().getTable("LLPID");
 
   /** Creates a new TurnToAngleUsingLimelight. */
   public DriveToCorrectRangeAndAlignWithLL(DriveTrain subsystem) {
@@ -30,21 +36,24 @@ public class DriveToCorrectRangeAndAlignWithLL extends CommandBase {
     anglePID = subsystem.getAngleController();
     distancePID = subsystem.getDistanceController();
     addRequirements(this.subsystem);
+    
   }
 
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    subsystem.setP(kP);
+    // subsystem.setP(kP);
     anglePID.setP(kP);
     anglePID.setI(kI);
     anglePID.setD(kD);
     anglePID.setSetpoint(0);
-    distancePID.setP(kPDist);
+    // distancePID.setP(kPDist);
     // subsystem.enablePID();
-    //getting epic stuff from the network table
+
     NetworkTableInstance.getDefault().getTable("rpi").getEntry("aimbot").setDouble(1);
     NetworkTableInstance.getDefault().getTable("limelight").getEntry("pipeline").setNumber(0.0);
+
+    initTY = NetworkTableInstance.getDefault().getTable("limelight").getEntry("ty").getDouble(0);
     
     subsystem.setAutomatic(true);
   }
@@ -57,27 +66,28 @@ public class DriveToCorrectRangeAndAlignWithLL extends CommandBase {
 
     /* drive to correct distance from target */
     double ty = NetworkTableInstance.getDefault().getTable("limelight").getEntry("ty").getDouble(0);
-    // System.out.println("ty: " + ty);
-    
-    double distAdjust = MathUtil.clamp(distancePID.calculate(ty, 0), -0.45, 0.45);
+    // // System.out.println("ty: " + ty);
+    distancePID.setP(LLTable.getEntry("distkP").getDouble(0));
+    distancePID.setD(LLTable.getEntry("distkD").getDouble(0));
+    double distAdjust = MathUtil.clamp(distancePID.calculate(ty, initTY), -0.5, 0.5);
+    LLTable.getEntry("distAdjust").setDouble(distAdjust);
 
-    // izone because there is no built-in izone function for PIDController
-    if (Math.abs(ty) <= 10) {
-      if (distancePID.getI() == 0.0) {
-        distancePID.setI(kIDist);
-      }
-    }
-    else {
-      distancePID.reset();
-      distancePID.setI(0);
-    }
+    // // izone because there is no built-in izone function for PIDController
+    // if (Math.abs(ty) <= 10) {
+    //   if (distancePID.getI() == 0.0) {
+    //     distancePID.setI(kIDist);
+    //   }
+    // }
+    // else {
+    //   distancePID.reset();
+    //   distancePID.setI(0);
+    // }
+    
     leftCommand += distAdjust;
-    rightCommand -= distAdjust;
+    rightCommand += distAdjust;
 
     /* turn to face the target */ 
     double tx = NetworkTableInstance.getDefault().getTable("limelight").getEntry("tx").getDouble(0);
-    // System.out.println("tx: " + tx);
-    // double steeringAdjust = Math.signum(tx) * Math.min(Math.abs(subsystem.getP() * tx), 0.45);
 
     // attempt with built-in pid controller
     // izone because there is no built-in izone function for PIDController
@@ -91,31 +101,27 @@ public class DriveToCorrectRangeAndAlignWithLL extends CommandBase {
     //   anglePID.setI(0);
     // }
 
-    // // anglePID.setD(kD);
-    // double steeringAdjust = MathUtil.clamp(anglePID.calculate(tx, 0), -0.05, 0.05);
-    // if (Math.abs(ty) <= 1.5) {
-    //   leftCommand -= steeringAdjust * 3.5;
-    //   rightCommand -= steeringAdjust * 3.5;
-    // }
-    // else {
-    //   leftCommand -= steeringAdjust;
-    //   rightCommand -= steeringAdjust;
-    // }
-
     // this is simply a minimum command 
     double steeringAdjust = 0;
-    if (Math.abs(ty) <= 3) {
-      steeringAdjust = MathUtil.clamp(kP * tx, -0.35, 0.35);
-    }
-    else {
-      steeringAdjust = Math.signum(tx) * 0.05;
-    }
+    // if (Math.abs(ty) <= 3) {
+    //   steeringAdjust = MathUtil.clamp(kP * tx, -0.35, 0.35);
+    // }
+    // else {
+    //   steeringAdjust = Math.signum(tx) * 0.05;
+    // }
     // steeringAdjust = MathUtil.clamp(kP * tx, -0.65, 0.65);
-    leftCommand -= steeringAdjust;
-    rightCommand -= steeringAdjust;
     
+    // add graph for steeringAdjust, you need the period of steeringAdjust https://en.wikipedia.org/wiki/Ziegler%E2%80%93Nichols_method
+    // commit changes for laptop 2 on test branch
+    anglePID.setP(LLTable.getEntry("anglekP").getDouble(0));
+    anglePID.setD(LLTable.getEntry("anglekD").getDouble(0));
+    steeringAdjust = MathUtil.clamp(anglePID.calculate(tx, 0), -0.7, 0.7);
+    LLTable.getEntry("steeringAdjust").setDouble(steeringAdjust);
+    
+    // leftCommand -= steeringAdjust;
+    // rightCommand += steeringAdjust;
 
-    System.out.println("tx: " + tx + " |\t\t " + "ty: " + ty);
+    // System.out.println("tx: " + tx + " |\t\t " + "ty: " + ty);
     subsystem.tankDrive(leftCommand, rightCommand);
   }
 
