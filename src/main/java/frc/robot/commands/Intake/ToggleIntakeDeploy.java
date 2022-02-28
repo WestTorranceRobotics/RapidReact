@@ -54,14 +54,15 @@ public class ToggleIntakeDeploy extends CommandBase
   {
     deployMotor.set(ControlMode.PercentOutput, deployMotorPower);
 
-    if(isDeployed){
-      if(Math.abs(currentPotentiometerVoltage - intake.getAnalogIntakeValue()) >= RobotMap.IntakeMap.voltageValueForDeployed)
+    if(!isDeployed){
+      if(intake.getAnalogIntakeValue() >= RobotMap.IntakeMap.voltageValueForDeployedLower && intake.getAnalogIntakeValue() <= RobotMap.IntakeMap.voltageValueForDeployedUpper)
       {
         isFinished = true;
       }
     }
-    if(!isDeployed){
-      if(Math.abs(currentPotentiometerVoltage - intake.getAnalogIntakeValue()) >= RobotMap.IntakeMap.voltageValueForUndeployed)
+
+    if(isDeployed){
+      if(intake.getAnalogIntakeValue() >= RobotMap.IntakeMap.voltageValueForUndeployedLower && intake.getAnalogIntakeValue() <= RobotMap.IntakeMap.voltageValueForUndeployedUpper);
         {
           isFinished = true;
         }

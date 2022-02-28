@@ -27,6 +27,7 @@ public class RobotMap {
         public static final int topLimitChannelID = 1;
         public static final int bottomLimitChannelID = 2;
         public static final int elevatorSolenoid = 2;
+        public static final double elevatorMaxHeight = 2000;
         public static final double elevatorMotorUp = 0.5;
         public static final double elevatorMotorDown = -0.5;
         public static final double elevatorHalt = 0.0;
@@ -40,7 +41,8 @@ public class RobotMap {
         public static final int ShooterLeaderCANID = 6;
         public static final int ShooterFollowerCANID = 7;
         public static final double kP = 0.00061675; //0.00061675
-        public static final double kD = 0.171675; //0.051675
+        
+        public static final double kD = 0.09171675; //0.051675
         public static final double shooterPowerShort = 0.5;
         public static final double shooterPowerLong = 1;
         public static double ballCurrent = 5;
@@ -55,8 +57,14 @@ public class RobotMap {
         public static int deployEncoderChannel2 = 5;
         public static double deployMotorPower = 0.4;
 
-        public static double voltageValueForDeployed = 0.9;
-        public static double voltageValueForUndeployed = 0.1;
+        //0.735-0.745 Start
+        public static double voltageValueForUndeployedLower = 0.735;
+        public static double voltageValueForUndeployedUpper = 0.75;
+
+        //0.37-0.38
+        public static double voltageValueForDeployedLower = 0.37;
+        public static double voltageValueForDeployedUpper = 0.38;
+
 
     }
 

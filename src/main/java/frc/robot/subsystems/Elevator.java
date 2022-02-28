@@ -39,6 +39,10 @@ public class Elevator extends SubsystemBase {
     // This method will be called once per scheduler run
   }
 
+  public CANSparkMax getElevatorMotor(){
+    return ElevatorMotor;
+  }
+
   /*victorspx requires controlmode value (all options can be seen with ctrl + click on ControlMode)
     typically we use percent output, position is sometimes used for drivedistance, velocity is also sometimes used alongside pid
     most libraries do not ask for a control mode*/

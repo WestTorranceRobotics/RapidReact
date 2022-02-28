@@ -95,6 +95,14 @@ public class DriveTrain extends SubsystemBase {
     return gyro;
   } 
 
+  public double getLeftDistance(){
+    return leftEncoder.getDistance();
+  }
+
+  public double getRightDistance(){
+    return rightEncoder.getDistance();
+  }
+
   public double getAngle() {
     return gyro.getAngle();
   }

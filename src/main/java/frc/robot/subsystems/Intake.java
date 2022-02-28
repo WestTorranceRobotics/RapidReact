@@ -5,6 +5,7 @@
 package frc.robot.subsystems;
 
 import com.ctre.phoenix.motorcontrol.ControlMode;
+import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.can.TalonSRX;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
@@ -32,6 +33,8 @@ public class Intake extends SubsystemBase
     intakeMotor.setInverted(true);
 
     deployMotor = new TalonSRX(RobotMap.IntakeMap.intakeDeployMotorCANID);
+    deployMotor.setNeutralMode(NeutralMode.Brake);
+
   }
 
   public void RunIntake()
@@ -51,6 +54,31 @@ public class Intake extends SubsystemBase
 
   public TalonSRX getDeployMotor(){
     return deployMotor;
+  }
+
+  public void deployIntake(){
+    deployMotor.set(ControlMode.PercentOutput, 0.3);
+  }
+
+  public void unDeployIntake(){
+    deployMotor.set(ControlMode.PercentOutput, -0.3);
+  }
+
+  public void stopIntake(){
+    deployMotor.set(ControlMode.PercentOutput, 0);
+  }
+
+  public boolean isDeployed(){
+    if(getAnalogIntakeValue() >= RobotMap.IntakeMap.voltageValueForDeployedLower && getAnalogIntakeValue() <= RobotMap.IntakeMap.voltageValueForDeployedUpper)
+      {
+        return true;
+      }
+    if(getAnalogIntakeValue() < RobotMap.IntakeMap.voltageValueForDeployedLower){
+      return true;
+    }
+    else{
+      return false;
+    }
   }
 
   public boolean ToggleIsDeployed()

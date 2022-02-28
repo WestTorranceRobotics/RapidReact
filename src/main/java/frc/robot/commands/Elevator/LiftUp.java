@@ -5,12 +5,14 @@
 package frc.robot.commands.Elevator;
 
 import edu.wpi.first.wpilibj2.command.CommandBase;
+import frc.robot.RobotMap;
 import frc.robot.subsystems.Elevator;
 
 public class LiftUp extends CommandBase {
 
   //creates new elevator
   private final Elevator elevator;
+  private boolean isFinished = false;
 
   public LiftUp(Elevator subsystem) {
     elevator = subsystem;
@@ -31,6 +33,10 @@ public class LiftUp extends CommandBase {
     /*this area is for checking if the climb is too high using encoders
       but the encoders originally used last year are from cansparkmax, not victorspx
       im planning to use gear ratios of elevatormotor to calculate this instead, may not be the case and will change accordingly later*/
+      if(elevator.getElevatorMotor().getEncoder().getPosition() >= RobotMap.ElevatorMap.elevatorMaxHeight){
+        elevator.setNoPower();
+        isFinished = true;
+      }
     }
   
 
@@ -39,11 +45,12 @@ public class LiftUp extends CommandBase {
   public void end(boolean interrupted) {
     //when command ends, elevator stops
     elevator.setNoPower();
+    isFinished = false;
   }
 
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return false;
+    return isFinished;
   }
 }
