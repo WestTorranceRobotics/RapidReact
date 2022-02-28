@@ -42,6 +42,7 @@ public class Shooter extends SubsystemBase {
     shootMotorLeader.setInverted(true);
     shootMotorLeader.getPIDController().setP(RobotMap.ShooterMap.kP);
     shootMotorLeader.getPIDController().setD(RobotMap.ShooterMap.kD);
+    shootMotorLeader.getPIDController().setFF(0.8);
     shootMotorLeader.getPIDController().setOutputRange(-1, 1);
   //follower
     shootMotorFollower.restoreFactoryDefaults();
@@ -49,6 +50,7 @@ public class Shooter extends SubsystemBase {
     // shootMotorFollower.setInverted(true);
     shootMotorFollower.getPIDController().setP(RobotMap.ShooterMap.kP);
     shootMotorFollower.getPIDController().setD(RobotMap.ShooterMap.kD);
+    shootMotorFollower.getPIDController().setFF(0.8);
     shootMotorFollower.getPIDController().setOutputRange(-1, 1);
     //shootMotorFollower.follow(shootMotorLeader, true);
   
@@ -72,7 +74,7 @@ public class Shooter extends SubsystemBase {
   }
   
   public double getVelocity() {
-    return (shootMotorLeader.getEncoder().getVelocity() * RobotMap.ShooterMap.gearRatio); 
+    return (shootMotorLeader.getEncoder().getVelocity() / RobotMap.ShooterMap.gearRatio); 
    }
    
    public void setVelocity(double velocity){

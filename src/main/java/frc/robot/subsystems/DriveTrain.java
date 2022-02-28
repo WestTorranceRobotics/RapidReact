@@ -134,8 +134,6 @@ public class DriveTrain extends SubsystemBase {
     leftEncoder.setDistancePerPulse(RobotMap.DriveTrainMap.inchesPerPulse);
     rightEncoder.setDistancePerPulse(RobotMap.DriveTrainMap.inchesPerPulse);
 
-    
-
   }
 
    /**
@@ -172,6 +170,14 @@ public class DriveTrain extends SubsystemBase {
   public AHRS getGyro(){
     return gyro;
   } 
+
+  public double getLeftDistance(){
+    return leftEncoder.getDistance();
+  }
+
+  public double getRightDistance(){
+    return rightEncoder.getDistance();
+  }
 
   public double getAngle() {
     return gyro.getAngle();

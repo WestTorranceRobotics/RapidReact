@@ -16,6 +16,7 @@ import edu.wpi.first.wpilibj.shuffleboard.WidgetType;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.ConditionalCommand;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.POVButton;
@@ -25,8 +26,10 @@ import frc.robot.commands.Elevator.LiftBackwards;
 import frc.robot.commands.Elevator.LiftDown;
 import frc.robot.commands.Elevator.LiftForwards;
 import frc.robot.commands.Elevator.LiftUp;
+import frc.robot.commands.Intake.DeployIntake;
 import frc.robot.commands.Intake.ReverseIntake;
 import frc.robot.commands.Intake.RunIntake;
+import frc.robot.commands.Intake.SettingStartingPosition;
 import frc.robot.commands.Intake.ToggleIntakeDeploy;
 import frc.robot.commands.Intake.UndeployIntake;
 import frc.robot.commands.Loader.ReverseLoader;
@@ -109,8 +112,12 @@ public class RobotContainer {
     display.addNumber("Left Encoder", driveTrain::getLeftEncoderTicks).withPosition(8, 2);
     display.addNumber("Right Encoder", driveTrain::getRightEncoderTicks).withPosition(9, 2);
 
-    display.addNumber("Applied Power on Shooter", shooter::getCurrent).withWidget(BuiltInWidgets.kGraph).withSize(3, 3);
-    display.addNumber("Applied Power on Shooter", shooter::getVelocity).withWidget(BuiltInWidgets.kGraph).withSize(3, 3).withPosition(4, 1);
+    display.addBoolean("IS DEPLOYED?", intake::isDeployed).withPosition(0, 1);
+
+    display.addNumber("Poteniometer", intake::getAnalogIntakeValue).withWidget(BuiltInWidgets.kGraph).withSize(3, 3);
+
+    //display.addNumber("Applied Power on Shooter", shooter::getCurrent).withWidget(BuiltInWidgets.kGraph).withSize(3, 3);
+    display.addNumber("Velocity on Shooter", shooter::getVelocity).withWidget(BuiltInWidgets.kGraph).withSize(3, 3).withPosition(4, 1);
     // display.addBoolean("IN CENTER", RobotContainer::isCenter);
 
   }
@@ -131,15 +138,19 @@ public class RobotContainer {
   private void configureButtonBindings() {
     //Shooter
     operatorRT.whenHeld(new ShootBallBasedOnPower(shooter, 1.0));
-    operatorRB.whenHeld(new ShootBallBasedOnRPM(shooter, 5600), true);
+    operatorRB.whenHeld(new ShootBallBasedOnRPM(shooter, 3000), true);
 
     //Intake
     operatorX.whenHeld(new RunIntake(intake));
-    operatorB.whenHeld(new ReverseIntake(intake));
+    //operatorB.whenHeld(new ReverseIntake(intake));
     operatorA.whenHeld(new RunLoader(loader));
     operatorY.whenHeld(new ReverseLoader(loader));
 
-    operatorBack.whenPressed(new ToggleIntakeDeploy(intake));
+    //operatorB.whenPressed(new DeployIntake(intake));
+    //operatorB.whenPressed(new UndeployIntake(intake));
+    operatorB.whenPressed(new ConditionalCommand(new UndeployIntake(intake), new DeployIntake(intake), intake::isDeployed));
+    operatorStart.whenPressed(new SettingStartingPosition(intake));
+
     //operatorRT.whenPressed(new UndeployIntake(intake));
     //operator.whenHeld(new MoveBallFromIntakeToShooter(loader, intake));
 
