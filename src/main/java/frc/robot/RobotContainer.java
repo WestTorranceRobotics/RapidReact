@@ -104,7 +104,7 @@ public class RobotContainer {
   
   private void configureShuffleboard(){
     ShuffleboardTab display = Shuffleboard.getTab("RobotVision");
-    display.addNumber("hi", RobotContainer::x);
+    display.addNumber("hi", () -> NetworkTableInstance.getDefault().getTable("Vision").getEntry("Xposition").getDouble(0));
 
     display.addNumber("Left Encoder", driveTrain::getLeftEncoderTicks).withPosition(8, 2);
     display.addNumber("Right Encoder", driveTrain::getRightEncoderTicks).withPosition(9, 2);
@@ -120,16 +120,13 @@ public class RobotContainer {
     NetworkTableInstance.getDefault().getTable("Vision").getEntry("Xposition").getDouble(0) > 130);
   }
 
-  private static double x(){
-    return NetworkTableInstance.getDefault().getTable("Vision").getEntry("Xposition").getDouble(0);
-  }
-
   private void configureDefaultCommands() {
     driveTrain.setDefaultCommand(new JoystickTankDrive(driverLeft, driverRight, driveTrain));
 
   }
   private void configureButtonBindings() {
     //Shooter
+    driverRightTrigger.toggleWhenPressed(new StayOnTarget(driveTrain));
     operatorRT.whenHeld(new ShootBallBasedOnPower(shooter, 1.0));
     operatorRB.whenHeld(new ShootBallBasedOnRPM(shooter, 5600), true);
 
@@ -161,14 +158,8 @@ public class RobotContainer {
     loader = new Loader();
   }  
 
-  /**
-   * Use this to pass the autonomous command to the main {@link Robot} class.
-   *
-   * @return the command to run in autonomous
-   */
   public Command getAutonomousCommand() 
   {
-    // An ExampleCommand will run in autonomous
     return new ShootBallBasedOnPower(shooter, 0.5);
   }
 }

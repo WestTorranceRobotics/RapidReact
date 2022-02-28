@@ -1,7 +1,5 @@
 package frc.robot;
 
-import edu.wpi.first.wpilibj.PneumaticsModuleType;
-
 public class RobotMap {
     
     public static class DriveTrainMap{
@@ -13,23 +11,11 @@ public class RobotMap {
         public static int rightLeaderCANID = 3;
         public static int rightFollowerCANID = 4;
 
-        /*CAN-ID VALUES FOR OUR DRIVETRAIN MOTOR CONTROLLORS. CAN-ID values are values we assign to motors for our
-        RoboRio to be able to use our motors and know which motors motor controllor needs to be used. 
-        */
-
         public static double radiusOfWheel = 3;
         //Radius of the wheel of the robot. (In terms of inches)
         
         public static double inchesPerPulse = 0.78858884343625044337347446800602;
         //0.04928680271 for quadature.
-      
-        /*
-        When getting values from motors, like encoder ticks, we need to convert those ticks into actual measurement. 
-        Thus we convert those tick values into actual values using this constant. The (43/7) is the gear ratio and 
-        can be represented in a ratio like 43:7. You need to include the gear ratio into your code and typically 
-        we'll be given the gear ratios by the manufacturing/design departments. 
-        */
-
     }
 
     public static class ElevatorMap{
@@ -58,7 +44,6 @@ public class RobotMap {
         public static final double shooterPowerShort = 0.5;
         public static final double shooterPowerLong = 1;
         public static double ballCurrent = 5;
-
     }
     
     public static class IntakeMap
@@ -77,8 +62,6 @@ public class RobotMap {
 
     public static class LoaderMap{
         public static int loaderMotorCANID = 9;
-        
-
     }
 
 }
