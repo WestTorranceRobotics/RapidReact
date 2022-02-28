@@ -5,6 +5,9 @@ import edu.wpi.first.wpilibj.PneumaticsModuleType;
 public class RobotMap {
     
     public static class DriveTrainMap{
+        public static final double kP = 0;
+        public static final double kI = 0;
+        public static final double kD = 0;
         public static int leftLeaderCANID = 1;
         public static int leftFollowerCANID = 2;
         public static int rightLeaderCANID = 3;
