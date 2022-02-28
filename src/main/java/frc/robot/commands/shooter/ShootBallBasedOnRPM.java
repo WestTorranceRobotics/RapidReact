@@ -37,13 +37,15 @@ public class ShootBallBasedOnRPM extends CommandBase {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    
-    double error = bShooter.getVelocity() - rpm;
-    double comp = -1.2e-5 * Math.pow(error,3);
-    if (Math.abs(comp) > 0.2) {
-      comp = Math.signum(comp) * 2;
-    }
-    bShooter.directVolts(0.147 + 0.0015538 * rpm );
+    bShooter.setVelocity(rpm);
+    // bShooter.setPower(-0.4);
+
+    // double error = bShooter.getVelocity() - rpm;
+    // double comp = -1.2e-5 * Math.pow(error,3);
+    // if (Math.abs(comp) > 0.2) {
+    //   comp = Math.signum(comp) * 2;
+    // }
+    // bShooter.directVolts(0.147 + 0.0015538 * rpm );
 
     /* if (shooter.getVelocity() >= rpm-50 && loader.getAppliedOutput() == 0) {
       loader.runBelt(RobotMap.LoaderMap.runLoaderSpeed);
@@ -58,11 +60,11 @@ public class ShootBallBasedOnRPM extends CommandBase {
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-
-    bShooter.directPower(0);
+    // bShooter.setVelocity(0);
+    bShooter.setPower(0);
     bShooter.atSpeed(false);
    //loader.stopBelt();
-   
+
   }
 
   // Returns true when the command should end.

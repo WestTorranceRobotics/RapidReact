@@ -2,19 +2,15 @@ package frc.robot;
 
 public class RobotMap {
     public static class ShooterMap {
-        public static final double reverseShooter = -.1;
-        public static final int shootLeaderCanID = 8; //8
-        public static final int shootFollowerCanID = 6; //6
-        public static final int shootSolenoid = 0;
-        public static final double Kp = 0.000199; //,00021
-        public static final double Ki = 0;
-        public static final double Kd = 0;
-        public static final double Kf = 0.000080;
-        public static final double lineShootRPM = 4400; 
-        public static final double trenchShootRPM = 5300; 
-        public static final double midTrenchShootRPM = 7150;
-        public static final double maxShootRPM = 7300;
-        public static final double gearRatio = .75;
+        public static final double gearRatio = 0.75;
+        public static final int ShooterLeaderCANID = 6;
+        public static final int ShooterFollowerCANID = 7;
+        public static final double kP = 0.00061675; //0.00061675
+        
+        public static final double kD = 0.09171675; //0.051675
+        public static final double shooterPowerShort = 0.5;
+        public static final double shooterPowerLong = 1;
+        public static double ballCurrent = 5;
     }
 
     public static class DriveTrainMap {
@@ -33,4 +29,5 @@ public class RobotMap {
 
         public static final double izOne = 5; 
     }
+    
 }

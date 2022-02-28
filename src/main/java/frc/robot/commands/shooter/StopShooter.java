@@ -32,7 +32,6 @@ addRequirements(shooter);
   @Override
   public void execute() {
     //need to add direct power method in subsystem, when it is done add StopShooter.directPower(0); to execute
-    aShooter.directPower(0);
   }
 
   // Called once the command ends or is interrupted.
