@@ -8,13 +8,11 @@ import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableInstance;
-import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.CommandBase;
-import frc.robot.RobotMap;
 import frc.robot.subsystems.DriveTrain;
 
 public class DriveToCorrectRangeAndAlignWithLL extends CommandBase {
-  private DriveTrain subsystem;
+  private DriveTrain driveTrain;
 
   private PIDController anglePID;
   private double kP = 0.1945392;
@@ -25,37 +23,35 @@ public class DriveToCorrectRangeAndAlignWithLL extends CommandBase {
   private double kPDist = 0.07;
   private double kIDist = 0.09;
   private double kDDist = 0;
-  // Timer timer = new Timer();
   private double initTY;
 
   private NetworkTable LLTable = NetworkTableInstance.getDefault().getTable("LLPID");
 
   /** Creates a new TurnToAngleUsingLimelight. */
-  public DriveToCorrectRangeAndAlignWithLL(DriveTrain subsystem) {
-    this.subsystem = subsystem;
-    anglePID = subsystem.getAngleController();
-    distancePID = subsystem.getDistanceController();
-    addRequirements(this.subsystem);
-    
+  public DriveToCorrectRangeAndAlignWithLL(DriveTrain driveTrain) {
+    this.driveTrain = driveTrain;
+    anglePID = driveTrain.getAngleController();
+    distancePID = driveTrain.getDistanceController();
+    addRequirements(this.driveTrain);
   }
 
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    // subsystem.setP(kP);
     anglePID.setP(kP);
     anglePID.setI(kI);
     anglePID.setD(kD);
-    anglePID.setSetpoint(0);
-    // distancePID.setP(kPDist);
-    // subsystem.enablePID();
+    // driveTrain.enablePID();
 
+    // turns on limelight and also lets rpi know that limelight is on
     NetworkTableInstance.getDefault().getTable("rpi").getEntry("aimbot").setDouble(1);
     NetworkTableInstance.getDefault().getTable("limelight").getEntry("pipeline").setNumber(0.0);
 
     initTY = NetworkTableInstance.getDefault().getTable("limelight").getEntry("ty").getDouble(0);
+    distancePID.setSetpoint(initTY);
+    anglePID.setSetpoint(0);
     
-    subsystem.setAutomatic(true);
+    driveTrain.setAutomatic(true);
   }
 
   // Called every time the scheduler runs while the command is scheduled.
@@ -64,24 +60,12 @@ public class DriveToCorrectRangeAndAlignWithLL extends CommandBase {
     double leftCommand = 0;
     double rightCommand = 0;
 
-    /* drive to correct distance from target */
+    /* stays on target distancewise*/
     double ty = NetworkTableInstance.getDefault().getTable("limelight").getEntry("ty").getDouble(0);
-    // // System.out.println("ty: " + ty);
     distancePID.setP(LLTable.getEntry("distkP").getDouble(0));
     distancePID.setD(LLTable.getEntry("distkD").getDouble(0));
-    double distAdjust = MathUtil.clamp(distancePID.calculate(ty, initTY), -0.5, 0.5);
+    double distAdjust = MathUtil.clamp(distancePID.calculate(ty), -0.5, 0.5);
     LLTable.getEntry("distAdjust").setDouble(distAdjust);
-
-    // // izone because there is no built-in izone function for PIDController
-    // if (Math.abs(ty) <= 10) {
-    //   if (distancePID.getI() == 0.0) {
-    //     distancePID.setI(kIDist);
-    //   }
-    // }
-    // else {
-    //   distancePID.reset();
-    //   distancePID.setI(0);
-    // }
     
     leftCommand += distAdjust;
     rightCommand += distAdjust;
@@ -89,47 +73,22 @@ public class DriveToCorrectRangeAndAlignWithLL extends CommandBase {
     /* turn to face the target */ 
     double tx = NetworkTableInstance.getDefault().getTable("limelight").getEntry("tx").getDouble(0);
 
-    // attempt with built-in pid controller
-    // izone because there is no built-in izone function for PIDController
-    // if (Math.abs(tx) <= 10) {
-    //   if (anglePID.getI() == 0.0) {
-    //     anglePID.setI(kI);
-    //   }
-    // }
-    // else {
-    //   anglePID.reset();
-    //   anglePID.setI(0);
-    // }
-
-    // this is simply a minimum command 
     double steeringAdjust = 0;
-    // if (Math.abs(ty) <= 3) {
-    //   steeringAdjust = MathUtil.clamp(kP * tx, -0.35, 0.35);
-    // }
-    // else {
-    //   steeringAdjust = Math.signum(tx) * 0.05;
-    // }
-    // steeringAdjust = MathUtil.clamp(kP * tx, -0.65, 0.65);
-    
-    // add graph for steeringAdjust, you need the period of steeringAdjust https://en.wikipedia.org/wiki/Ziegler%E2%80%93Nichols_method
-    // commit changes for laptop 2 on test branch
     anglePID.setP(LLTable.getEntry("anglekP").getDouble(0));
     anglePID.setD(LLTable.getEntry("anglekD").getDouble(0));
-    steeringAdjust = MathUtil.clamp(anglePID.calculate(tx, 0), -0.7, 0.7);
+    steeringAdjust = MathUtil.clamp(anglePID.calculate(tx), -0.7, 0.7);
     LLTable.getEntry("steeringAdjust").setDouble(steeringAdjust);
     
     // leftCommand -= steeringAdjust;
     // rightCommand += steeringAdjust;
-
-    // System.out.println("tx: " + tx + " |\t\t " + "ty: " + ty);
-    subsystem.tankDrive(leftCommand, rightCommand);
+    driveTrain.tankDrive(leftCommand, rightCommand);
   }
 
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-    subsystem.setAutomatic(false);
-    subsystem.disablePID();
+    driveTrain.setAutomatic(false);
+    driveTrain.disablePID();
     NetworkTableInstance.getDefault().getTable("rpi").getEntry("aimbot").setDouble(0);
     NetworkTableInstance.getDefault().getTable("limelight").getEntry("pipeline").setNumber(1.0);
   }
@@ -140,16 +99,3 @@ public class DriveToCorrectRangeAndAlignWithLL extends CommandBase {
     return false;
   }
 }
-
-/*
-There are two pid controllers used in this command: one for the alignment (anglePID) and one for driving to the correct range (distPID). 
-
-These are the problems so far:
-  -If the distance is correct, the proportional angle constant is not enough for the Angle PID
-    to even move the drive train. 
-
-    I think that to correct this, we do not clamp the angle pid output and instead change
-    the kP value to something that makes sense. 
-    We also have to change the integral value again. 
-    However, I believe that the distance pid code is fine. The clamping for that makes sense.
-*/

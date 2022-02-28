@@ -78,7 +78,7 @@ public class DriveTrain extends SubsystemBase {
     gyro.reset();
     gyro.zeroYaw();
 
-    anglePID = new PIDController(kP, kI, kD);
+    anglePID = new PIDController(0, 0, 0);
     distancePID = new PIDController(0, 0, 0);
   }
 
@@ -107,40 +107,13 @@ public class DriveTrain extends SubsystemBase {
     return distancePID;
   }
 
-  public void setP(double kP) {
-    this.kP = kP;
-    anglePID.setP(kP);
-  }
-
-  public double getP() {
-    return kP;
-  }
-
-  public void setI(double kI) {
-    this.kI = kI;
-    anglePID.setP(kI);
-  }
-
-  public double getI() {
-    return kI;
-  }
-
-  public void setD(double kD) {
-    this.kD = kD;
-    anglePID.setP(kD);
-  }
-
-  public double getD() {
-    return kD;
-  }
-
   public void enablePID() {
-    anglePID.setP(RobotMap.DriveTrainMap.kP);
-    anglePID.setI(RobotMap.DriveTrainMap.kI);
-    anglePID.setD(RobotMap.DriveTrainMap.kD);
-    distancePID.setP(0.0);
-    distancePID.setI(0.0);
-    distancePID.setD(0.0);
+    anglePID.setP(RobotMap.DriveTrainMap.angleKp);
+    anglePID.setI(RobotMap.DriveTrainMap.angleKi);
+    anglePID.setD(RobotMap.DriveTrainMap.angleKd);
+    distancePID.setP(RobotMap.DriveTrainMap.distKp);
+    distancePID.setI(RobotMap.DriveTrainMap.distKi);
+    distancePID.setD(RobotMap.DriveTrainMap.distKd);
   }
 
   public void disablePID() {
@@ -151,8 +124,4 @@ public class DriveTrain extends SubsystemBase {
     distancePID.setI(0.0);
     distancePID.setD(0.0);
   }
-
-  public void isAutomatic(boolean b) {
-  }
-
 }

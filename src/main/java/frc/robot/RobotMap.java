@@ -23,11 +23,14 @@ public class RobotMap {
         public static int rightLeaderCANID = 3;
         public static int rightFollowerCANID = 4;
         
-        public static final double kP = 0.052;
-        public static final double kI = 0.0;
-        public static final double kD = 0.0;
-        public static final double izOne = 5; 
-        // public static final double izOneDist = 
+        public static final double angleKp = 0.052;
+        public static final double angleKi = 0.0;
+        public static final double angleKd = 0.0;
 
+        public static final double distKp = 0.0;
+        public static final double distKi = 0.0;
+        public static final double distKd = 0.0;
+
+        public static final double izOne = 5; 
     }
 }
