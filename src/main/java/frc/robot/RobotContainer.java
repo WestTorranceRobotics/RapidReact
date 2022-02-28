@@ -18,7 +18,8 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import frc.robot.commands.drivetrain.JoystickTankDrive;
 import frc.robot.commands.shooter.DriveToCorrectRangeAndAlignWithLL;
-import frc.robot.subsystems.DriveTrain;
+import frc.robot.commands.shooter.ShootBallUsingLimelight;
+import frc.robot.subsystems.*;
 
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a
@@ -30,13 +31,15 @@ public class RobotContainer {
   // The robot's subsystems and commands are defined here...
   private ShuffleboardTab display;
   private DriveTrain driveTrain;
+  private Shooter shooter;
 
   public static final Joystick driverLeft = new Joystick(0);
   public static final Joystick driverRight = new Joystick(1);
   // public XboxController operator = new XboxController(0);
   
   // public JoystickButton operatorA = new JoystickButton(operator, 2);
-  public JoystickButton trigger = new JoystickButton(driverRight, 1);
+  public JoystickButton triggerRight = new JoystickButton(driverRight, 1);
+  public JoystickButton triggerLeft = new JoystickButton(driverLeft, 1);
 
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
@@ -54,12 +57,13 @@ public class RobotContainer {
    * edu.wpi.first.wpilibj2.command.button.JoystickButton}.
    */
   private void configureButtonBindings() {
-    // operatorA.toggleWhenPressed(new DriveToCorrectRangeAndAlignWithLL(driveTrain));
-    trigger.toggleWhenPressed(new DriveToCorrectRangeAndAlignWithLL(driveTrain));
+    triggerLeft.toggleWhenPressed(new ShootBallUsingLimelight(driveTrain, shooter, 4000));
+    triggerRight.toggleWhenPressed(new DriveToCorrectRangeAndAlignWithLL(driveTrain));
   }
 
   private void configureSubsystems(){
     driveTrain = new DriveTrain();
+    shooter = new Shooter();
   }
   
   private void configureShuffleboard(){

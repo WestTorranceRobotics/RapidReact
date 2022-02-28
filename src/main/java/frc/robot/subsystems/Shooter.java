@@ -33,6 +33,8 @@ public class Shooter extends SubsystemBase {
   private boolean atSpeed;
   private int ballsShot = 0;
   private boolean passedBallCurrent = false;
+
+  CANSparkMax loaderMotor;
  
   public Shooter() {
 
@@ -53,8 +55,27 @@ public class Shooter extends SubsystemBase {
     shootMotorFollower.getPIDController().setFF(0.8);
     shootMotorFollower.getPIDController().setOutputRange(-1, 1);
     //shootMotorFollower.follow(shootMotorLeader, true);
+
+    loaderMotor = new CANSparkMax(RobotMap.LoaderMap.loaderMotorCANID, MotorType.kBrushless);
+    loaderMotor.restoreFactoryDefaults();
   
   }
+
+  public void runLoader(){
+    loaderMotor.set(-0.40);
+  }
+
+  public void reverseLoader(){
+    loaderMotor.set(0.5);
+  }
+
+  public void stopLoader(){
+    loaderMotor.set(0);
+  }
+  
+  public double getAppliedOutput() {
+    return loaderMotor.getAppliedOutput();
+}
 
   public boolean active() {
     return shootMotorLeader.getAppliedOutput() != 0;
@@ -88,7 +109,7 @@ public class Shooter extends SubsystemBase {
    }
   
    public void atSpeed(boolean atSpeed) {
-    this.atSpeed= atSpeed;
+    this.atSpeed = atSpeed;
   }
   public boolean atSpeed() {
     return this.atSpeed;

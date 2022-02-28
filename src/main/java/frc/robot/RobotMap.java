@@ -13,6 +13,11 @@ public class RobotMap {
         public static double ballCurrent = 5;
     }
 
+    
+    public static class LoaderMap{
+        public static int loaderMotorCANID = 9;
+    }
+
     public static class DriveTrainMap {
         public static int leftLeaderCANID = 1;
         public static int leftFollowerCANID = 2;

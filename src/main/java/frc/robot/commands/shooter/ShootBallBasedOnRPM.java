@@ -38,6 +38,14 @@ public class ShootBallBasedOnRPM extends CommandBase {
   @Override
   public void execute() {
     bShooter.setVelocity(rpm);
+    // loader waits until the shooter reaches the desired velocity before running
+    if (bShooter.getVelocity() >= rpm-50) {
+      bShooter.atSpeed(true);
+    }
+    if (bShooter.atSpeed()) {
+      bShooter.runLoader();
+    }
+
     // bShooter.setPower(-0.4);
 
     // double error = bShooter.getVelocity() - rpm;
