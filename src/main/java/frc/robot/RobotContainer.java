@@ -20,6 +20,7 @@ import edu.wpi.first.wpilibj2.command.ConditionalCommand;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.POVButton;
+import frc.robot.commands.CombindedCommands.AimAndShoot;
 import frc.robot.commands.CombindedCommands.MoveBallFromIntakeToShooter;
 import frc.robot.commands.DriveTrain.JoystickTankDrive;
 import frc.robot.commands.Elevator.LiftBackwards;
@@ -107,7 +108,7 @@ public class RobotContainer {
   
   private void configureShuffleboard(){
     ShuffleboardTab display = Shuffleboard.getTab("RobotVision");
-    display.addNumber("hi", RobotContainer::x);
+    display.addNumber("hi", () -> NetworkTableInstance.getDefault().getTable("Vision").getEntry("Xposition").getDouble(0));
 
     display.addNumber("Left Encoder", driveTrain::getLeftEncoderTicks).withPosition(8, 2);
     display.addNumber("Right Encoder", driveTrain::getRightEncoderTicks).withPosition(9, 2);
@@ -128,23 +129,21 @@ public class RobotContainer {
     NetworkTableInstance.getDefault().getTable("Vision").getEntry("Xposition").getDouble(0) > 130);
   }
 
-  private static double x(){
-    return NetworkTableInstance.getDefault().getTable("Vision").getEntry("Xposition").getDouble(0);
-  }
-
   private void configureDefaultCommands() {
     driveTrain.setDefaultCommand(new JoystickTankDrive(driverLeft, driverRight, driveTrain));
 
   }
   private void configureButtonBindings() {
     //Shooter
-    operatorRT.whenHeld(new ShootBallBasedOnPower(shooter, 1.0));
+    driverRightTrigger.toggleWhenPressed(new StayOnTarget(driveTrain)); 
+    operatorRT.whenPressed(new AimAndShoot(driveTrain, loader, intake, shooter));
+    
     operatorRB.whenHeld(new ShootBallBasedOnRPM(shooter, 3000), true);
-
+    
     //Intake
-    operatorX.whenHeld(new RunIntake(intake));
+    //operatorX.whenHeld(new RunIntake(intake));
     //operatorB.whenHeld(new ReverseIntake(intake));
-    operatorA.whenHeld(new RunLoader(loader));
+    operatorA.whenHeld(new RunIntake(intake));
     operatorY.whenHeld(new ReverseLoader(loader));
 
     //operatorB.whenPressed(new DeployIntake(intake));
@@ -153,7 +152,7 @@ public class RobotContainer {
     operatorStart.whenPressed(new SettingStartingPosition(intake));
 
     //operatorRT.whenPressed(new UndeployIntake(intake));
-    //operator.whenHeld(new MoveBallFromIntakeToShooter(loader, intake));
+    //operator.whenHeld(new MoveBallFromIntakeToShooter (loader, intake));
 
     //Elevator
     operatorUp.whileHeld(new LiftUp(elevator));
@@ -162,7 +161,7 @@ public class RobotContainer {
     operatorRight.whileHeld(new LiftBackwards(elevator));
 
     //Vision
-    operatorLT.whenPressed(new visiondriving(driveTrain));
+    operatorLT.whenPressed(new ShootBallBasedOnRPM(shooter, 3000));
   }
 
   private void configureSubsystems(){
@@ -173,14 +172,8 @@ public class RobotContainer {
     loader = new Loader();
   }  
 
-  /**
-   * Use this to pass the autonomous command to the main {@link Robot} class.
-   *
-   * @return the command to run in autonomous
-   */
   public Command getAutonomousCommand() 
   {
-    // An ExampleCommand will run in autonomous
     return new ShootBallBasedOnPower(shooter, 0.5);
   }
 }
