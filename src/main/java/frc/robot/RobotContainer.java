@@ -113,6 +113,7 @@ public class RobotContainer {
     display.addNumber("Right Encoder", driveTrain::getRightEncoderTicks).withPosition(9, 2);
 
     display.addBoolean("IS DEPLOYED?", intake::isDeployed).withPosition(0, 1);
+    display.addNumber("Elevator Height", elevator::getElevatorMotorTicks);
 
     display.addNumber("Poteniometer", intake::getAnalogIntakeValue).withWidget(BuiltInWidgets.kGraph).withSize(3, 3);
 
