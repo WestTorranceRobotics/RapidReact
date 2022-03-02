@@ -86,13 +86,13 @@ public class RobotContainer {
     NetworkTableEntry pipeEntry = NetworkTableInstance.getDefault().getTable("limelight").getEntry("pipeline");
 
     display.addBoolean("Limelight On?",() -> (int) pipeEntry.getDouble(-1) == 0)
-    .withPosition(6, 1).withSize(1, 1).withWidget(BuiltInWidgets.kBooleanBox);
+    .withPosition(8, 1).withSize(1, 1).withWidget(BuiltInWidgets.kBooleanBox);
 
     display.addNumber("tx", () -> NetworkTableInstance.getDefault().getTable("limelight").getEntry("tx").getDouble(0))
-    .withPosition(6, 2).withSize(1, 1);
+    .withPosition(7, 2).withSize(1, 1);
 
     display.addNumber("ty", () -> NetworkTableInstance.getDefault().getTable("limelight").getEntry("ty").getDouble(0))
-    .withPosition(7, 2).withSize(1, 1);
+    .withPosition(8, 2).withSize(1, 1);
 
     // display.addCamera("limelight", "limelight", "mjpg:http://10.51.24.10:5800")
     // .withSize(4, 4);
