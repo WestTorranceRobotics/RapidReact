@@ -20,6 +20,7 @@ import edu.wpi.first.wpilibj2.command.ConditionalCommand;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.POVButton;
+import frc.robot.commands.CombindedCommands.AimAndShoot;
 import frc.robot.commands.CombindedCommands.MoveBallFromIntakeToShooter;
 import frc.robot.commands.DriveTrain.JoystickTankDrive;
 import frc.robot.commands.Elevator.LiftBackwards;
@@ -113,6 +114,7 @@ public class RobotContainer {
     display.addNumber("Right Encoder", driveTrain::getRightEncoderTicks).withPosition(9, 2);
 
     display.addBoolean("IS DEPLOYED?", intake::isDeployed).withPosition(0, 1);
+    display.addNumber("Elevator Height", elevator::getElevatorMotorTicks);
 
     display.addNumber("Poteniometer", intake::getAnalogIntakeValue).withWidget(BuiltInWidgets.kGraph).withSize(3, 3);
 
@@ -133,14 +135,15 @@ public class RobotContainer {
   }
   private void configureButtonBindings() {
     //Shooter
-    driverRightTrigger.toggleWhenPressed(new StayOnTarget(driveTrain));
-    operatorRT.whenHeld(new ShootBallBasedOnPower(shooter, 1.0));
+    driverRightTrigger.toggleWhenPressed(new StayOnTarget(driveTrain)); 
+    operatorRT.whenPressed(new AimAndShoot(driveTrain, loader, intake, shooter));
+    
     operatorRB.whenHeld(new ShootBallBasedOnRPM(shooter, 3000), true);
-
+    
     //Intake
-    operatorX.whenHeld(new RunIntake(intake));
+    //operatorX.whenHeld(new RunIntake(intake));
     //operatorB.whenHeld(new ReverseIntake(intake));
-    operatorA.whenHeld(new RunLoader(loader));
+    operatorA.whenHeld(new RunIntake(intake));
     operatorY.whenHeld(new ReverseLoader(loader));
 
     //operatorB.whenPressed(new DeployIntake(intake));
@@ -149,7 +152,7 @@ public class RobotContainer {
     operatorStart.whenPressed(new SettingStartingPosition(intake));
 
     //operatorRT.whenPressed(new UndeployIntake(intake));
-    //operator.whenHeld(new MoveBallFromIntakeToShooter(loader, intake));
+    //operator.whenHeld(new MoveBallFromIntakeToShooter (loader, intake));
 
     //Elevator
     operatorUp.whileHeld(new LiftUp(elevator));
@@ -158,7 +161,7 @@ public class RobotContainer {
     operatorRight.whileHeld(new LiftBackwards(elevator));
 
     //Vision
-    operatorLT.whenPressed(new visiondriving(driveTrain));
+    operatorLT.whenPressed(new ShootBallBasedOnRPM(shooter, 3000));
   }
 
   private void configureSubsystems(){

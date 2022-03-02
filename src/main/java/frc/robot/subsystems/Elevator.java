@@ -34,6 +34,9 @@ public class Elevator extends SubsystemBase {
     // BreakOff = new Solenoid(PneumaticsModuleType.CTREPCM, RobotMap.ElevatorMap.elevatorSolenoid);
     ElevatorTurningFollower.follow(ElevatorTurningLeader);
     // ElevatorMotor.setIdleMode(IdleMode.Brake);
+
+    ElevatorMotor.setInverted(true);
+    ElevatorMotor.getEncoder().setPosition(0);
   }
 
   @Override
@@ -43,6 +46,10 @@ public class Elevator extends SubsystemBase {
 
   public CANSparkMax getElevatorMotor(){
     return ElevatorMotor;
+  }
+
+  public double getElevatorMotorTicks(){
+    return ElevatorMotor.getEncoder().getPosition();
   }
 
   /*victorspx requires controlmode value (all options can be seen with ctrl + click on ControlMode)
