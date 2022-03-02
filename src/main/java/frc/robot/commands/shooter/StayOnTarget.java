@@ -77,8 +77,8 @@ public class StayOnTarget extends CommandBase {
     double tx = NetworkTableInstance.getDefault().getTable("limelight").getEntry("tx").getDouble(0);
 
     double steeringAdjust = 0;
-    anglePID.setP(LLTable.getEntry("anglekP").getDouble(0));
-    anglePID.setD(LLTable.getEntry("anglekD").getDouble(0));
+    // anglePID.setP(LLTable.getEntry("anglekP").getDouble(0));
+    // anglePID.setD(LLTable.getEntry("anglekD").getDouble(0));
     steeringAdjust = MathUtil.clamp(anglePID.calculate(tx, 0), -0.7, 0.7);
     LLTable.getEntry("steeringAdjust").setDouble(steeringAdjust);
     

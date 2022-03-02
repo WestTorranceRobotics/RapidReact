@@ -16,8 +16,7 @@ import frc.robot.subsystems.Shooter;
 public class RunShooterAndIntakeToShooter extends ParallelCommandGroup {
   /** Creates a new RunShooterAndLoader. */
   public RunShooterAndIntakeToShooter(Loader loader, Intake intake, Shooter shooter, double power) {
-    // Add your commands in the addCommands() call, e.g.
-    // addCommands(new FooCommand(), new BarCommand());
+    
     addCommands(new MoveBallFromIntakeToShooter(loader, intake).deadlineWith(new ShootOneBallUsingDirectPower(shooter, loader)));
   }
 }

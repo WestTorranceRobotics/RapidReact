@@ -65,7 +65,7 @@ public class RobotMap {
 
         //0.37-0.38
         public static double voltageValueForDeployedLower = 0.37;
-        public static double voltageValueForDeployedUpper = 0.38;
+        public static double voltageValueForDeployedUpper = 0.387;
 
 
     }
