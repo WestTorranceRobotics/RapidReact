@@ -15,15 +15,17 @@ public class DriveToCorrectRangeAndAlignWithLL extends CommandBase {
   private DriveTrain driveTrain;
 
   private PIDController anglePID;
-  private double kP = 0.1945392;
+  private double kP = 0.1345392;
   private double kI = 0;
-  private double kD = 0.00323242;
+  private double kD = 0.00503242;
 
   private PIDController distancePID;
-  private double kPDist = 0.07;
+  private double kPDist = 0.23;
   private double kIDist = 0.09;
   private double kDDist = 0;
-  private double initTY;
+  private double initTY = -999;
+  private boolean init;
+  private int initTicks = 0;
 
   private NetworkTable LLTable = NetworkTableInstance.getDefault().getTable("LLPID");
 
@@ -38,17 +40,19 @@ public class DriveToCorrectRangeAndAlignWithLL extends CommandBase {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
+    System.out.println("bruh");
     anglePID.setP(kP);
     anglePID.setI(kI);
     anglePID.setD(kD);
+    initTicks = 0;
     // driveTrain.enablePID();
 
     // turns on limelight and also lets rpi know that limelight is on
     NetworkTableInstance.getDefault().getTable("rpi").getEntry("aimbot").setDouble(1);
     NetworkTableInstance.getDefault().getTable("limelight").getEntry("pipeline").setNumber(0.0);
 
-    initTY = NetworkTableInstance.getDefault().getTable("limelight").getEntry("ty").getDouble(0);
-    distancePID.setSetpoint(initTY);
+    // initTY = NetworkTableInstance.getDefault().getTable("limelight").getEntry("ty").getDouble(0);
+    // distancePID.setSetpoint(initTY);
     anglePID.setSetpoint(0);
     
     driveTrain.setAutomatic(true);
@@ -61,26 +65,41 @@ public class DriveToCorrectRangeAndAlignWithLL extends CommandBase {
     double rightCommand = 0;
 
     /* stays on target distancewise*/
+
+    if (initTicks >= 15 && initTY < -100) {
+      initTY = NetworkTableInstance.getDefault().getTable("limelight").getEntry("ty").getDouble(0);
+      // driveTrain.enablePID();
+      distancePID.setSetpoint(initTY);
+    }
+    else {
+      initTicks++;
+    }
+    
+    System.out.println(initTY);
+    System.out.println(initTicks);
     double ty = NetworkTableInstance.getDefault().getTable("limelight").getEntry("ty").getDouble(0);
     distancePID.setP(LLTable.getEntry("distkP").getDouble(0));
     distancePID.setD(LLTable.getEntry("distkD").getDouble(0));
-    double distAdjust = MathUtil.clamp(distancePID.calculate(ty), -0.5, 0.5);
+    double distAdjust = MathUtil.clamp(distancePID.calculate(ty, initTY), -0.7, 0.7);
     LLTable.getEntry("distAdjust").setDouble(distAdjust);
     
-    leftCommand += distAdjust;
-    rightCommand += distAdjust;
+    leftCommand -= distAdjust;
+    rightCommand -= distAdjust;
 
     /* turn to face the target */ 
     double tx = NetworkTableInstance.getDefault().getTable("limelight").getEntry("tx").getDouble(0);
 
     double steeringAdjust = 0;
-    anglePID.setP(LLTable.getEntry("anglekP").getDouble(0));
-    anglePID.setD(LLTable.getEntry("anglekD").getDouble(0));
-    steeringAdjust = MathUtil.clamp(anglePID.calculate(tx), -0.7, 0.7);
-    LLTable.getEntry("steeringAdjust").setDouble(steeringAdjust);
+    // anglePID.setP(LLTable.getEntry("anglekP").getDouble(0));
+    // anglePID.setD(LLTable.getEntry("anglekD").getDouble(0));
+    if (Math.abs(tx) > 2.5) {
+      steeringAdjust = MathUtil.clamp(anglePID.calculate(tx), -0.7, 0.7);
+      LLTable.getEntry("steeringAdjust").setDouble(steeringAdjust);
+    }
+
     
-    // leftCommand -= steeringAdjust;
-    // rightCommand += steeringAdjust;
+    leftCommand -= steeringAdjust;
+    rightCommand += steeringAdjust;
     driveTrain.tankDrive(leftCommand, rightCommand);
   }
 

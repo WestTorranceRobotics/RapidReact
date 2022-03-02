@@ -94,8 +94,8 @@ public class RobotContainer {
     display.addNumber("ty", () -> NetworkTableInstance.getDefault().getTable("limelight").getEntry("ty").getDouble(0))
     .withPosition(7, 2).withSize(1, 1);
 
-    display.addCamera("limelight", "limelight", "mjpg:http://10.51.24.10:5800")
-    .withSize(4, 4);
+    // display.addCamera("limelight", "limelight", "mjpg:http://10.51.24.10:5800")
+    // .withSize(4, 4);
   }
 
   public void configureDefaultCommands() {
