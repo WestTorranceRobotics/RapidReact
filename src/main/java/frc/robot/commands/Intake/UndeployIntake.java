@@ -43,7 +43,7 @@ public class UndeployIntake extends CommandBase {
     if(isDeployed && isFinished == false){
       System.out.println("RUNNING UNDEPLOY");
       mIntake.unDeployIntake();
-    if(mIntake.getAnalogIntakeValue() >= RobotMap.IntakeMap.voltageValueForUndeployedLower && mIntake.getAnalogIntakeValue() <= RobotMap.IntakeMap.voltageValueForUndeployedUpper)
+    if(mIntake.getAnalogIntakeValue() >= RobotMap.IntakeMap.voltageValueForUndeployedLower)
       {
         mIntake.stopIntake();
         isFinished = true;
@@ -57,6 +57,7 @@ public class UndeployIntake extends CommandBase {
   public void end(boolean interrupted) {
     mIntake.getDeployMotor().set(ControlMode.PercentOutput, 0);
     isFinished = false;
+    
   }
 
   // Returns true when the command should end.

@@ -41,7 +41,8 @@ public class DeployIntake extends CommandBase {
     System.out.println(isDeployed);
     if(!isDeployed && isFinished == false){
       mIntake.deployIntake();
-    if(mIntake.getAnalogIntakeValue() >= RobotMap.IntakeMap.voltageValueForDeployedLower && mIntake.getAnalogIntakeValue() <= RobotMap.IntakeMap.voltageValueForDeployedUpper)
+     // mIntake.getAnalogIntakeValue() >= RobotMap.IntakeMap.voltageValueForDeployedLower && 
+    if(mIntake.getAnalogIntakeValue() <= RobotMap.IntakeMap.voltageValueForDeployedUpper)
       {
         mIntake.stopIntake();
         isFinished = true;

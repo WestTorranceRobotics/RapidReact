@@ -25,7 +25,7 @@ public class SettingStartingPosition extends CommandBase {
   @Override
   public void execute() {
     mIntake.unDeployIntake();
-    if(mIntake.getAnalogIntakeValue() >=0.79){
+    if(mIntake.getAnalogIntakeValue() >=0.78){
       mIntake.stopIntake();
       isFinished = true;
     }
