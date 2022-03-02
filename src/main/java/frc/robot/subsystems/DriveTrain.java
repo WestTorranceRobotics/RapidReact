@@ -11,6 +11,7 @@ import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 import com.kauailabs.navx.frc.AHRS;
 
 import edu.wpi.first.math.controller.PIDController;
+import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj.Encoder;
 import edu.wpi.first.wpilibj.SPI;
 import edu.wpi.first.wpilibj.CounterBase.EncodingType;
@@ -198,6 +199,15 @@ public class DriveTrain extends SubsystemBase {
     distancePID.setP(0.0);
     distancePID.setI(0.0);
     distancePID.setD(0.0);
+  }
+
+  public double getDistanceFromTarget() {
+    // hub is 8' 8" tall
+    double ty = NetworkTableInstance.getDefault().getTable("limelight").getEntry("ty").getDouble(0);
+    double radiansTY = ty * (3.14159 / 180.0);
+    double h2 = 0; // need the height of the limelight
+    double angleLL = 0; // need the angle of the limelight
+    return (104 - h2) / Math.tan(angleLL + radiansTY);
   }
 
   @Override

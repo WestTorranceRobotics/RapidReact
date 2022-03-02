@@ -5,8 +5,6 @@
 package frc.robot.commands.CombindedCommands;
 
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
-import frc.robot.commands.Loader.RunLoader;
-import frc.robot.commands.shooter.ShootBallBasedOnPower;
 import frc.robot.commands.shooter.ShootOneBallUsingDirectPower;
 import frc.robot.subsystems.Intake;
 import frc.robot.subsystems.Loader;

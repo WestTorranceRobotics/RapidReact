@@ -107,6 +107,8 @@ public class RobotContainer {
    */
   
   private void configureShuffleboard(){
+    NetworkTableInstance.getDefault().getTable("Vision").getEntry("rpm").setDouble(0);
+
     ShuffleboardTab display = Shuffleboard.getTab("RobotVision");
     display.addNumber("hi", () -> NetworkTableInstance.getDefault().getTable("Vision").getEntry("Xposition").getDouble(0));
 
@@ -117,6 +119,11 @@ public class RobotContainer {
     display.addNumber("Elevator Height", elevator::getElevatorMotorTicks);
 
     display.addNumber("Poteniometer", intake::getAnalogIntakeValue).withWidget(BuiltInWidgets.kGraph).withSize(3, 3);
+
+    // for finding the range of distances from target that we can shoot from
+    display.addNumber("Distance From Target", driveTrain::getDistanceFromTarget).withPosition(1, 1);
+    display.addNumber("RPM", () -> NetworkTableInstance.getDefault().getTable("Vision").getEntry("rpm").getDouble(0))
+    .withWidget(BuiltInWidgets.kNumberSlider).withPosition(5, 0).withSize(3, 1); // set range max to 4000
 
     //display.addNumber("Applied Power on Shooter", shooter::getCurrent).withWidget(BuiltInWidgets.kGraph).withSize(3, 3);
     display.addNumber("Velocity on Shooter", shooter::getVelocity).withWidget(BuiltInWidgets.kGraph).withSize(3, 3).withPosition(4, 1);
@@ -141,18 +148,11 @@ public class RobotContainer {
     operatorRB.whenHeld(new ShootBallBasedOnRPM(shooter, 3000), true);
     
     //Intake
-    //operatorX.whenHeld(new RunIntake(intake));
-    //operatorB.whenHeld(new ReverseIntake(intake));
     operatorA.whenHeld(new RunIntake(intake));
     operatorY.whenHeld(new ReverseLoader(loader));
 
-    //operatorB.whenPressed(new DeployIntake(intake));
-    //operatorB.whenPressed(new UndeployIntake(intake));
     operatorB.whenPressed(new ConditionalCommand(new UndeployIntake(intake), new DeployIntake(intake), intake::isDeployed));
     operatorStart.whenPressed(new SettingStartingPosition(intake));
-
-    //operatorRT.whenPressed(new UndeployIntake(intake));
-    //operator.whenHeld(new MoveBallFromIntakeToShooter (loader, intake));
 
     //Elevator
     operatorUp.whileHeld(new LiftUp(elevator));

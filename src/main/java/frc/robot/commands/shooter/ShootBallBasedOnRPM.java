@@ -4,6 +4,7 @@
 
 package frc.robot.commands.shooter;
 
+import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.subsystems.Intake;
 import frc.robot.subsystems.Shooter;
@@ -37,7 +38,9 @@ public class ShootBallBasedOnRPM extends CommandBase {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    bShooter.setVelocity(rpm);
+    double networkRPM = NetworkTableInstance.getDefault().getTable("Vision").getEntry("rpm").getDouble(0);
+    bShooter.setVelocity(networkRPM);
+    // bShooter.setVelocity(rpm);
     // bShooter.setPower(-0.4);
 
     // double error = bShooter.getVelocity() - rpm;

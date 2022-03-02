@@ -6,7 +6,7 @@ package frc.robot.commands.CombindedCommands;
 
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import frc.robot.RobotMap;
-import frc.robot.commands.VisionProcessing.visiondriving;
+import frc.robot.commands.shooter.StayOnTarget;
 import frc.robot.subsystems.DriveTrain;
 import frc.robot.subsystems.Intake;
 import frc.robot.subsystems.Loader;
@@ -20,7 +20,7 @@ public class AimAndShoot extends ParallelCommandGroup {
   public AimAndShoot(DriveTrain driveTrain, Loader loader, Intake intake, Shooter shooter) {
     // Add your commands in the addCommands() call, e.g.
     // addCommands(new FooCommand(), new BarCommand());
-    addCommands(new visiondriving(driveTrain), new RunShooterAndIntakeToShooter(loader, intake, shooter, RobotMap.ShooterMap.shooterPowerLong));
+    addCommands(new StayOnTarget(driveTrain), new RunShooterAndIntakeToShooter(loader, intake, shooter, RobotMap.ShooterMap.shooterPowerLong));
   
   }
 }
