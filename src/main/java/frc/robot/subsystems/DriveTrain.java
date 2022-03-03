@@ -206,7 +206,7 @@ public class DriveTrain extends SubsystemBase {
     double ty = NetworkTableInstance.getDefault().getTable("limelight").getEntry("ty").getDouble(0);
     double radiansTY = ty * (3.14159 / 180.0);
     double h2 = 0; // need the height of the limelight
-    double angleLL = 0; // need the angle of the limelight
+    double angleLL = 50 * (3.14159 / 180.0); // need the angle of the limelight
     return (104 - h2) / Math.tan(angleLL + radiansTY);
   }
 
