@@ -29,7 +29,7 @@ public class ShootOneBallUsingDirectPower extends CommandBase {
   @Override
   public void execute() {
 
-    mshooter.setPower(0.5);
+    mshooter.setPower(0.75);
     
     if(mshooter.atSpeed() && mLoader.getAppliedOutput() > 0) {
       mshooter.currentWatch();
@@ -43,7 +43,9 @@ public class ShootOneBallUsingDirectPower extends CommandBase {
 
   // Called once the command ends or is interrupted.
   @Override
-  public void end(boolean interrupted) {}
+  public void end(boolean interrupted) {
+    mshooter.setPower(0);
+  }
 
   // Returns true when the command should end.
   @Override

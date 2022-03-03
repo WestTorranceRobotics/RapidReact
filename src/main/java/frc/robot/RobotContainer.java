@@ -18,6 +18,7 @@ import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.ConditionalCommand;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.ParallelDeadlineGroup;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.POVButton;
 import frc.robot.commands.CombindedCommands.AimAndShoot;
@@ -74,6 +75,8 @@ public class RobotContainer {
 
   public JoystickButton driverRightTrigger = new JoystickButton(driverRight, 1);
   public JoystickButton driverRightThumb  = new JoystickButton(driverRight, 2);
+
+  public JoystickButton driverLeftTrigger = new JoystickButton(driverLeft, 1);
 
   public POVButton operatorUp = new POVButton(operator, 0);
   public POVButton operatorDown = new POVButton(operator, 180);
@@ -143,7 +146,8 @@ public class RobotContainer {
   private void configureButtonBindings() {
     //Shooter
     driverRightTrigger.toggleWhenPressed(new StayOnTarget(driveTrain)); 
-    operatorRT.whenPressed(new AimAndShoot(driveTrain, loader, intake, shooter));
+    // driverLeftTrigger.toggleWhenPressed(new AimAndShoot(driveTrain, loader, intake, shooter));
+    driverLeftTrigger.whenPressed(new ParallelDeadlineGroup(new ShootOneBallUsingDirectPower(shooter, loader), new StayOnTarget(driveTrain), new MoveBallFromIntakeToShooter(loader, intake)));
     
     operatorRB.whenHeld(new ShootBallBasedOnRPM(shooter, 3000), true);
     
