@@ -46,15 +46,7 @@ import frc.robot.subsystems.Loader;
 import edu.wpi.first.wpilibj2.command.button.POVButton;
 import frc.robot.subsystems.Elevator;
 
-/**
- * This class is where the bulk of the robot should be declared. Since Command-based is a
- * "declarative" paradigm, very little robot logic should actually be handled in the {@link Robot}
- * periodic methods (other than the scheduler calls). Instead, the structure of the robot (including
- * subsystems, commands, and button mappings) should be declared here.
- */
 public class RobotContainer {
-
-  // The robot's subsystems and commands are defined here...
   public static final Joystick driverLeft = new Joystick(0);
   public static final Joystick driverRight = new Joystick(1);
   public XboxController operator = new XboxController(2);
@@ -85,14 +77,12 @@ public class RobotContainer {
 
   public ShuffleboardTab display;
 
-  //Subsystem
   private Shooter shooter;
   private DriveTrain driveTrain;
   private Intake intake;
   private Elevator elevator;
   private Loader loader;
-  
-  /** The container for the robot. Contains subsystems, OI devices, and commands. */
+
   public RobotContainer() 
   {
     // Configure the button bindings
@@ -102,15 +92,9 @@ public class RobotContainer {
     configureShuffleboard();
   }
 
-  /**
-   * Use this method to define your button->command mappings. Buttons can be created by
-   * instantiating a {@link GenericHID} or one of its subclasses ({@link
-   * edu.wpi.first.wpilibj.Joystick} or {@link XboxController}), and then passing it to a {@link
-   * edu.wpi.first.wpilibj2.command.button.JoystickButton}.
-   */
-  
   private void configureShuffleboard(){
     NetworkTableInstance.getDefault().getTable("Vision").getEntry("rpm").setDouble(0);
+    NetworkTableInstance.getDefault().getTable("limelight").getEntry("pipeline").setDouble(0);
 
     ShuffleboardTab display = Shuffleboard.getTab("RobotVision");
     display.addNumber("hi", () -> NetworkTableInstance.getDefault().getTable("Vision").getEntry("Xposition").getDouble(0));
@@ -131,7 +115,6 @@ public class RobotContainer {
     //display.addNumber("Applied Power on Shooter", shooter::getCurrent).withWidget(BuiltInWidgets.kGraph).withSize(3, 3);
     display.addNumber("Velocity on Shooter", shooter::getVelocity).withWidget(BuiltInWidgets.kGraph).withSize(3, 3).withPosition(4, 1);
     // display.addBoolean("IN CENTER", RobotContainer::isCenter);
-
   }
 
   private static boolean isCenter(){
@@ -145,9 +128,13 @@ public class RobotContainer {
   }
   private void configureButtonBindings() {
     //Shooter
-    driverRightTrigger.toggleWhenPressed(new StayOnTarget(driveTrain)); 
+    // driverRightTrigger.toggleWhenPressed(new StayOnTarget(driveTrain)); 
+    driverRightTrigger.whenHeld(new MoveBallFromIntakeToShooter(loader, intake));
+    driverRightThumb.whenHeld(new ReverseLoader(loader));
+    driverLeftTrigger.whenHeld(new ShootBallBasedOnRPM(shooter, 3000));
+    // NetworkTableInstance.getDefault().getTable("Vision").getEntry("rpm").getDouble(0)
     // driverLeftTrigger.toggleWhenPressed(new AimAndShoot(driveTrain, loader, intake, shooter));
-    driverLeftTrigger.whenPressed(new ParallelDeadlineGroup(new ShootOneBallUsingDirectPower(shooter, loader), new StayOnTarget(driveTrain), new MoveBallFromIntakeToShooter(loader, intake)));
+    // driverLeftTrigger.whenPressed(new ParallelDeadlineGroup(new ShootOneBallUsingDirectPower(shooter, loader), new StayOnTarget(driveTrain), new MoveBallFromIntakeToShooter(loader, intake)));
     
     operatorRB.whenHeld(new ShootBallBasedOnRPM(shooter, 3000), true);
     

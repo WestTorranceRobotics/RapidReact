@@ -42,7 +42,7 @@ public class Shooter extends SubsystemBase {
     shootMotorLeader.setInverted(true);
     shootMotorLeader.getPIDController().setP(RobotMap.ShooterMap.kP);
     shootMotorLeader.getPIDController().setD(RobotMap.ShooterMap.kD);
-    shootMotorLeader.getPIDController().setFF(0.8);
+    shootMotorLeader.getPIDController().setFF(0.004);
     shootMotorLeader.getPIDController().setOutputRange(-1, 1);
   //follower
     shootMotorFollower.restoreFactoryDefaults();
@@ -50,7 +50,7 @@ public class Shooter extends SubsystemBase {
     // shootMotorFollower.setInverted(true);
     shootMotorFollower.getPIDController().setP(RobotMap.ShooterMap.kP);
     shootMotorFollower.getPIDController().setD(RobotMap.ShooterMap.kD);
-    shootMotorFollower.getPIDController().setFF(0.8);
+    shootMotorFollower.getPIDController().setFF(0.004);
     shootMotorFollower.getPIDController().setOutputRange(-1, 1);
     //shootMotorFollower.follow(shootMotorLeader, true);
   

@@ -21,7 +21,7 @@ public class Loader extends SubsystemBase {
   }
 
   public void runLoader(){
-    loaderMotor.set(-0.30);
+    loaderMotor.set(-0.4);
   }
 
   public void reverseLoader(){
