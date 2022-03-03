@@ -20,11 +20,11 @@ public class DriveToCorrectRangeAndAlignWithLL extends CommandBase {
   private double kD = 0.00503242;
 
   private PIDController distancePID;
-  private double kPDist = 0.23;
-  private double kIDist = 0.09;
-  private double kDDist = 0;
+  private double kPDist = 0.2;
+  private double kIDist = 0;
+  private double kDDist = 0.09;
 
-  private double initTY = Double.MIN_VALUE;
+  private double initTY;
   private boolean isAligned = false;
   private boolean isCorrectDistance = false;
 
@@ -41,6 +41,7 @@ public class DriveToCorrectRangeAndAlignWithLL extends CommandBase {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
+    initTY = Double.MIN_VALUE;
     anglePID.setP(kP);
     anglePID.setI(kI);
     anglePID.setD(kD);
@@ -77,8 +78,10 @@ public class DriveToCorrectRangeAndAlignWithLL extends CommandBase {
         // maybe incorporate tx aligning in here as well
         System.out.println(initTY);
         double ty = NetworkTableInstance.getDefault().getTable("limelight").getEntry("ty").getDouble(0);
-        distancePID.setP(LLTable.getEntry("distkP").getDouble(0));
-        distancePID.setD(LLTable.getEntry("distkD").getDouble(0));
+        // distancePID.setP(LLTable.getEntry("distkP").getDouble(0));
+        // distancePID.setD(LLTable.getEntry("distkD").getDouble(0));
+        distancePID.setP(kPDist);
+        distancePID.setD(kDDist);
 
         double distancePowerLimit = 0;
         if (isAligned) {
@@ -107,7 +110,7 @@ public class DriveToCorrectRangeAndAlignWithLL extends CommandBase {
     if (Math.abs(tx) > 2.8) {
       steeringAdjust = MathUtil.clamp(anglePID.calculate(tx), -0.7, 0.7);
       LLTable.getEntry("steeringAdjust").setDouble(steeringAdjust);
-      isAligned = false;
+      // isAligned = false;
     } else {
       isAligned = true;
     }
