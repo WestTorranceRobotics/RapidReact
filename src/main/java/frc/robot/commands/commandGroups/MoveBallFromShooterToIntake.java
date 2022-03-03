@@ -2,11 +2,11 @@
 // Open Source Software; you can modify and/or share it under the terms of
 // the WPILib BSD license file in the root directory of this project.
 
-package frc.robot.commands.CombindedCommands;
+package frc.robot.commands.commandGroups;
 
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
-import frc.robot.commands.Intake.ReverseIntake;
-import frc.robot.commands.Loader.ReverseLoader;
+import frc.robot.commands.intake.ReverseIntake;
+import frc.robot.commands.loader.ReverseLoader;
 import frc.robot.subsystems.Intake;
 import frc.robot.subsystems.Loader;
 

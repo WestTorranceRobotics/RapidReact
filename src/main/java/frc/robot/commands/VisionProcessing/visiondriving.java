@@ -2,7 +2,7 @@
 // Open Source Software; you can modify and/or share it under the terms of
 // the WPILib BSD license file in the root directory of this project.
 
-package frc.robot.commands.VisionProcessing;
+package frc.robot.commands.visionProcessing;
 
 import com.fasterxml.jackson.databind.deser.ValueInstantiator.Gettable;
 
@@ -10,11 +10,11 @@ import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.subsystems.DriveTrain;
 
-public class visiondriving extends CommandBase {
+public class VisionDriving extends CommandBase {
   /** Creates a new visiondriving. */
   DriveTrain m_driveTrain;
   boolean isFinished = false;
-  public visiondriving(DriveTrain driveTrain) {
+  public VisionDriving(DriveTrain driveTrain) {
 
     m_driveTrain = driveTrain;
     addRequirements(driveTrain);

@@ -17,7 +17,6 @@ public class Loader extends SubsystemBase {
   public Loader() {
     loaderMotor = new CANSparkMax(RobotMap.LoaderMap.loaderMotorCANID, MotorType.kBrushless);
     loaderMotor.restoreFactoryDefaults();
-
   }
 
   public void runLoader(){

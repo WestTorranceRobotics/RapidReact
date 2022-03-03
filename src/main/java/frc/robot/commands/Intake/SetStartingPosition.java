@@ -2,20 +2,18 @@
 // Open Source Software; you can modify and/or share it under the terms of
 // the WPILib BSD license file in the root directory of this project.
 
-package frc.robot.commands.shooter;
-
-import com.revrobotics.CANSparkMax;
-import com.revrobotics.CANSparkMaxLowLevel.MotorType;
+package frc.robot.commands.intake;
 
 import edu.wpi.first.wpilibj2.command.CommandBase;
+import frc.robot.subsystems.Intake;
 
-public class tesssssssssst extends CommandBase {
-  CANSparkMax canSparkMax;
-  /** Creates a new tesssssssssst. */
-  public tesssssssssst(double speed) {
-
-    canSparkMax = new CANSparkMax(20, MotorType.kBrushless);
-
+public class SetStartingPosition extends CommandBase {
+  private Intake mIntake;
+  private boolean isFinished = false;
+  /** Creates a new SettingStartingPosition. */
+  public SetStartingPosition(Intake intake) {
+    mIntake = intake;
+    addRequirements(mIntake);
     // Use addRequirements() here to declare subsystem dependencies.
   }
 
@@ -26,17 +24,23 @@ public class tesssssssssst extends CommandBase {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    canSparkMax.set(-0.5);
-
+    mIntake.unDeployIntake();
+    if (mIntake.getAnalogIntakeValue() >= 0.78){
+      mIntake.stopIntake();
+      isFinished = true;
+    }
   }
 
   // Called once the command ends or is interrupted.
   @Override
-  public void end(boolean interrupted) {}
+  public void end(boolean interrupted) {
+    mIntake.stopIntake();
+    isFinished = false;
+  }
 
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return false;
+    return isFinished;
   }
 }

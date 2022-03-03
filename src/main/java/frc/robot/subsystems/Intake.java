@@ -64,25 +64,24 @@ public class Intake extends SubsystemBase
     deployMotor.set(ControlMode.PercentOutput, -0.3);
   }
 
-  public void stopIntake(){
+  public void stopIntake() {
     deployMotor.set(ControlMode.PercentOutput, 0);
   }
 
-  public boolean isDeployed(){
-    if(getAnalogIntakeValue() >= RobotMap.IntakeMap.voltageValueForDeployedLower && getAnalogIntakeValue() <= RobotMap.IntakeMap.voltageValueForDeployedUpper)
+  public boolean isDeployed() {
+    if (getAnalogIntakeValue() >= RobotMap.IntakeMap.voltageValueForDeployedLower && getAnalogIntakeValue() <= RobotMap.IntakeMap.voltageValueForDeployedUpper)
       {
         return true;
       }
-    if(getAnalogIntakeValue() < RobotMap.IntakeMap.voltageValueForDeployedLower){
+    if (getAnalogIntakeValue() < RobotMap.IntakeMap.voltageValueForDeployedLower) {
       return true;
     }
-    else{
+    else {
       return false;
     }
   }
 
-  public boolean ToggleIsDeployed()
-  {
+  public boolean ToggleIsDeployed() {
     isDeployed = !isDeployed;//toggles the value of is deployed
     return !isDeployed;//returns the initial value
   }
