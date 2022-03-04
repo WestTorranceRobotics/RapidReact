@@ -10,6 +10,7 @@ import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.shuffleboard.BuiltInWidgets;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.ConditionalCommand;
 import edu.wpi.first.wpilibj2.command.ParallelDeadlineGroup;
@@ -17,6 +18,7 @@ import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.POVButton;
 import frc.robot.commands.commandGroups.AimAndShoot;
 import frc.robot.commands.commandGroups.MoveBallFromIntakeToShooter;
+import frc.robot.commands.driveTrain.DriveDistance;
 import frc.robot.commands.driveTrain.JoystickTankDrive;
 import frc.robot.commands.elevator.LiftBackwards;
 import frc.robot.commands.elevator.LiftDown;
@@ -57,6 +59,7 @@ public class RobotContainer {
   public JoystickButton driverRightThumb  = new JoystickButton(driverRight, 2);
 
   public JoystickButton driverLeftTrigger = new JoystickButton(driverLeft, 1);
+  public JoystickButton driverLeftThumb = new JoystickButton(driverLeft, 2);
 
   public POVButton operatorUp = new POVButton(operator, 0);
   public POVButton operatorDown = new POVButton(operator, 180);
@@ -82,6 +85,7 @@ public class RobotContainer {
 
   private void configureShuffleboard(){
     NetworkTableInstance.getDefault().getTable("Vision").getEntry("rpm").setDouble(0);
+    NetworkTableInstance.getDefault().getTable("Vision").getEntry("speed").setDouble(0);
     NetworkTableInstance.getDefault().getTable("limelight").getEntry("pipeline").setDouble(0);
 
     ShuffleboardTab display = Shuffleboard.getTab("RobotVision");
@@ -97,8 +101,6 @@ public class RobotContainer {
 
     // for finding the range of distances from target that we can shoot from
     display.addNumber("Distance From Target", driveTrain::getDistanceFromTarget).withPosition(1, 1);
-    display.addNumber("RPM", () -> NetworkTableInstance.getDefault().getTable("Vision").getEntry("rpm").getDouble(0))
-    .withWidget(BuiltInWidgets.kNumberSlider).withPosition(5, 0).withSize(3, 1); // set range max to 4000
 
     //display.addNumber("Applied Power on Shooter", shooter::getCurrent).withWidget(BuiltInWidgets.kGraph).withSize(3, 3);
     display.addNumber("Velocity on Shooter", shooter::getVelocity).withWidget(BuiltInWidgets.kGraph).withSize(3, 3).withPosition(4, 1);
@@ -119,8 +121,9 @@ public class RobotContainer {
     // driverRightTrigger.toggleWhenPressed(new StayOnTarget(driveTrain)); 
     driverRightTrigger.whenHeld(new MoveBallFromIntakeToShooter(loader, intake));
     driverRightThumb.whenHeld(new ReverseLoader(loader));
-    driverLeftTrigger.whenHeld(new ShootBallBasedOnRPM(shooter, 3000));
-    // NetworkTableInstance.getDefault().getTable("Vision").getEntry("rpm").getDouble(0)
+    // driverLeftTrigger.whenHeld(new ShootBallBasedOnRPM(shooter, 3000));
+    driverLeftTrigger.whenHeld(new ShootBallBasedOnPower(shooter, 0));
+    // driverLeftThumb.whenPressed(new DriveDistance(driveTrain, 24, 0.6));
     // driverLeftTrigger.toggleWhenPressed(new AimAndShoot(driveTrain, loader, intake, shooter));
     // driverLeftTrigger.whenPressed(new ParallelDeadlineGroup(new ShootOneBallUsingDirectPower(shooter, loader), new StayOnTarget(driveTrain), new MoveBallFromIntakeToShooter(loader, intake)));
     

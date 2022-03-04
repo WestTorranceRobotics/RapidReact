@@ -14,7 +14,9 @@ public class RobotMap {
         public static double radiusOfWheel = 3;
         //Radius of the wheel of the robot. (In terms of inches)
         
-        public static double inchesPerPulse = 0.78858884343625044337347446800602;
+        public static double inchesPerPulse = 0.12058884343625044337347446800602; // MAJIK NUMBER WORKS DO NOT CHANGE (maybe take off a few decimal places)
+        // 0.78858884343625044337347446800602; // old value
+        // public static double inchesPerPulse = (1.0 / 20) * (1.0 / 10.75) * (6.0 * 3.14159);
         //0.04928680271 for quadature.
     }
 
