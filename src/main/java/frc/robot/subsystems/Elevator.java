@@ -26,13 +26,13 @@ public class Elevator extends SubsystemBase {
   /** Creates a new Elevator. */
   public Elevator() {
     //declaring motor and limits to their can ids
-    ElevatorMotor = new CANSparkMax(RobotMap.ElevatorMap.elevatorCANID, MotorType.kBrushless);
-    ElevatorTurningLeader = new CANSparkMax(RobotMap.ElevatorMap.elevatorTurningLeader, MotorType.kBrushless);
-    ElevatorTurningFollower = new CANSparkMax(RobotMap.ElevatorMap.elevatorTurningFollower, MotorType.kBrushless);
-    ElevatorTurningLeader.restoreFactoryDefaults();
-    ElevatorTurningFollower.restoreFactoryDefaults();
-    ElevatorTurningLeader.setInverted(false);
-    ElevatorTurningLeader.setInverted(false);
+    elevatorMotor = new CANSparkMax(RobotMap.ElevatorMap.elevatorCANID, MotorType.kBrushless);
+    elevatorTurningLeader = new CANSparkMax(RobotMap.ElevatorMap.elevatorTurningLeader, MotorType.kBrushless);
+    elevatorTurningFollower = new CANSparkMax(RobotMap.ElevatorMap.elevatorTurningFollower, MotorType.kBrushless);
+    elevatorTurningLeader.restoreFactoryDefaults();
+    elevatorTurningFollower.restoreFactoryDefaults();
+    elevatorTurningLeader.setInverted(false);
+    elevatorTurningLeader.setInverted(false);
     // TopLimit = new DigitalInput(RobotMap.ElevatorMap.topLimitChannelID);
     // BottomLimit = new DigitalInput(RobotMap.ElevatorMap.bottomLimitChannelID);
     // BreakOff = new Solenoid(PneumaticsModuleType.CTREPCM, RobotMap.ElevatorMap.elevatorSolenoid);
@@ -66,18 +66,18 @@ public class Elevator extends SubsystemBase {
   }
 
   public void turnLiftClockwise(double power){
-    ElevatorTurningLeader.set(power);
-    ElevatorTurningFollower.set(-power);
+    elevatorTurningLeader.set(power);
+    elevatorTurningFollower.set(-power);
   }
 
   public void turnLiftCounterClockwise(double power){
-    ElevatorTurningLeader.set(-power);
-    ElevatorTurningFollower.set(power);
+    elevatorTurningLeader.set(-power);
+    elevatorTurningFollower.set(power);
   }
 
   public void stopTurning(){
-    ElevatorTurningLeader.set(0);
-    ElevatorTurningFollower.set(0);
+    elevatorTurningLeader.set(0);
+    elevatorTurningFollower.set(0);
   }
 
   //lowers down elevator
