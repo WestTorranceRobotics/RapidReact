@@ -17,8 +17,6 @@ import frc.robot.RobotMap;
 public class Elevator extends SubsystemBase {
   //motor for elevator may be victor spx or falcon 500
   private CANSparkMax elevatorMotor;
-  private CANSparkMax elevatorTurningLeader;
-  private CANSparkMax elevatorTurningFollower;
   private DigitalInput topLimit;
   private DigitalInput bottomLimit;
   private Solenoid breakOff;
@@ -27,12 +25,9 @@ public class Elevator extends SubsystemBase {
   public Elevator() {
     //declaring motor and limits to their can ids
     elevatorMotor = new CANSparkMax(RobotMap.ElevatorMap.elevatorCANID, MotorType.kBrushless);
-    elevatorTurningLeader = new CANSparkMax(RobotMap.ElevatorMap.elevatorTurningLeader, MotorType.kBrushless);
-    elevatorTurningFollower = new CANSparkMax(RobotMap.ElevatorMap.elevatorTurningFollower, MotorType.kBrushless);
     // TopLimit = new DigitalInput(RobotMap.ElevatorMap.topLimitChannelID);
     // BottomLimit = new DigitalInput(RobotMap.ElevatorMap.bottomLimitChannelID);
     // BreakOff = new Solenoid(PneumaticsModuleType.CTREPCM, RobotMap.ElevatorMap.elevatorSolenoid);
-    elevatorTurningFollower.follow(elevatorTurningLeader);
     // ElevatorMotor.setIdleMode(IdleMode.Brake);
 
     elevatorMotor.setInverted(true);
@@ -66,19 +61,9 @@ public class Elevator extends SubsystemBase {
     elevatorMotor.set(RobotMap.ElevatorMap.elevatorMotorDown);
   }
 
-  public void liftForwards(){
-    elevatorTurningLeader.set(RobotMap.ElevatorMap.elevatorMotorUp);
-  }
-
-  public void liftBackwards(){
-    elevatorTurningLeader.set(RobotMap.ElevatorMap.elevatorMotorDown);
-  }
-
   //stops elevator
   public void setNoPower(){
     elevatorMotor.set(RobotMap.ElevatorMap.elevatorHalt);
-    elevatorTurningLeader.set(RobotMap.ElevatorMap.elevatorHalt);
-    elevatorTurningFollower.set(RobotMap.ElevatorMap.elevatorHalt);
   }
 
   //notifies when top is reached

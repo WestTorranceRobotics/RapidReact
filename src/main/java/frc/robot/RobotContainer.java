@@ -16,13 +16,13 @@ import edu.wpi.first.wpilibj2.command.ConditionalCommand;
 import edu.wpi.first.wpilibj2.command.ParallelDeadlineGroup;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.POVButton;
+import frc.robot.commands.TurningArms.LiftBackwards;
+import frc.robot.commands.TurningArms.LiftForwards;
 import frc.robot.commands.commandGroups.AimAndShoot;
 import frc.robot.commands.commandGroups.MoveBallFromIntakeToShooter;
 import frc.robot.commands.driveTrain.DriveDistance;
 import frc.robot.commands.driveTrain.JoystickTankDrive;
-import frc.robot.commands.elevator.LiftBackwards;
 import frc.robot.commands.elevator.LiftDown;
-import frc.robot.commands.elevator.LiftForwards;
 import frc.robot.commands.elevator.LiftUp;
 import frc.robot.commands.intake.DeployIntake;
 import frc.robot.commands.intake.ReverseIntake;
@@ -74,6 +74,7 @@ public class RobotContainer {
   private Intake intake;
   private Elevator elevator;
   private Loader loader;
+  private TurningArms turningArms;
 
   public RobotContainer() 
   {
@@ -156,8 +157,8 @@ public class RobotContainer {
     //Elevator
     operatorUp.whileHeld(new LiftUp(elevator));
     operatorDown.whileHeld(new LiftDown(elevator));
-    operatorLeft.whileHeld(new LiftForwards(elevator));
-    operatorRight.whileHeld(new LiftBackwards(elevator));
+    operatorLeft.whileHeld(new LiftForwards(turningArms));
+    operatorRight.whileHeld(new LiftBackwards(turningArms));
 
     //Vision
     operatorLT.whenPressed(new ShootBallBasedOnRPM(shooter, 3000));
