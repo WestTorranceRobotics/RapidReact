@@ -6,6 +6,8 @@ package frc.robot.commands.auto;
 
 import edu.wpi.first.wpilibj2.command.ParallelDeadlineGroup;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
+import frc.robot.commands.driveTrain.DriveDistance;
+import frc.robot.commands.intake.RunIntake;
 
 // NOTE:  Consider using this command inline, rather than writing a subclass.  For more
 // information, see:
@@ -15,6 +17,15 @@ public class AutoDriveOffAimAndShoot extends SequentialCommandGroup {
   public AutoDriveOffAimAndShoot() {
     // Add your commands in the addCommands() call, e.g.
     // addCommands(new FooCommand(), new BarCommand());
-    addCommands();
+    addCommands(
+      // new ParallelDeadlineGroup(
+      //   new DriveDistance(driveTrain, 200, 0.6),
+      //   new RunIntake(intake)),
+      // new ParallelDeadlineGroup(
+      //     new ShootOneBallUsingDirectPower(shooter, loader),
+      //     new StayOnTarget(driveTrain),
+      //     new MoveBallFromIntakeToShooter(loader, intake)
+      //   )
+    );
   }
 }

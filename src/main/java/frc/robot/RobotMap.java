@@ -50,7 +50,7 @@ public class RobotMap {
         public static final double kD = 0.52171675; //0.051675
         public static final double shooterPowerShort = 0.5;
         public static final double shooterPowerLong = 0.75;
-        public static double ballCurrent = 5;
+        public static double ballCurrent = 15;
     }
     
     public static class IntakeMap

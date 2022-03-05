@@ -13,13 +13,26 @@ import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.ConditionalCommand;
+import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.ParallelDeadlineGroup;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.POVButton;
-import frc.robot.commands.commandGroups.*;
-import frc.robot.commands.driveTrain.*;
-import frc.robot.commands.intake.*;
-import frc.robot.commands.loader.*;
+import frc.robot.commands.loader.ReverseLoader;
+import frc.robot.commands.loader.RunLoader;
+import frc.robot.commands.TurningArms.LiftBackwards;
+import frc.robot.commands.TurningArms.LiftForwards;
+import frc.robot.commands.commandGroups.AimAndShoot;
+import frc.robot.commands.commandGroups.MoveBallFromIntakeToShooter;
+import frc.robot.commands.driveTrain.DriveDistance;
+import frc.robot.commands.driveTrain.JoystickTankDrive;
+import frc.robot.commands.elevator.LiftDown;
+import frc.robot.commands.elevator.LiftUp;
+import frc.robot.commands.intake.DeployIntake;
+import frc.robot.commands.intake.ReverseIntake;
+import frc.robot.commands.intake.RunIntake;
+import frc.robot.commands.intake.SetStartingPosition;
+import frc.robot.commands.intake.ToggleIntakeDeploy;
+import frc.robot.commands.intake.UndeployIntake;
 import frc.robot.commands.shooter.*;
 import frc.robot.commands.elevator.*;
 import frc.robot.subsystems.*;
@@ -48,7 +61,7 @@ public class RobotContainer {
 
   public JoystickButton driverLeftTrigger = new JoystickButton(driverLeft, 1);
   public JoystickButton driverLeftThumb = new JoystickButton(driverLeft, 2);
-  public JoystickButton driverLeftButton1 = new JoystickButton(driverLeft, 3);
+  public JoystickButton driverLeftButton3 = new JoystickButton(driverLeft, 3);
 
   public POVButton operatorUp = new POVButton(operator, 0);
   public POVButton operatorDown = new POVButton(operator, 180);
@@ -62,6 +75,7 @@ public class RobotContainer {
   private Intake intake;
   private Elevator elevator;
   private Loader loader;
+  private TurningArms turningArms;
 
   public RobotContainer() 
   {
@@ -85,6 +99,7 @@ public class RobotContainer {
     NetworkTableInstance.getDefault().getTable("limelight").getEntry("pipeline").setDouble(0);
 
     ShuffleboardTab display = Shuffleboard.getTab("RobotVision");
+    Shuffleboard.selectTab("RobotVision");
     display.addNumber("hi", () -> NetworkTableInstance.getDefault().getTable("Vision").getEntry("Xposition").getDouble(0));
 
     display.addNumber("Left Encoder", driveTrain::getLeftEncoderTicks).withPosition(8, 2);
@@ -94,6 +109,10 @@ public class RobotContainer {
     display.addNumber("Elevator Height", elevator::getElevatorMotorTicks);
 
     display.addNumber("Poteniometer", intake::getAnalogIntakeValue).withWidget(BuiltInWidgets.kGraph).withSize(3, 3);
+
+    display.addNumber("Current", shooter::getCurrent).withPosition(5, 0);
+    display.addNumber("Loader applied output", loader::getAppliedOutput).withPosition(6, 0);
+    // display.addNumber("Balls shot", shooter::getBallsShot).withPosition(7, 0);
 
     // for finding the range of distances from target that we can shoot from
     display.addNumber("Distance From Target", driveTrain::getDistanceFromTarget).withPosition(1, 1);
@@ -121,16 +140,18 @@ public class RobotContainer {
     // driverRightTrigger.toggleWhenPressed(new StayOnTarget(driveTrain)); 
     driverRightTrigger.whenHeld(new MoveBallFromIntakeToShooter(loader, intake));
     driverRightThumb.whenHeld(new ReverseLoader(loader));
-    driverLeftTrigger.whenHeld(new ShootBallBasedOnRPM(shooter, 3000));
+    // driverLeftTrigger.whenHeld(new ShootBallBasedOnRPM(shooter, 3000));
     // driverLeftTrigger.whenHeld(new ShootBallBasedOnPower(shooter, 0));
     // driverLeftThumb.whenPressed(new DriveDistance(driveTrain, 24, 0.6));
-    // driverLeftButton1.toggleWhenPressed(new ShootOneBallUsingDirectPower(shooter, loader));
-
-    // driverLeftTrigger.whenPressed(new ParallelDeadlineGroup(
-    //   new ShootOneBallUsingDirectPower(shooter, loader),
-    //   new StayOnTarget(driveTrain),
-    //   new MoveBallFromIntakeToShooter(loader, intake)
-    // ));
+    driverLeftButton3.toggleWhenPressed(new ShootBallBasedOnPower(shooter, 0.85));
+    // driverLeftButton3.toggleWhenPressed(new ShootOneBallUsingDirectPower(shooter, loader));
+    
+    driverLeftTrigger.toggleWhenPressed(new ParallelCommandGroup(
+      new ShootOneBallUsingDirectPower(shooter, loader),
+      // new StayOnTarget(driveTrain),
+      new RunIntake(intake)
+      // new MoveBallFromIntakeToShooter(loader, intake)
+    ));
     
     operatorRB.whenHeld(new ShootBallBasedOnRPM(shooter, 3000), true);
     
@@ -144,8 +165,8 @@ public class RobotContainer {
     //Elevator
     operatorUp.whileHeld(new LiftUp(elevator));
     operatorDown.whileHeld(new LiftDown(elevator));
-    operatorLeft.whenHeld(new TurnElevatorClockwise(elevator));
-    operatorRight.whenHeld(new TurnElevatorCounterClockwise(elevator));
+    operatorLeft.whenHeld(new LiftForwards(turningArms));
+    operatorRight.whenHeld(new LiftBackwards(turningArms));
 
     //Vision
     operatorLT.whenPressed(new ShootBallBasedOnRPM(shooter, 3000));
