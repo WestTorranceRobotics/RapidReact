@@ -17,7 +17,7 @@ public class TurningArms extends SubsystemBase {
   
   public TurningArms() {
     elevatorTurningLeader = new CANSparkMax(RobotMap.ElevatorMap.elevatorTurningLeader, MotorType.kBrushless);
-    elevatorTurningLeader = new CANSparkMax(RobotMap.ElevatorMap.elevatorTurningFollower, MotorType.kBrushless);
+    elevatorTurningFollower = new CANSparkMax(RobotMap.ElevatorMap.elevatorTurningFollower, MotorType.kBrushless);
     elevatorTurningFollower.follow(elevatorTurningLeader);
     elevatorTurningLeader.getEncoder().setPosition(0);
   }
