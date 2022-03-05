@@ -30,7 +30,7 @@ public class ShootBallBasedOnRPM extends CommandBase {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    
+    bShooter.resetError();
     //loader.ballIntaked(0);
 
   }

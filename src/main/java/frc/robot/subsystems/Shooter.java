@@ -33,6 +33,10 @@ public class Shooter extends SubsystemBase {
   private boolean atSpeed;
   private int ballsShot = 0;
   private boolean passedBallCurrent = false;
+
+//   P: 9.2177e-4
+// I: 2.114e-7
+// D: 0.03395
  
   public Shooter() {
 
@@ -72,9 +76,15 @@ public class Shooter extends SubsystemBase {
       passedBallCurrent = false;
     }
   }
+
+  public void resetError() {
+    shootMotorLeader.getPIDController().setIAccum(0);
+    shootMotorFollower.getPIDController().setIAccum(0);
+  }
   
   public double getVelocity() {
-    return (shootMotorLeader.getEncoder().getVelocity() / RobotMap.ShooterMap.gearRatio); 
+    // return (shootMotorLeader.getEncoder().getVelocity() / RobotMap.ShooterMap.gearRatio); 
+    return (shootMotorLeader.getEncoder().getVelocity()); 
    }
    
    public void setVelocity(double velocity){
@@ -106,7 +116,7 @@ public class Shooter extends SubsystemBase {
   @Override
   public void periodic() {
     
-    NetworkTableInstance.getDefault().getTable("Vision").getEntry("shootI").setDouble(0);
+    // NetworkTableInstance.getDefault().getTable("Vision").getEntry("shootI").setDouble(0);
 
     shootMotorLeader.getPIDController().setP(NetworkTableInstance.getDefault().getTable("Vision").getEntry("shootP").getDouble(0));
     shootMotorLeader.getPIDController().setI(NetworkTableInstance.getDefault().getTable("Vision").getEntry("shootI").getDouble(0));
