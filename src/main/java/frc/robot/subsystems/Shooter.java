@@ -103,6 +103,22 @@ public class Shooter extends SubsystemBase {
     return ballsShot;
   }
 
+  @Override
+  public void periodic() {
+    
+    NetworkTableInstance.getDefault().getTable("Vision").getEntry("shootI").setDouble(0);
+
+    shootMotorLeader.getPIDController().setP(NetworkTableInstance.getDefault().getTable("Vision").getEntry("shootP").getDouble(0));
+    shootMotorLeader.getPIDController().setI(NetworkTableInstance.getDefault().getTable("Vision").getEntry("shootI").getDouble(0));
+    shootMotorLeader.getPIDController().setD(NetworkTableInstance.getDefault().getTable("Vision").getEntry("shootD").getDouble(0));
+    shootMotorLeader.getPIDController().setFF(NetworkTableInstance.getDefault().getTable("Vision").getEntry("shootF").getDouble(0)); // 0.004
+  //follower
+    shootMotorFollower.getPIDController().setP(NetworkTableInstance.getDefault().getTable("Vision").getEntry("shootP").getDouble(0));
+    shootMotorFollower.getPIDController().setI(NetworkTableInstance.getDefault().getTable("Vision").getEntry("shootI").getDouble(0));
+    shootMotorFollower.getPIDController().setD(NetworkTableInstance.getDefault().getTable("Vision").getEntry("shootD").getDouble(0));
+    shootMotorFollower.getPIDController().setFF(NetworkTableInstance.getDefault().getTable("Vision").getEntry("shootF").getDouble(0));
+  }
+
   /**
    * @deprecated Unreliable with higher loader speeds at the present
    */

@@ -60,6 +60,7 @@ public class RobotContainer {
 
   public JoystickButton driverLeftTrigger = new JoystickButton(driverLeft, 1);
   public JoystickButton driverLeftThumb = new JoystickButton(driverLeft, 2);
+  public JoystickButton driverLeftButton1 = new JoystickButton(driverLeft, 3);
 
   public POVButton operatorUp = new POVButton(operator, 0);
   public POVButton operatorDown = new POVButton(operator, 180);
@@ -86,6 +87,13 @@ public class RobotContainer {
   private void configureShuffleboard(){
     NetworkTableInstance.getDefault().getTable("Vision").getEntry("rpm").setDouble(0);
     NetworkTableInstance.getDefault().getTable("Vision").getEntry("speed").setDouble(0);
+
+    NetworkTableInstance.getDefault().getTable("Vision").getEntry("shootP").setDouble(0);
+    NetworkTableInstance.getDefault().getTable("Vision").getEntry("shootI").setDouble(0);
+    NetworkTableInstance.getDefault().getTable("Vision").getEntry("shootD").setDouble(0);
+    NetworkTableInstance.getDefault().getTable("Vision").getEntry("shootF").setDouble(0);
+    // NetworkTableInstance.getDefault().getTable("Vision").getEntry("").setDouble(0);
+
     NetworkTableInstance.getDefault().getTable("limelight").getEntry("pipeline").setDouble(0);
 
     ShuffleboardTab display = Shuffleboard.getTab("RobotVision");
@@ -101,6 +109,10 @@ public class RobotContainer {
 
     // for finding the range of distances from target that we can shoot from
     display.addNumber("Distance From Target", driveTrain::getDistanceFromTarget).withPosition(1, 1);
+
+    // gets current current of shooter
+    display.addNumber("Current current of shooter", shooter::getCurrent).withPosition(2, 1);
+    display.addNumber("Balls shot", shooter::getBallsShot).withPosition(3, 1);
 
     //display.addNumber("Applied Power on Shooter", shooter::getCurrent).withWidget(BuiltInWidgets.kGraph).withSize(3, 3);
     display.addNumber("Velocity on Shooter", shooter::getVelocity).withWidget(BuiltInWidgets.kGraph).withSize(3, 3).withPosition(4, 1);
@@ -121,11 +133,16 @@ public class RobotContainer {
     // driverRightTrigger.toggleWhenPressed(new StayOnTarget(driveTrain)); 
     driverRightTrigger.whenHeld(new MoveBallFromIntakeToShooter(loader, intake));
     driverRightThumb.whenHeld(new ReverseLoader(loader));
-    // driverLeftTrigger.whenHeld(new ShootBallBasedOnRPM(shooter, 3000));
-    driverLeftTrigger.whenHeld(new ShootBallBasedOnPower(shooter, 0));
+    driverLeftTrigger.whenHeld(new ShootBallBasedOnRPM(shooter, 3000));
+    // driverLeftTrigger.whenHeld(new ShootBallBasedOnPower(shooter, 0));
     // driverLeftThumb.whenPressed(new DriveDistance(driveTrain, 24, 0.6));
-    // driverLeftTrigger.toggleWhenPressed(new AimAndShoot(driveTrain, loader, intake, shooter));
-    // driverLeftTrigger.whenPressed(new ParallelDeadlineGroup(new ShootOneBallUsingDirectPower(shooter, loader), new StayOnTarget(driveTrain), new MoveBallFromIntakeToShooter(loader, intake)));
+    // driverLeftButton1.toggleWhenPressed(new ShootOneBallUsingDirectPower(shooter, loader));
+
+    // driverLeftTrigger.whenPressed(new ParallelDeadlineGroup(
+    //   new ShootOneBallUsingDirectPower(shooter, loader),
+    //   new StayOnTarget(driveTrain),
+    //   new MoveBallFromIntakeToShooter(loader, intake)
+    // ));
     
     operatorRB.whenHeld(new ShootBallBasedOnRPM(shooter, 3000), true);
     

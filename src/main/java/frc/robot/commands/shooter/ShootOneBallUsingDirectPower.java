@@ -29,7 +29,9 @@ public class ShootOneBallUsingDirectPower extends CommandBase {
   @Override
   public void execute() {
 
-    mshooter.setPower(0.75);
+    mshooter.setPower(0.85);
+
+    mshooter.atSpeed(true);
     
     if(mshooter.atSpeed() && mLoader.getAppliedOutput() > 0) {
       mshooter.currentWatch();
