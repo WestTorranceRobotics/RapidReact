@@ -17,10 +17,22 @@ import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.ParallelDeadlineGroup;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.POVButton;
-import frc.robot.commands.commandGroups.*;
-import frc.robot.commands.driveTrain.*;
-import frc.robot.commands.intake.*;
-import frc.robot.commands.loader.*;
+import frc.robot.commands.Loader.ReverseLoader;
+import frc.robot.commands.Loader.RunLoader;
+import frc.robot.commands.TurningArms.LiftBackwards;
+import frc.robot.commands.TurningArms.LiftForwards;
+import frc.robot.commands.commandGroups.AimAndShoot;
+import frc.robot.commands.commandGroups.MoveBallFromIntakeToShooter;
+import frc.robot.commands.driveTrain.DriveDistance;
+import frc.robot.commands.driveTrain.JoystickTankDrive;
+import frc.robot.commands.elevator.LiftDown;
+import frc.robot.commands.elevator.LiftUp;
+import frc.robot.commands.intake.DeployIntake;
+import frc.robot.commands.intake.ReverseIntake;
+import frc.robot.commands.intake.RunIntake;
+import frc.robot.commands.intake.SetStartingPosition;
+import frc.robot.commands.intake.ToggleIntakeDeploy;
+import frc.robot.commands.intake.UndeployIntake;
 import frc.robot.commands.shooter.*;
 import frc.robot.commands.elevator.*;
 import frc.robot.subsystems.*;
@@ -63,6 +75,7 @@ public class RobotContainer {
   private Intake intake;
   private Elevator elevator;
   private Loader loader;
+  private TurningArms turningArms;
 
   public RobotContainer() 
   {
@@ -152,8 +165,8 @@ public class RobotContainer {
     //Elevator
     operatorUp.whileHeld(new LiftUp(elevator));
     operatorDown.whileHeld(new LiftDown(elevator));
-    operatorLeft.whenHeld(new TurnElevatorClockwise(elevator));
-    operatorRight.whenHeld(new TurnElevatorCounterClockwise(elevator));
+    operatorLeft.whenHeld(new LiftForwards(turningArms));
+    operatorRight.whenHeld(new LiftBackwards(turningArms));
 
     //Vision
     operatorLT.whenPressed(new ShootBallBasedOnRPM(shooter, 3000));

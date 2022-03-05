@@ -2,39 +2,51 @@
 // Open Source Software; you can modify and/or share it under the terms of
 // the WPILib BSD license file in the root directory of this project.
 
-package frc.robot.commands.elevator;
+package frc.robot.commands.Loader;
 
 import edu.wpi.first.wpilibj2.command.CommandBase;
-import frc.robot.subsystems.Elevator;
+import frc.robot.subsystems.Loader;
 
-public class LiftBackwards extends CommandBase {
-  /** Creates a new LiftBackwards. */
-  private final Elevator elevator;
-  public LiftBackwards(Elevator subsystem) {
-    elevator = subsystem;
-    addRequirements(elevator);
+public class SeeBallRunLoader extends CommandBase {
+  private Loader mLoader;
+  private boolean isFinished = false;
+  /** Creates a new SeeBallRunLoader. */
+  public SeeBallRunLoader(Loader loader) {
+    mLoader = loader;
+
+    addRequirements(mLoader);
     // Use addRequirements() here to declare subsystem dependencies.
   }
 
   // Called when the command is initially scheduled.
   @Override
-  public void initialize() {
-    elevator.liftBackwards();
-  }
+  public void initialize() {}
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
-  public void execute() {}
+  public void execute() {
+    if(mLoader.seeBall()){
+      mLoader.runLoader();
+      if(!mLoader.seeBall()){
+        mLoader.stopLoader();
+        isFinished = true;
+      }
+    }
+    else{
+      mLoader.stopLoader();
+    }
+  }
 
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-    elevator.setNoPower();
+    isFinished = false;
+    mLoader.stopLoader();
   }
 
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return false;
+    return isFinished;
   }
 }
