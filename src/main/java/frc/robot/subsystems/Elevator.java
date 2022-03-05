@@ -7,6 +7,7 @@ package frc.robot.subsystems;
 
 import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.revrobotics.CANSparkMax;
+import com.revrobotics.CANSparkMax.IdleMode;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 
 import edu.wpi.first.wpilibj.DigitalInput;
@@ -27,8 +28,11 @@ public class Elevator extends SubsystemBase {
   public Elevator() {
     //declaring motor and limits to their can ids
     elevatorMotor = new CANSparkMax(RobotMap.ElevatorMap.elevatorCANID, MotorType.kBrushless);
+    elevatorMotor.setIdleMode(IdleMode.kBrake);
     elevatorTurningLeader = new CANSparkMax(RobotMap.ElevatorMap.elevatorTurningLeader, MotorType.kBrushless);
     elevatorTurningFollower = new CANSparkMax(RobotMap.ElevatorMap.elevatorTurningFollower, MotorType.kBrushless);
+    elevatorTurningFollower.setIdleMode(IdleMode.kBrake);
+    elevatorTurningLeader.setIdleMode(IdleMode.kBrake);
     elevatorTurningLeader.restoreFactoryDefaults();
     elevatorTurningFollower.restoreFactoryDefaults();
     elevatorTurningLeader.setInverted(false);
