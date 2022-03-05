@@ -6,7 +6,7 @@ package frc.robot.commands.commandGroups;
 
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import frc.robot.commands.intake.ReverseIntake;
-import frc.robot.commands.loader.ReverseLoader;
+import frc.robot.commands.Loader.ReverseLoader;
 import frc.robot.subsystems.Intake;
 import frc.robot.subsystems.Loader;
 

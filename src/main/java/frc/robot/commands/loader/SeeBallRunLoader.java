@@ -7,10 +7,11 @@ package frc.robot.commands.Loader;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.subsystems.Loader;
 
-public class ReverseLoader extends CommandBase {
-  Loader mLoader;
-  /** Creates a new ReverseLoader. */
-  public ReverseLoader(Loader loader) {
+public class SeeBallRunLoader extends CommandBase {
+  private Loader mLoader;
+  private boolean isFinished = false;
+  /** Creates a new SeeBallRunLoader. */
+  public SeeBallRunLoader(Loader loader) {
     mLoader = loader;
 
     addRequirements(mLoader);
@@ -24,18 +25,28 @@ public class ReverseLoader extends CommandBase {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-      mLoader.reverseLoader();
+    if(mLoader.seeBall()){
+      mLoader.runLoader();
+      if(!mLoader.seeBall()){
+        mLoader.stopLoader();
+        isFinished = true;
+      }
+    }
+    else{
+      mLoader.stopLoader();
+    }
   }
 
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
+    isFinished = false;
     mLoader.stopLoader();
   }
 
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return false;
+    return isFinished;
   }
 }
