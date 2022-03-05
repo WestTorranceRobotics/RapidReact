@@ -28,6 +28,10 @@ public class Elevator extends SubsystemBase {
     // TopLimit = new DigitalInput(RobotMap.ElevatorMap.topLimitChannelID);
     // BottomLimit = new DigitalInput(RobotMap.ElevatorMap.bottomLimitChannelID);
     // BreakOff = new Solenoid(PneumaticsModuleType.CTREPCM, RobotMap.ElevatorMap.elevatorSolenoid);
+    // TopLimit = new DigitalInput(RobotMap.ElevatorMap.topLimitChannelID);
+    // BottomLimit = new DigitalInput(RobotMap.ElevatorMap.bottomLimitChannelID);
+    // BreakOff = new Solenoid(PneumaticsModuleType.CTREPCM, RobotMap.ElevatorMap.elevatorSolenoid);
+    //ElevatorTurningFollower.follow(ElevatorTurningLeader);
     // ElevatorMotor.setIdleMode(IdleMode.Brake);
 
     elevatorMotor.setInverted(true);

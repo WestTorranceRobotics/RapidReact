@@ -33,7 +33,7 @@ import frc.robot.commands.intake.UndeployIntake;
 import frc.robot.commands.loader.ReverseLoader;
 import frc.robot.commands.loader.RunLoader;
 import frc.robot.commands.shooter.*;
-import frc.robot.commands.visionProcessing.*;
+import frc.robot.commands.elevator.*;
 import frc.robot.subsystems.*;
 
 public class RobotContainer {
@@ -157,8 +157,8 @@ public class RobotContainer {
     //Elevator
     operatorUp.whileHeld(new LiftUp(elevator));
     operatorDown.whileHeld(new LiftDown(elevator));
-    operatorLeft.whileHeld(new LiftForwards(turningArms));
-    operatorRight.whileHeld(new LiftBackwards(turningArms));
+    operatorLeft.whenHeld(new TurnElevatorClockwise(elevator));
+    operatorRight.whenHeld(new TurnElevatorCounterClockwise(elevator));
 
     //Vision
     operatorLT.whenPressed(new ShootBallBasedOnRPM(shooter, 3000));
