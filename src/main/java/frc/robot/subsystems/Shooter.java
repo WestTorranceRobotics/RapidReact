@@ -70,6 +70,7 @@ public class Shooter extends SubsystemBase {
 
   public void currentWatch() {
     if (shootMotorLeader.getOutputCurrent() >= RobotMap.ShooterMap.ballCurrent && passedBallCurrent == false) {
+      NetworkTableInstance.getDefault().getTable("Vision").getEntry("OUTPUTCURRENT").setDouble(shootMotorLeader.getOutputCurrent());
       passedBallCurrent = true;
       ballsShot = ballsShot + 1;
     } else if (passedBallCurrent == true && shootMotorLeader.getOutputCurrent() < RobotMap.ShooterMap.ballCurrent-7) {
