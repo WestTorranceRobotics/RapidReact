@@ -16,24 +16,12 @@ import edu.wpi.first.wpilibj2.command.ConditionalCommand;
 import edu.wpi.first.wpilibj2.command.ParallelDeadlineGroup;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.POVButton;
-import frc.robot.commands.commandGroups.AimAndShoot;
-import frc.robot.commands.commandGroups.MoveBallFromIntakeToShooter;
-import frc.robot.commands.driveTrain.DriveDistance;
-import frc.robot.commands.driveTrain.JoystickTankDrive;
-import frc.robot.commands.elevator.LiftBackwards;
-import frc.robot.commands.elevator.LiftDown;
-import frc.robot.commands.elevator.LiftForwards;
-import frc.robot.commands.elevator.LiftUp;
-import frc.robot.commands.intake.DeployIntake;
-import frc.robot.commands.intake.ReverseIntake;
-import frc.robot.commands.intake.RunIntake;
-import frc.robot.commands.intake.SetStartingPosition;
-import frc.robot.commands.intake.ToggleIntakeDeploy;
-import frc.robot.commands.intake.UndeployIntake;
-import frc.robot.commands.loader.ReverseLoader;
-import frc.robot.commands.loader.RunLoader;
+import frc.robot.commands.commandGroups.*;
+import frc.robot.commands.driveTrain.*;
+import frc.robot.commands.intake.*;
+import frc.robot.commands.loader.*;
 import frc.robot.commands.shooter.*;
-import frc.robot.commands.visionProcessing.*;
+import frc.robot.commands.elevator.*;
 import frc.robot.subsystems.*;
 
 public class RobotContainer {
@@ -156,8 +144,8 @@ public class RobotContainer {
     //Elevator
     operatorUp.whileHeld(new LiftUp(elevator));
     operatorDown.whileHeld(new LiftDown(elevator));
-    operatorLeft.whileHeld(new LiftForwards(elevator));
-    operatorRight.whileHeld(new LiftBackwards(elevator));
+    operatorLeft.whenHeld(new TurnElevatorClockwise(elevator));
+    operatorRight.whenHeld(new TurnElevatorCounterClockwise(elevator));
 
     //Vision
     operatorLT.whenPressed(new ShootBallBasedOnRPM(shooter, 3000));

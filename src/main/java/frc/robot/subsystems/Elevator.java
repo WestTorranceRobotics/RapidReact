@@ -29,10 +29,14 @@ public class Elevator extends SubsystemBase {
     elevatorMotor = new CANSparkMax(RobotMap.ElevatorMap.elevatorCANID, MotorType.kBrushless);
     elevatorTurningLeader = new CANSparkMax(RobotMap.ElevatorMap.elevatorTurningLeader, MotorType.kBrushless);
     elevatorTurningFollower = new CANSparkMax(RobotMap.ElevatorMap.elevatorTurningFollower, MotorType.kBrushless);
+    elevatorTurningLeader.restoreFactoryDefaults();
+    elevatorTurningFollower.restoreFactoryDefaults();
+    elevatorTurningLeader.setInverted(false);
+    elevatorTurningLeader.setInverted(false);
     // TopLimit = new DigitalInput(RobotMap.ElevatorMap.topLimitChannelID);
     // BottomLimit = new DigitalInput(RobotMap.ElevatorMap.bottomLimitChannelID);
     // BreakOff = new Solenoid(PneumaticsModuleType.CTREPCM, RobotMap.ElevatorMap.elevatorSolenoid);
-    elevatorTurningFollower.follow(elevatorTurningLeader);
+    //ElevatorTurningFollower.follow(ElevatorTurningLeader);
     // ElevatorMotor.setIdleMode(IdleMode.Brake);
 
     elevatorMotor.setInverted(true);
@@ -59,6 +63,21 @@ public class Elevator extends SubsystemBase {
   //lifts up elevator 
   public void liftUp(){
     elevatorMotor.set(RobotMap.ElevatorMap.elevatorMotorUp);
+  }
+
+  public void turnLiftClockwise(double power){
+    elevatorTurningLeader.set(power);
+    elevatorTurningFollower.set(-power);
+  }
+
+  public void turnLiftCounterClockwise(double power){
+    elevatorTurningLeader.set(-power);
+    elevatorTurningFollower.set(power);
+  }
+
+  public void stopTurning(){
+    elevatorTurningLeader.set(0);
+    elevatorTurningFollower.set(0);
   }
 
   //lowers down elevator
