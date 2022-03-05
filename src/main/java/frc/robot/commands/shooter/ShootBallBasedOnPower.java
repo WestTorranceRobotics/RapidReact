@@ -4,6 +4,7 @@
 
 package frc.robot.commands.shooter;
 
+import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.subsystems.Shooter;
 
@@ -25,7 +26,8 @@ public class ShootBallBasedOnPower extends CommandBase {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    mShooter.setPower(mpower);
+    double networkSpeed = NetworkTableInstance.getDefault().getTable("Vision").getEntry("speed").getDouble(0);
+    mShooter.setPower(networkSpeed);
   }
 
   // Called once the command ends or is interrupted.

@@ -17,11 +17,10 @@ public class Loader extends SubsystemBase {
   public Loader() {
     loaderMotor = new CANSparkMax(RobotMap.LoaderMap.loaderMotorCANID, MotorType.kBrushless);
     loaderMotor.restoreFactoryDefaults();
-
   }
 
   public void runLoader(){
-    loaderMotor.set(-0.30);
+    loaderMotor.set(-0.4);
   }
 
   public void reverseLoader(){

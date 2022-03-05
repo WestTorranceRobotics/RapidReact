@@ -42,7 +42,7 @@ public class Shooter extends SubsystemBase {
     shootMotorLeader.setInverted(true);
     shootMotorLeader.getPIDController().setP(RobotMap.ShooterMap.kP);
     shootMotorLeader.getPIDController().setD(RobotMap.ShooterMap.kD);
-    shootMotorLeader.getPIDController().setFF(0.8);
+    shootMotorLeader.getPIDController().setFF(0.004);
     shootMotorLeader.getPIDController().setOutputRange(-1, 1);
   //follower
     shootMotorFollower.restoreFactoryDefaults();
@@ -50,7 +50,7 @@ public class Shooter extends SubsystemBase {
     // shootMotorFollower.setInverted(true);
     shootMotorFollower.getPIDController().setP(RobotMap.ShooterMap.kP);
     shootMotorFollower.getPIDController().setD(RobotMap.ShooterMap.kD);
-    shootMotorFollower.getPIDController().setFF(0.8);
+    shootMotorFollower.getPIDController().setFF(0.004);
     shootMotorFollower.getPIDController().setOutputRange(-1, 1);
     //shootMotorFollower.follow(shootMotorLeader, true);
   
@@ -101,6 +101,22 @@ public class Shooter extends SubsystemBase {
 
   public int getBallsShot() {
     return ballsShot;
+  }
+
+  @Override
+  public void periodic() {
+    
+    NetworkTableInstance.getDefault().getTable("Vision").getEntry("shootI").setDouble(0);
+
+    shootMotorLeader.getPIDController().setP(NetworkTableInstance.getDefault().getTable("Vision").getEntry("shootP").getDouble(0));
+    shootMotorLeader.getPIDController().setI(NetworkTableInstance.getDefault().getTable("Vision").getEntry("shootI").getDouble(0));
+    shootMotorLeader.getPIDController().setD(NetworkTableInstance.getDefault().getTable("Vision").getEntry("shootD").getDouble(0));
+    shootMotorLeader.getPIDController().setFF(NetworkTableInstance.getDefault().getTable("Vision").getEntry("shootF").getDouble(0)); // 0.004
+  //follower
+    shootMotorFollower.getPIDController().setP(NetworkTableInstance.getDefault().getTable("Vision").getEntry("shootP").getDouble(0));
+    shootMotorFollower.getPIDController().setI(NetworkTableInstance.getDefault().getTable("Vision").getEntry("shootI").getDouble(0));
+    shootMotorFollower.getPIDController().setD(NetworkTableInstance.getDefault().getTable("Vision").getEntry("shootD").getDouble(0));
+    shootMotorFollower.getPIDController().setFF(NetworkTableInstance.getDefault().getTable("Vision").getEntry("shootF").getDouble(0));
   }
 
   /**

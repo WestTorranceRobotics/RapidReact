@@ -16,12 +16,12 @@ import frc.robot.RobotMap;
 
 public class Elevator extends SubsystemBase {
   //motor for elevator may be victor spx or falcon 500
-  private CANSparkMax ElevatorMotor;
-  private CANSparkMax ElevatorTurningLeader;
-  private CANSparkMax ElevatorTurningFollower;
-  private DigitalInput TopLimit;
-  private DigitalInput BottomLimit;
-  private Solenoid BreakOff;
+  private CANSparkMax elevatorMotor;
+  private CANSparkMax elevatorTurningLeader;
+  private CANSparkMax elevatorTurningFollower;
+  private DigitalInput topLimit;
+  private DigitalInput bottomLimit;
+  private Solenoid breakOff;
 
   /** Creates a new Elevator. */
   public Elevator() {
@@ -39,8 +39,8 @@ public class Elevator extends SubsystemBase {
     //ElevatorTurningFollower.follow(ElevatorTurningLeader);
     // ElevatorMotor.setIdleMode(IdleMode.Brake);
 
-    ElevatorMotor.setInverted(true);
-    ElevatorMotor.getEncoder().setPosition(0);
+    elevatorMotor.setInverted(true);
+    elevatorMotor.getEncoder().setPosition(0);
   }
 
   @Override
@@ -49,11 +49,11 @@ public class Elevator extends SubsystemBase {
   }
 
   public CANSparkMax getElevatorMotor(){
-    return ElevatorMotor;
+    return elevatorMotor;
   }
 
   public double getElevatorMotorTicks(){
-    return ElevatorMotor.getEncoder().getPosition();
+    return elevatorMotor.getEncoder().getPosition();
   }
 
   /*victorspx requires controlmode value (all options can be seen with ctrl + click on ControlMode)
@@ -62,7 +62,7 @@ public class Elevator extends SubsystemBase {
 
   //lifts up elevator 
   public void liftUp(){
-    ElevatorMotor.set(RobotMap.ElevatorMap.elevatorMotorUp);
+    elevatorMotor.set(RobotMap.ElevatorMap.elevatorMotorUp);
   }
 
   public void turnLiftClockwise(double power){
@@ -82,31 +82,31 @@ public class Elevator extends SubsystemBase {
 
   //lowers down elevator
   public void liftDown(){
-    ElevatorMotor.set(RobotMap.ElevatorMap.elevatorMotorDown);
+    elevatorMotor.set(RobotMap.ElevatorMap.elevatorMotorDown);
   }
 
   public void liftForwards(){
-    ElevatorTurningLeader.set(RobotMap.ElevatorMap.elevatorMotorUp);
+    elevatorTurningLeader.set(RobotMap.ElevatorMap.elevatorMotorUp);
   }
 
   public void liftBackwards(){
-    ElevatorTurningLeader.set(RobotMap.ElevatorMap.elevatorMotorDown);
+    elevatorTurningLeader.set(RobotMap.ElevatorMap.elevatorMotorDown);
   }
 
   //stops elevator
   public void setNoPower(){
-    ElevatorMotor.set(RobotMap.ElevatorMap.elevatorHalt);
-    ElevatorTurningLeader.set(RobotMap.ElevatorMap.elevatorHalt);
-    ElevatorTurningFollower.set(RobotMap.ElevatorMap.elevatorHalt);
+    elevatorMotor.set(RobotMap.ElevatorMap.elevatorHalt);
+    elevatorTurningLeader.set(RobotMap.ElevatorMap.elevatorHalt);
+    elevatorTurningFollower.set(RobotMap.ElevatorMap.elevatorHalt);
   }
 
   //notifies when top is reached
-  public boolean reachedTopLimit(){
-    return TopLimit.get();
+  public boolean hasReachedTopLimit(){
+    return topLimit.get();
   }
 
   //notifies when bottom is reached
-  public boolean reachedBottomLimit(){
-    return BottomLimit.get();
+  public boolean hasReachedBottomLimit(){
+    return bottomLimit.get();
   }
 }

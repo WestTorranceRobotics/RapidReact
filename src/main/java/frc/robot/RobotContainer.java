@@ -4,20 +4,15 @@
 
 package frc.robot;
 
-import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.networktables.NetworkTableInstance;
-import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.shuffleboard.BuiltInWidgets;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
-import edu.wpi.first.wpilibj.shuffleboard.WidgetType;
-import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
-import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.ConditionalCommand;
-import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.ParallelDeadlineGroup;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.POVButton;
@@ -38,25 +33,27 @@ import frc.robot.commands.Intake.ToggleIntakeDeploy;
 import frc.robot.commands.Intake.UndeployIntake;
 import frc.robot.commands.Loader.ReverseLoader;
 import frc.robot.commands.Loader.RunLoader;
+import frc.robot.commands.commandGroups.AimAndShoot;
+import frc.robot.commands.commandGroups.MoveBallFromIntakeToShooter;
+import frc.robot.commands.driveTrain.DriveDistance;
+import frc.robot.commands.driveTrain.JoystickTankDrive;
+import frc.robot.commands.elevator.LiftBackwards;
+import frc.robot.commands.elevator.LiftDown;
+import frc.robot.commands.elevator.LiftForwards;
+import frc.robot.commands.elevator.LiftUp;
+import frc.robot.commands.intake.DeployIntake;
+import frc.robot.commands.intake.ReverseIntake;
+import frc.robot.commands.intake.RunIntake;
+import frc.robot.commands.intake.SetStartingPosition;
+import frc.robot.commands.intake.ToggleIntakeDeploy;
+import frc.robot.commands.intake.UndeployIntake;
+import frc.robot.commands.loader.ReverseLoader;
+import frc.robot.commands.loader.RunLoader;
 import frc.robot.commands.shooter.*;
-import frc.robot.commands.VisionProcessing.*;
-import frc.robot.subsystems.DriveTrain;
-import frc.robot.subsystems.Shooter;
-import edu.wpi.first.wpilibj2.command.button.JoystickButton;
-import frc.robot.subsystems.Intake;
-import frc.robot.subsystems.Loader;
-import edu.wpi.first.wpilibj2.command.button.POVButton;
-import frc.robot.subsystems.Elevator;
+import frc.robot.commands.visionProcessing.*;
+import frc.robot.subsystems.*;
 
-/**
- * This class is where the bulk of the robot should be declared. Since Command-based is a
- * "declarative" paradigm, very little robot logic should actually be handled in the {@link Robot}
- * periodic methods (other than the scheduler calls). Instead, the structure of the robot (including
- * subsystems, commands, and button mappings) should be declared here.
- */
 public class RobotContainer {
-
-  // The robot's subsystems and commands are defined here...
   public static final Joystick driverLeft = new Joystick(0);
   public static final Joystick driverRight = new Joystick(1);
   public XboxController operator = new XboxController(2);
@@ -79,6 +76,8 @@ public class RobotContainer {
   public JoystickButton driverRightThumb  = new JoystickButton(driverRight, 2);
 
   public JoystickButton driverLeftTrigger = new JoystickButton(driverLeft, 1);
+  public JoystickButton driverLeftThumb = new JoystickButton(driverLeft, 2);
+  public JoystickButton driverLeftButton1 = new JoystickButton(driverLeft, 3);
 
   public POVButton operatorUp = new POVButton(operator, 0);
   public POVButton operatorDown = new POVButton(operator, 180);
@@ -87,14 +86,12 @@ public class RobotContainer {
 
   public ShuffleboardTab display;
 
-  //Subsystem
   private Shooter shooter;
   private DriveTrain driveTrain;
   private Intake intake;
   private Elevator elevator;
   private Loader loader;
-  
-  /** The container for the robot. Contains subsystems, OI devices, and commands. */
+
   public RobotContainer() 
   {
     // Configure the button bindings
@@ -104,15 +101,17 @@ public class RobotContainer {
     configureShuffleboard();
   }
 
-  /**
-   * Use this method to define your button->command mappings. Buttons can be created by
-   * instantiating a {@link GenericHID} or one of its subclasses ({@link
-   * edu.wpi.first.wpilibj.Joystick} or {@link XboxController}), and then passing it to a {@link
-   * edu.wpi.first.wpilibj2.command.button.JoystickButton}.
-   */
-  
   private void configureShuffleboard(){
     NetworkTableInstance.getDefault().getTable("Vision").getEntry("rpm").setDouble(0);
+    NetworkTableInstance.getDefault().getTable("Vision").getEntry("speed").setDouble(0);
+
+    NetworkTableInstance.getDefault().getTable("Vision").getEntry("shootP").setDouble(0);
+    NetworkTableInstance.getDefault().getTable("Vision").getEntry("shootI").setDouble(0);
+    NetworkTableInstance.getDefault().getTable("Vision").getEntry("shootD").setDouble(0);
+    NetworkTableInstance.getDefault().getTable("Vision").getEntry("shootF").setDouble(0);
+    // NetworkTableInstance.getDefault().getTable("Vision").getEntry("").setDouble(0);
+
+    NetworkTableInstance.getDefault().getTable("limelight").getEntry("pipeline").setDouble(0);
 
     ShuffleboardTab display = Shuffleboard.getTab("RobotVision");
     display.addNumber("hi", () -> NetworkTableInstance.getDefault().getTable("Vision").getEntry("Xposition").getDouble(0));
@@ -127,13 +126,14 @@ public class RobotContainer {
 
     // for finding the range of distances from target that we can shoot from
     display.addNumber("Distance From Target", driveTrain::getDistanceFromTarget).withPosition(1, 1);
-    display.addNumber("RPM", () -> NetworkTableInstance.getDefault().getTable("Vision").getEntry("rpm").getDouble(0))
-    .withWidget(BuiltInWidgets.kNumberSlider).withPosition(5, 0).withSize(3, 1); // set range max to 4000
+
+    // gets current current of shooter
+    display.addNumber("Current current of shooter", shooter::getCurrent).withPosition(2, 1);
+    display.addNumber("Balls shot", shooter::getBallsShot).withPosition(3, 1);
 
     //display.addNumber("Applied Power on Shooter", shooter::getCurrent).withWidget(BuiltInWidgets.kGraph).withSize(3, 3);
     display.addNumber("Velocity on Shooter", shooter::getVelocity).withWidget(BuiltInWidgets.kGraph).withSize(3, 3).withPosition(4, 1);
     // display.addBoolean("IN CENTER", RobotContainer::isCenter);
-
   }
 
   private static boolean isCenter(){
@@ -147,9 +147,19 @@ public class RobotContainer {
   }
   private void configureButtonBindings() {
     //Shooter
-    driverRightTrigger.toggleWhenPressed(new StayOnTarget(driveTrain)); 
-    // driverLeftTrigger.toggleWhenPressed(new AimAndShoot(driveTrain, loader, intake, shooter));
-    driverLeftTrigger.whenPressed(new ParallelDeadlineGroup(new ShootOneBallUsingDirectPower(shooter, loader), new StayOnTarget(driveTrain), new MoveBallFromIntakeToShooter(loader, intake)));
+    // driverRightTrigger.toggleWhenPressed(new StayOnTarget(driveTrain)); 
+    driverRightTrigger.whenHeld(new MoveBallFromIntakeToShooter(loader, intake));
+    driverRightThumb.whenHeld(new ReverseLoader(loader));
+    driverLeftTrigger.whenHeld(new ShootBallBasedOnRPM(shooter, 3000));
+    // driverLeftTrigger.whenHeld(new ShootBallBasedOnPower(shooter, 0));
+    // driverLeftThumb.whenPressed(new DriveDistance(driveTrain, 24, 0.6));
+    // driverLeftButton1.toggleWhenPressed(new ShootOneBallUsingDirectPower(shooter, loader));
+
+    // driverLeftTrigger.whenPressed(new ParallelDeadlineGroup(
+    //   new ShootOneBallUsingDirectPower(shooter, loader),
+    //   new StayOnTarget(driveTrain),
+    //   new MoveBallFromIntakeToShooter(loader, intake)
+    // ));
     
     operatorRB.whenHeld(new ShootBallBasedOnRPM(shooter, 3000), true);
     
@@ -158,7 +168,7 @@ public class RobotContainer {
     operatorY.whenHeld(new ReverseLoader(loader));
 
     operatorB.whenPressed(new ConditionalCommand(new UndeployIntake(intake), new DeployIntake(intake), intake::isDeployed));
-    operatorStart.whenPressed(new SettingStartingPosition(intake));
+    operatorStart.whenPressed(new SetStartingPosition(intake));
 
     //Elevator
     operatorUp.whileHeld(new LiftUp(elevator));
