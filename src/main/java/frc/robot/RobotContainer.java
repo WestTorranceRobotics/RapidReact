@@ -28,6 +28,8 @@ import frc.robot.commands.Elevator.LiftBackwards;
 import frc.robot.commands.Elevator.LiftDown;
 import frc.robot.commands.Elevator.LiftForwards;
 import frc.robot.commands.Elevator.LiftUp;
+import frc.robot.commands.Elevator.TurnElevatorClockwise;
+import frc.robot.commands.Elevator.TurnElevatorCounterClockwise;
 import frc.robot.commands.Intake.DeployIntake;
 import frc.robot.commands.Intake.ReverseIntake;
 import frc.robot.commands.Intake.RunIntake;
@@ -161,8 +163,8 @@ public class RobotContainer {
     //Elevator
     operatorUp.whileHeld(new LiftUp(elevator));
     operatorDown.whileHeld(new LiftDown(elevator));
-    operatorLeft.whileHeld(new LiftForwards(elevator));
-    operatorRight.whileHeld(new LiftBackwards(elevator));
+    operatorLeft.whenHeld(new TurnElevatorClockwise(elevator));
+    operatorRight.whenHeld(new TurnElevatorCounterClockwise(elevator));
 
     //Vision
     operatorLT.whenPressed(new ShootBallBasedOnRPM(shooter, 3000));
