@@ -5,10 +5,11 @@
 package frc.robot.commands.elevator;
 
 import edu.wpi.first.wpilibj2.command.CommandBase;
+import frc.robot.RobotMap;
 import frc.robot.subsystems.Elevator;
 
 public class LiftDown extends CommandBase {
-  
+  boolean isFinished = false;
   //creates new elevator
   private final Elevator elevator;
 
@@ -28,6 +29,10 @@ public class LiftDown extends CommandBase {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
+    if(elevator.getElevatorMotor().getEncoder().getPosition() >= RobotMap.ElevatorMap.elevatorMinHeight){
+      elevator.setNoPower();
+      isFinished = true;
+    }
     /*see LiftUp command for basic rundown,
       except that instead of if it's too high, it is if it's too low*/
   }
@@ -42,6 +47,6 @@ public class LiftDown extends CommandBase {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return false;
+    return isFinished;
   }
 }
