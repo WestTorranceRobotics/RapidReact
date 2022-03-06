@@ -25,7 +25,6 @@ public class DriveOffAimAndShootOneBall extends SequentialCommandGroup {
   /** Creates a new AutoDriveOffAimAndShoot. */
   public DriveOffAimAndShootOneBall(DriveTrain driveTrain, Intake intake, Loader loader, Shooter shooter) {
     addCommands(
-      new ShootOneBallUsingDirectPower(shooter,loader, 0.55, 2000),
       new DeployIntake(intake),
       // drive while continuously intaking, stop when finished driving
       new ParallelDeadlineGroup(

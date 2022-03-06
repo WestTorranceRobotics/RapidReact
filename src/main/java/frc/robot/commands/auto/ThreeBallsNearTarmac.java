@@ -29,7 +29,7 @@ public class ThreeBallsNearTarmac extends SequentialCommandGroup {
       new DriveDistance(driveTrain, 72, 0.6),
       new TurnToAngle(driveTrain, -45),
       new ParallelDeadlineGroup(
-        new ShootOneBallUsingDirectPower(shooter, loader),
+        //new ShootOneBallUsingDirectPower(shooter, loader),
         new StayOnTarget(driveTrain),
         new RunIntake(intake)
       )
