@@ -4,12 +4,15 @@
 
 package frc.robot;
 
+import java.util.HashMap;
+
 import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.shuffleboard.BuiltInWidgets;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
+import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.ConditionalCommand;
@@ -23,6 +26,8 @@ import frc.robot.commands.loader.SeeBallRunLoader;
 import frc.robot.commands.TurningArms.LiftBackwards;
 import frc.robot.commands.TurningArms.LiftForwards;
 import frc.robot.commands.auto.AutoDriveOffAimAndShoot;
+import frc.robot.commands.auto.Test;
+import frc.robot.commands.auto.Test1;
 import frc.robot.commands.commandGroups.AimAndShoot;
 import frc.robot.commands.commandGroups.MoveBallFromIntakeToShooter;
 import frc.robot.commands.driveTrain.DriveDistance;
@@ -74,6 +79,8 @@ public class RobotContainer {
   public POVButton operatorLeft = new POVButton(operator, 270);
 
   public ShuffleboardTab display;
+  private HashMap<String, Command> autonomousCommandHashMap = new HashMap<>();
+  private SendableChooser<String> autoSelector = new SendableChooser<String>();
 
   private Shooter shooter;
   private DriveTrain driveTrain;
@@ -105,6 +112,7 @@ public class RobotContainer {
 
     ShuffleboardTab display = Shuffleboard.getTab("RobotVision");
     Shuffleboard.selectTab("RobotVision");
+
     display.addNumber("hi", () -> NetworkTableInstance.getDefault().getTable("Vision").getEntry("Xposition").getDouble(0));
 
     display.addNumber("Left Encoder", driveTrain::getLeftEncoderTicks).withPosition(8, 2);
@@ -131,6 +139,23 @@ public class RobotContainer {
     //display.addNumber("Applied Power on Shooter", shooter::getCurrent).withWidget(BuiltInWidgets.kGraph).withSize(3, 3);
     display.addNumber("Velocity on Shooter", shooter::getVelocity).withWidget(BuiltInWidgets.kGraph).withSize(3, 3).withPosition(4, 1);
     // display.addBoolean("IN CENTER", RobotContainer::isCenter);
+    
+    configureAutonomousSelector(display);
+  }
+
+  private void configureAutonomousSelector(ShuffleboardTab display) {
+    autoSelector.addOption("1 Ball", "1 Ball");
+    autoSelector.addOption("2 Ball", "2 Ball");
+    autoSelector.addOption("3 Ball", "3 Ball");
+    autoSelector.addOption("Simple Drive Off", "Simple Drive Off");
+
+    // display.add("Start Position Selector", autoSelector)
+    // .withPosition(7, 0).withSize(2, 1).withWidget(BuiltInWidgets.kComboBoxChooser);
+
+    // autonomousCommandHashMap.put("1 Ball", new AimAndShoot(driveTrain, loader, intake, shooter));
+    // autonomousCommandHashMap.put("2 Ball", new Test1());
+    // autonomousCommandHashMap.put("3 Ball", new Test());
+    // autonomousCommandHashMap.put("Simple Drive Off", new Test());
   }
 
   private static boolean isCenter(){
@@ -194,6 +219,31 @@ public class RobotContainer {
 
   public Command getAutonomousCommand() 
   {
+    /* 
+    Currently I am unsure if connecting to the FMS in the actual comp by 
+    ethernet at the alliance station allows us to connect to the robot before 
+    the match starts. I fear that if we do not connect to the robot, then 
+    the shuffleboard will not connect and then we will be unable to select
+    an auto from the shuffleboard as the options will be greyed out and 
+    unavailable. 
+
+    However, I do believe that it does connect because at comps before, 
+    we get a confirmation that we are connected because the options for 
+    teleop, auto, test, etc. on the driver station application are replaced
+    with something that simply says something like "Connected to FMS".
+    Maybe this means we are able to see stuff on shuffleboard.
+
+    This is why the if check is here. If there is indeed no autoSelector
+    widget created on the shuffleboard (or if there is nothing selected),
+    then we will run a default simple move off and shoot auto. 
+    */
+
+    // if (autoSelector.getSelected() == null) {
+    //   return new ShootBallBasedOnPower(shooter, 0.5);
+    // }
+    // return autonomousCommandHashMap.get(autoSelector.getSelected());
+
+
     return new ShootBallBasedOnPower(shooter, 0.5);
   }
 }
