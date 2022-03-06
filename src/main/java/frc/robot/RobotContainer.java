@@ -149,7 +149,7 @@ public class RobotContainer {
     driverRightTrigger.whenHeld(new MoveBallFromIntakeToShooter(loader, intake));
     driverRightThumb.whenHeld(new ParallelCommandGroup(new ReverseLoader(loader), new ReverseIntake(intake)));
     driverRightButton3.whileHeld(new RunIntake(intake));
-    driverRightButton4.whileHeld(new ReverseIntake(intake));
+    driverRightButton4.whileHeld(new SetStartingPosition(intake));
     // driverLeftTrigger.whenHeld(new ShootBallBasedOnRPM(shooter, 3000));
     // driverLeftThumb.whenPressed(new DriveDistance(driveTrain, 24, 0.6));
     driverLeftButton4.toggleWhenPressed(new ShootBallBasedOnPower(shooter, 1));
@@ -157,12 +157,12 @@ public class RobotContainer {
 
     // driverLeftButton3.toggleWhenPressed(new ShootOneBallUsingDirectPower(shooter, loader));
     
-    driverLeftTrigger.toggleWhenPressed(new ParallelDeadlineGroup(
-      new ShootOneBallUsingDirectPower(shooter, loader),
-      new StayOnTarget(driveTrain)
-    ));
+    // driverLeftTrigger.toggleWhenPressed(new ParallelDeadlineGroup(
+    //   new ShootOneBallUsingDirectPower(shooter, loader),
+    //   new StayOnTarget(driveTrain)
+    // ));
 
-    // driverLeftButton4.whenPressed(new AutoDriveOffAimAndShoot(driveTrain, intake, loader, shooter));
+    driverLeftButton4.whenPressed(new AutoDriveOffAimAndShoot(driveTrain, intake, loader, shooter));
     
     operatorRB.whenHeld(new ShootBallBasedOnRPM(shooter, 3000), true);
     

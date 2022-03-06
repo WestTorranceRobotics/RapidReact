@@ -32,7 +32,7 @@ public class ShootOneBallUsingDirectPower extends CommandBase {
     mshooter.setPower(0.85);
     
 
-    if (Math.abs(mshooter.getVelocity()) >= 5000 && !mshooter.atSpeed()) {
+    if (Math.abs(mshooter.getVelocity()) >= 4000 && !mshooter.atSpeed()) {
       mshooter.atSpeed(true);
     }
 
