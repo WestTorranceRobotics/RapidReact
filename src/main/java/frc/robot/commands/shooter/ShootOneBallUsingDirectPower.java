@@ -11,11 +11,15 @@ import frc.robot.subsystems.Shooter;
 public class ShootOneBallUsingDirectPower extends CommandBase {
   private Shooter mshooter;
   private Loader mLoader;
+  private double mpower;
+  private double mrpm;
   private boolean isDone = false;
   /** Creates a new ShootOneBallUsingDirectPower. */
-  public ShootOneBallUsingDirectPower(Shooter shooter, Loader loader) {
+  public ShootOneBallUsingDirectPower(Shooter shooter, Loader loader, double power, double rpm) {
     mshooter = shooter;
     mLoader = loader;
+    mpower = power;
+    mrpm = rpm;
 
     addRequirements(mshooter);
     // Use addRequirements() here to declare subsystem dependencies.
@@ -29,10 +33,10 @@ public class ShootOneBallUsingDirectPower extends CommandBase {
   @Override
   public void execute() {
 
-    mshooter.setPower(0.85);
+    mshooter.setPower(mpower);
     
 
-    if (Math.abs(mshooter.getVelocity()) >= 4000 && !mshooter.atSpeed()) {
+    if (Math.abs(mshooter.getVelocity()) >= mrpm && !mshooter.atSpeed()) {
       mshooter.atSpeed(true);
     }
 
@@ -55,6 +59,7 @@ public class ShootOneBallUsingDirectPower extends CommandBase {
   public void end(boolean interrupted) {
     mshooter.setPower(0);
     mLoader.stopLoader();
+    mshooter.resetBallShot();
   }
 
   // Returns true when the command should end.

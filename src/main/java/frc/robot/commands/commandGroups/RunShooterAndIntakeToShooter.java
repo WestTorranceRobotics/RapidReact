@@ -17,6 +17,6 @@ public class RunShooterAndIntakeToShooter extends ParallelCommandGroup {
   /** Creates a new RunShooterAndLoader. */
   public RunShooterAndIntakeToShooter(Loader loader, Intake intake, Shooter shooter, double power) {
     
-    addCommands(new MoveBallFromIntakeToShooter(loader, intake).deadlineWith(new ShootOneBallUsingDirectPower(shooter, loader)));
+    addCommands(new MoveBallFromIntakeToShooter(loader, intake).deadlineWith(new ShootOneBallUsingDirectPower(shooter, loader,0.75,4000)));
   }
 }

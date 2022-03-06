@@ -164,10 +164,11 @@ public class RobotContainer {
 
     driverLeftButton4.whenPressed(new AutoDriveOffAimAndShoot(driveTrain, intake, loader, shooter));
     
-    operatorRB.whenHeld(new ShootBallBasedOnRPM(shooter, 3000), true);
+    operatorRB.whenPressed(new ShootOneBallUsingDirectPower(shooter,loader, 0.65, 2000));
     
     //Intake
     operatorA.whenHeld(new RunIntake(intake));
+    operatorX.whenHeld(new RunLoader(loader));
     operatorY.whenHeld(new ReverseLoader(loader));
 
     operatorB.whenPressed(new ConditionalCommand(new UndeployIntake(intake), new DeployIntake(intake), intake::isDeployed));

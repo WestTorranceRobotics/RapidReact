@@ -34,10 +34,10 @@ public class LiftUp extends CommandBase {
       but the encoders originally used last year are from cansparkmax, not victorspx
       im planning to use gear ratios of elevatormotor to calculate this instead, may not be the case and will change accordingly later*/
       // set limits on elevator
-      if(elevator.getElevatorMotor().getEncoder().getPosition() >= RobotMap.ElevatorMap.elevatorMaxHeight){
-        elevator.setNoPower();
-        isFinished = true;
-      }
+      // if(elevator.getElevatorMotor().getEncoder().getPosition() >= RobotMap.ElevatorMap.elevatorMaxHeight){
+      //   elevator.setNoPower();
+      //   isFinished = true;
+      // }
     }
   
 

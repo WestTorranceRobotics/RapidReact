@@ -6,12 +6,15 @@ package frc.robot.commands.auto;
 
 import java.security.KeyStore.LoadStoreParameter;
 
+import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.ParallelDeadlineGroup;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import frc.robot.commands.commandGroups.MoveBallFromIntakeToShooter;
 import frc.robot.commands.driveTrain.DriveDistance;
 import frc.robot.commands.intake.DeployIntake;
 import frc.robot.commands.intake.RunIntake;
+import frc.robot.commands.loader.RunLoader;
+import frc.robot.commands.loader.SeeBallRunLoader;
 import frc.robot.commands.shooter.ShootOneBallUsingDirectPower;
 import frc.robot.commands.shooter.StayOnTarget;
 import frc.robot.subsystems.DriveTrain;
@@ -28,13 +31,14 @@ public class AutoDriveOffAimAndShoot extends SequentialCommandGroup {
     // Add your commands in the addCommands() call, e.g.
     // addCommands(new FooCommand(), new BarCommand());
     addCommands(
+      new ShootOneBallUsingDirectPower(shooter,loader, 0.55, 2000),
       new DeployIntake(intake),
       new ParallelDeadlineGroup(
-        new DriveDistance(driveTrain, 24, 0.6),
+        new DriveDistance(driveTrain, 64, 0.6),
         new RunIntake(intake)
       ),
       new ParallelDeadlineGroup(
-        new ShootOneBallUsingDirectPower(shooter, loader),
+        new ShootOneBallUsingDirectPower(shooter, loader, 0.75, 4000),
         new StayOnTarget(driveTrain),
         new RunIntake(intake)
       )

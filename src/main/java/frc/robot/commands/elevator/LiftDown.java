@@ -29,10 +29,10 @@ public class LiftDown extends CommandBase {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    if(elevator.getElevatorMotor().getEncoder().getPosition() >= RobotMap.ElevatorMap.elevatorMinHeight){
-      elevator.setNoPower();
-      isFinished = true;
-    }
+    // if(elevator.getElevatorMotor().getEncoder().getPosition() <= RobotMap.ElevatorMap.elevatorMinHeight){
+    //   elevator.setNoPower();
+    //   isFinished = true;
+    // }
     /*see LiftUp command for basic rundown,
       except that instead of if it's too high, it is if it's too low*/
   }

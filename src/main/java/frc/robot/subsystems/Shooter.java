@@ -113,6 +113,10 @@ public class Shooter extends SubsystemBase {
     return ballsShot;
   }
 
+  public void resetBallShot(){
+    ballsShot = 0;
+  }
+
   @Override
   public void periodic() {
     
