@@ -19,8 +19,10 @@ import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.POVButton;
 import frc.robot.commands.loader.ReverseLoader;
 import frc.robot.commands.loader.RunLoader;
+import frc.robot.commands.loader.SeeBallRunLoader;
 import frc.robot.commands.TurningArms.LiftBackwards;
 import frc.robot.commands.TurningArms.LiftForwards;
+import frc.robot.commands.auto.AutoDriveOffAimAndShoot;
 import frc.robot.commands.commandGroups.AimAndShoot;
 import frc.robot.commands.commandGroups.MoveBallFromIntakeToShooter;
 import frc.robot.commands.driveTrain.DriveDistance;
@@ -58,10 +60,13 @@ public class RobotContainer {
 
   public JoystickButton driverRightTrigger = new JoystickButton(driverRight, 1);
   public JoystickButton driverRightThumb  = new JoystickButton(driverRight, 2);
+  public JoystickButton driverRightButton3 = new JoystickButton(driverRight, 3);
+  public JoystickButton driverRightButton4 = new JoystickButton(driverRight, 4);
 
   public JoystickButton driverLeftTrigger = new JoystickButton(driverLeft, 1);
   public JoystickButton driverLeftThumb = new JoystickButton(driverLeft, 2);
   public JoystickButton driverLeftButton3 = new JoystickButton(driverLeft, 3);
+  public JoystickButton driverLeftButton4 = new JoystickButton(driverLeft, 4);
 
   public POVButton operatorUp = new POVButton(operator, 0);
   public POVButton operatorDown = new POVButton(operator, 180);
@@ -96,7 +101,7 @@ public class RobotContainer {
     NetworkTableInstance.getDefault().getTable("Vision").getEntry("shootF").setDouble(0);
     // NetworkTableInstance.getDefault().getTable("Vision").getEntry("").setDouble(0);
 
-    NetworkTableInstance.getDefault().getTable("limelight").getEntry("pipeline").setDouble(0);
+    NetworkTableInstance.getDefault().getTable("limelight").getEntry("pipeline").setDouble(1);
 
     ShuffleboardTab display = Shuffleboard.getTab("RobotVision");
     Shuffleboard.selectTab("RobotVision");
@@ -121,6 +126,8 @@ public class RobotContainer {
     display.addNumber("Current current of shooter", shooter::getCurrent).withPosition(2, 1);
     display.addNumber("Balls shot", shooter::getBallsShot).withPosition(3, 1);
 
+    display.addBoolean("Shooter at speed", shooter::atSpeed).withPosition(9, 0);
+
     //display.addNumber("Applied Power on Shooter", shooter::getCurrent).withWidget(BuiltInWidgets.kGraph).withSize(3, 3);
     display.addNumber("Velocity on Shooter", shooter::getVelocity).withWidget(BuiltInWidgets.kGraph).withSize(3, 3).withPosition(4, 1);
     // display.addBoolean("IN CENTER", RobotContainer::isCenter);
@@ -133,25 +140,29 @@ public class RobotContainer {
 
   private void configureDefaultCommands() {
     driveTrain.setDefaultCommand(new JoystickTankDrive(driverLeft, driverRight, driveTrain));
+    // loader.setDefaultCommand(new SeeBallRunLoader(loader));
 
   }
   private void configureButtonBindings() {
     //Shooter
     // driverRightTrigger.toggleWhenPressed(new StayOnTarget(driveTrain)); 
     driverRightTrigger.whenHeld(new MoveBallFromIntakeToShooter(loader, intake));
-    driverRightThumb.whenHeld(new ReverseLoader(loader));
+    driverRightThumb.whenHeld(new ParallelCommandGroup(new ReverseLoader(loader), new ReverseIntake(intake)));
+    driverRightButton3.whileHeld(new RunIntake(intake));
+    driverRightButton4.whileHeld(new ReverseIntake(intake));
     // driverLeftTrigger.whenHeld(new ShootBallBasedOnRPM(shooter, 3000));
-    // driverLeftTrigger.whenHeld(new ShootBallBasedOnPower(shooter, 0));
     // driverLeftThumb.whenPressed(new DriveDistance(driveTrain, 24, 0.6));
-    driverLeftButton3.toggleWhenPressed(new ShootBallBasedOnPower(shooter, 0.85));
+    driverLeftButton4.toggleWhenPressed(new ShootBallBasedOnPower(shooter, 1));
+    driverLeftButton3.toggleWhenPressed(new ShootBallBasedOnRPM(shooter, 5700));
+
     // driverLeftButton3.toggleWhenPressed(new ShootOneBallUsingDirectPower(shooter, loader));
     
-    driverLeftTrigger.toggleWhenPressed(new ParallelCommandGroup(
+    driverLeftTrigger.toggleWhenPressed(new ParallelDeadlineGroup(
       new ShootOneBallUsingDirectPower(shooter, loader),
-      // new StayOnTarget(driveTrain),
-      new RunIntake(intake)
-      // new MoveBallFromIntakeToShooter(loader, intake)
+      new StayOnTarget(driveTrain)
     ));
+
+    // driverLeftButton4.whenPressed(new AutoDriveOffAimAndShoot(driveTrain, intake, loader, shooter));
     
     operatorRB.whenHeld(new ShootBallBasedOnRPM(shooter, 3000), true);
     
@@ -178,6 +189,7 @@ public class RobotContainer {
     intake = new Intake();
     elevator = new Elevator();
     loader = new Loader();
+    turningArms = new TurningArms();
   }  
 
   public Command getAutonomousCommand() 

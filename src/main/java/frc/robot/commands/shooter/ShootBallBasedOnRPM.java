@@ -39,7 +39,7 @@ public class ShootBallBasedOnRPM extends CommandBase {
   @Override
   public void execute() {
     double networkRPM = NetworkTableInstance.getDefault().getTable("Vision").getEntry("rpm").getDouble(0);
-    bShooter.setVelocity(networkRPM);
+    bShooter.setVelocity(rpm);
 
     // bShooter.setVelocity(rpm);
     // bShooter.setPower(-0.4);

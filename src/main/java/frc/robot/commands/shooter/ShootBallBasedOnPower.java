@@ -27,7 +27,7 @@ public class ShootBallBasedOnPower extends CommandBase {
   @Override
   public void execute() {
     double networkSpeed = NetworkTableInstance.getDefault().getTable("Vision").getEntry("speed").getDouble(0);
-    mShooter.setPower(networkSpeed);
+    mShooter.setPower(mpower);
   }
 
   // Called once the command ends or is interrupted.

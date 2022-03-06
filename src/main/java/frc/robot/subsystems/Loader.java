@@ -24,11 +24,15 @@ public class Loader extends SubsystemBase {
   }
 
   public void runLoader(){
-    loaderMotor.set(-0.4);
+    loaderMotor.set(-0.3);
+  }
+
+  public double getProxVoltage() {
+    return ballDetector.getVoltage();
   }
 
   public boolean seeBall(){
-    if (ballDetector.getVoltage() > 2){
+    if (ballDetector.getVoltage() < 1.5){
       return true;
     }
     return false;

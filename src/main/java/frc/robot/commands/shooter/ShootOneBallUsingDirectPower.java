@@ -30,10 +30,15 @@ public class ShootOneBallUsingDirectPower extends CommandBase {
   public void execute() {
 
     mshooter.setPower(0.85);
-    mLoader.runLoader();
+    
 
-    // if (mshooter.getVelocity() >= )
-    mshooter.atSpeed(true);
+    if (Math.abs(mshooter.getVelocity()) >= 5000 && !mshooter.atSpeed()) {
+      mshooter.atSpeed(true);
+    }
+
+    if (mshooter.atSpeed()) {
+      mLoader.runLoader();
+    }
     
     if(mshooter.atSpeed() && mLoader.getAppliedOutput() < 0) {
       mshooter.currentWatch();

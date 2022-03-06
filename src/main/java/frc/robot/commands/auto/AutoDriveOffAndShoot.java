@@ -19,7 +19,8 @@ import frc.robot.subsystems.Shooter;
 public class AutoDriveOffAndShoot extends SequentialCommandGroup {
   /** Creates a new AutoDriveOffAndShoot. */
   public AutoDriveOffAndShoot(DriveTrain driveTrain, Loader loader, Intake intake, Shooter shooter) {
-    addCommands(new DriveDistance(driveTrain, 200, 0.6), new RunShooterAndIntakeToShooter(loader, intake, shooter, RobotMap.ShooterMap.shooterPowerLong));
+    addCommands(new DriveDistance(driveTrain, 200, 0.6),
+    new RunShooterAndIntakeToShooter(loader, intake, shooter, RobotMap.ShooterMap.shooterPowerLong));
   }
   
 }
