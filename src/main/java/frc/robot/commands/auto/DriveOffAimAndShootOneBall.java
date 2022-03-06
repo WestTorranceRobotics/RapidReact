@@ -4,11 +4,8 @@
 
 package frc.robot.commands.auto;
 
-import java.security.KeyStore.LoadStoreParameter;
-
 import edu.wpi.first.wpilibj2.command.ParallelDeadlineGroup;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
-import frc.robot.commands.commandGroups.MoveBallFromIntakeToShooter;
 import frc.robot.commands.driveTrain.DriveDistance;
 import frc.robot.commands.intake.DeployIntake;
 import frc.robot.commands.intake.RunIntake;
@@ -22,17 +19,17 @@ import frc.robot.subsystems.Shooter;
 // NOTE:  Consider using this command inline, rather than writing a subclass.  For more
 // information, see:
 // https://docs.wpilib.org/en/stable/docs/software/commandbased/convenience-features.html
-public class AutoDriveOffAimAndShoot extends SequentialCommandGroup {
+public class DriveOffAimAndShootOneBall extends SequentialCommandGroup {
   /** Creates a new AutoDriveOffAimAndShoot. */
-  public AutoDriveOffAimAndShoot(DriveTrain driveTrain, Intake intake, Loader loader, Shooter shooter) {
-    // Add your commands in the addCommands() call, e.g.
-    // addCommands(new FooCommand(), new BarCommand());
+  public DriveOffAimAndShootOneBall(DriveTrain driveTrain, Intake intake, Loader loader, Shooter shooter) {
     addCommands(
       new DeployIntake(intake),
+      // drive while continuously intaking, stop when finished driving
       new ParallelDeadlineGroup(
-        new DriveDistance(driveTrain, 24, 0.6),
+        new DriveDistance(driveTrain, 42, 0.6),
         new RunIntake(intake)
       ),
+      // shoot while continuously aiming and intaking, stop when finished shooting
       new ParallelDeadlineGroup(
         new ShootOneBallUsingDirectPower(shooter, loader),
         new StayOnTarget(driveTrain),

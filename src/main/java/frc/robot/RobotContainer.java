@@ -25,13 +25,12 @@ import frc.robot.commands.loader.RunLoader;
 import frc.robot.commands.loader.SeeBallRunLoader;
 import frc.robot.commands.TurningArms.LiftBackwards;
 import frc.robot.commands.TurningArms.LiftForwards;
-import frc.robot.commands.auto.AutoDriveOffAimAndShoot;
-import frc.robot.commands.auto.Test;
-import frc.robot.commands.auto.Test1;
+import frc.robot.commands.auto.DriveOffAimAndShootOneBall;
 import frc.robot.commands.commandGroups.AimAndShoot;
 import frc.robot.commands.commandGroups.MoveBallFromIntakeToShooter;
 import frc.robot.commands.driveTrain.DriveDistance;
 import frc.robot.commands.driveTrain.JoystickTankDrive;
+import frc.robot.commands.driveTrain.TurnToAngle;
 import frc.robot.commands.elevator.LiftDown;
 import frc.robot.commands.elevator.LiftUp;
 import frc.robot.commands.intake.DeployIntake;
@@ -136,6 +135,8 @@ public class RobotContainer {
 
     display.addBoolean("Shooter at speed", shooter::atSpeed).withPosition(9, 0);
 
+    display.addNumber("Current angle", driveTrain::getAngle).withPosition(0, 4);
+
     //display.addNumber("Applied Power on Shooter", shooter::getCurrent).withWidget(BuiltInWidgets.kGraph).withSize(3, 3);
     display.addNumber("Velocity on Shooter", shooter::getVelocity).withWidget(BuiltInWidgets.kGraph).withSize(3, 3).withPosition(4, 1);
     // display.addBoolean("IN CENTER", RobotContainer::isCenter);
@@ -173,8 +174,8 @@ public class RobotContainer {
     // driverRightTrigger.toggleWhenPressed(new StayOnTarget(driveTrain)); 
     driverRightTrigger.whenHeld(new MoveBallFromIntakeToShooter(loader, intake));
     driverRightThumb.whenHeld(new ParallelCommandGroup(new ReverseLoader(loader), new ReverseIntake(intake)));
-    driverRightButton3.whileHeld(new RunIntake(intake));
-    driverRightButton4.whileHeld(new SetStartingPosition(intake));
+    driverRightButton3.whenPressed(new TurnToAngle(driveTrain, 90));
+    driverRightButton4.whenPressed(new DriveDistance(driveTrain, -24, 0.6));
     // driverLeftTrigger.whenHeld(new ShootBallBasedOnRPM(shooter, 3000));
     // driverLeftThumb.whenPressed(new DriveDistance(driveTrain, 24, 0.6));
     driverLeftButton4.toggleWhenPressed(new ShootBallBasedOnPower(shooter, 1));
@@ -187,7 +188,7 @@ public class RobotContainer {
     //   new StayOnTarget(driveTrain)
     // ));
 
-    driverLeftButton4.whenPressed(new AutoDriveOffAimAndShoot(driveTrain, intake, loader, shooter));
+    driverLeftButton4.whenPressed(new DriveOffAimAndShootOneBall(driveTrain, intake, loader, shooter));
     
     operatorRB.whenHeld(new ShootBallBasedOnRPM(shooter, 3000), true);
     
