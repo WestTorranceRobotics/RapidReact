@@ -5,34 +5,40 @@
 package frc.robot.commands.TurningArms;
 
 import edu.wpi.first.wpilibj2.command.CommandBase;
-import frc.robot.subsystems.Elevator;
-import frc.robot.subsystems.TurningArms;
+import frc.robot.subsystems.LeftArm;
 
-public class LiftBackwards extends CommandBase {
-  /** Creates a new LiftBackwards. */
-  private final TurningArms turningArms;
-  public LiftBackwards(TurningArms subsystem) {
-    turningArms = subsystem;
-    addRequirements(turningArms);
-    // Use addRequirements() here to declare subsystem dependencies.
+public class LeftArmForwards extends CommandBase {
+  /** Creates a new LeftArmForwards. */
+  private LeftArm arm;
+  private boolean enabled;
+  public LeftArmForwards(LeftArm arm) {
+    this.arm = arm;
+    enabled = true;
+    addRequirements(this.arm);
+  }
+
+  public LeftArmForwards(LeftArm arm, boolean overrideEnabled) {
+    this.arm = arm;
+    enabled = overrideEnabled;
   }
 
   // Called when the command is initially scheduled.
   @Override
-  public void initialize() {
-    turningArms.liftBackwards();
-  }
+  public void initialize() {}
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
-  public void execute() {}
+  public void execute() {
+    if (enabled) {
+      arm.armForwards();
+    }
+  }
 
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-    turningArms.setNoPower();
+    arm.stopArm();
   }
-
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {

@@ -24,12 +24,15 @@ import edu.wpi.first.wpilibj2.command.button.POVButton;
 import frc.robot.commands.loader.ReverseLoader;
 import frc.robot.commands.loader.RunLoader;
 import frc.robot.commands.loader.SeeBallRunLoader;
-import frc.robot.commands.TurningArms.LiftBackwards;
-import frc.robot.commands.TurningArms.LiftForwards;
+import frc.robot.commands.TurningArms.LeftArmBackwards;
+import frc.robot.commands.TurningArms.LeftArmForwards;
+import frc.robot.commands.TurningArms.RightArmBackwards;
+import frc.robot.commands.TurningArms.RightArmForwards;
 import frc.robot.commands.auto.DriveOffAimAndShootOneBall;
 import frc.robot.commands.auto.DriveOffAimAndShootTwoBalls;
 import frc.robot.commands.commandGroups.AimAndShoot;
 import frc.robot.commands.commandGroups.MoveBallFromIntakeToShooter;
+import frc.robot.commands.commandGroups.MoveBallFromShooterToIntake;
 import frc.robot.commands.driveTrain.DriveDistance;
 import frc.robot.commands.driveTrain.JoystickTankDrive;
 import frc.robot.commands.driveTrain.TurnToAngle;
@@ -59,8 +62,7 @@ public class RobotContainer {
   public JoystickButton operatorLT = new JoystickButton(operator, 7);
   public JoystickButton operatorRT = new JoystickButton(operator, 8);
   public JoystickButton operatorBack = new JoystickButton(operator, 9);
-  public JoystickButton operatorStart = new JoystickButton(operator,10);
-  public JoystickButton operatorTest = new JoystickButton(operator, 9);
+  public JoystickButton operatorStart = new JoystickButton(operator, 10);
   public JoystickButton operatorStickLeft = new JoystickButton(operator, 11);
   public JoystickButton operatorStickRight = new JoystickButton(operator, 12);
 
@@ -88,7 +90,9 @@ public class RobotContainer {
   private Intake intake;
   private Elevator elevator;
   private Loader loader;
-  private TurningArms turningArms;
+  // private TurningArms turningArms;
+  private LeftArm leftArm;
+  private RightArm rightArm;
 
   public RobotContainer() 
   {
@@ -142,6 +146,8 @@ public class RobotContainer {
     //display.addNumber("Applied Power on Shooter", shooter::getCurrent).withWidget(BuiltInWidgets.kGraph).withSize(3, 3);
     display.addNumber("Velocity on Shooter", shooter::getVelocity).withWidget(BuiltInWidgets.kGraph).withSize(3, 3).withPosition(4, 1);
     // display.addBoolean("IN CENTER", RobotContainer::isCenter);
+
+    // display.addBoolean("Arms Overridden", leftArm::isOverridden);
     
     configureAutonomousSelector(display);
   }
@@ -181,7 +187,8 @@ public class RobotContainer {
     //   new ShootBallBasedOnRPM(shooter, 5700)
     // ));
 
-    // nothing to outtake
+    // needs a way to outtake
+    // driverRightButton3.whenHeld(new MoveBallFromShooterToIntake(intake, loader));
 
     // debug controls
     //Shooter
@@ -207,12 +214,30 @@ public class RobotContainer {
     operatorDown.whileHeld(new LiftDown(elevator));
 
     // arms are separated.
-    operatorLT.whenHeld(new InstantCommand());
-    operatorLeft.whenHeld(new LiftForwards(turningArms));
-    operatorRight.whenHeld(new LiftBackwards(turningArms));
+    // add something in shuffleboard that tells the operator if the arms are manually overridden
+    operatorBack.whenPressed(new ParallelCommandGroup(
+      new InstantCommand(leftArm::toggleManualOverride, leftArm),
+      new InstantCommand(rightArm::toggleManualOverride, rightArm)
+    ));
+
+    // these buttons only work when operatorBack has been pressed to toggle the override
+    operatorLT.whenHeld(new LeftArmForwards(leftArm, leftArm.isOverridden()));
+    operatorLB.whenHeld(new LeftArmBackwards(leftArm, leftArm.isOverridden()));
+    operatorRT.whenHeld(new RightArmForwards(rightArm, rightArm.isOverridden()));
+    operatorRB.whenHeld(new RightArmBackwards(rightArm, rightArm.isOverridden()));
+
+    operatorLeft.whenHeld(new ParallelCommandGroup(
+      new RightArmForwards(rightArm),
+      new LeftArmForwards(leftArm)
+    ));
+    operatorRight.whenHeld(new ParallelCommandGroup(
+      new RightArmBackwards(rightArm),
+      new LeftArmBackwards(leftArm)
+    ));
+    // at the end of a match, we need to get a way to reset the arm positions to starting position
 
     //Vision
-    operatorLT.whenPressed(new ShootBallBasedOnRPM(shooter, 3000));
+    // operatorLT.whenPressed(new ShootBallBasedOnRPM(shooter, 3000));
   }
 
   private void configureSubsystems(){
@@ -221,7 +246,9 @@ public class RobotContainer {
     intake = new Intake();
     elevator = new Elevator();
     loader = new Loader();
-    turningArms = new TurningArms();
+    // turningArms = new TurningArms();
+    leftArm = new LeftArm();
+    rightArm = new RightArm();
   }  
 
   public Command getAutonomousCommand() 

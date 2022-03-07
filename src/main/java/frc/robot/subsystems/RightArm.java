@@ -13,24 +13,38 @@ import frc.robot.RobotMap;
 
 public class RightArm extends SubsystemBase {
   private CANSparkMax rightArm;
+  private boolean overrideEnabled;
   /** Creates a new LeftArm. */
   public RightArm() {
-    rightArm = new CANSparkMax(RobotMap.ElevatorMap.elevatorTurningLeader, MotorType.kBrushless);
+    rightArm = new CANSparkMax(RobotMap.ElevatorMap.elevatorTurningFollower, MotorType.kBrushless);
     rightArm.restoreFactoryDefaults();
     rightArm.setIdleMode(IdleMode.kBrake);
-
+    rightArm.getEncoder().setPosition(0);
+    overrideEnabled = false;
   }
 
-  public void liftForwards(){
+  public void armForwards(){
     rightArm.set(RobotMap.ElevatorMap.elevatorMotorUp);
   }
 
-  public void liftBackwards(){
+  public void armBackwards(){
     rightArm.set(-RobotMap.ElevatorMap.elevatorMotorDown);
   }
 
-  public void setNoPower(){
+  public void stopArm(){
     rightArm.set(RobotMap.ElevatorMap.elevatorHalt);
+  }
+
+  public double getEncoderPosition() {
+    return rightArm.getEncoder().getPosition();
+  }
+
+  public void toggleManualOverride() {
+    overrideEnabled = !overrideEnabled;
+  }
+
+  public boolean isOverridden() {
+    return overrideEnabled;
   }
 
   @Override
