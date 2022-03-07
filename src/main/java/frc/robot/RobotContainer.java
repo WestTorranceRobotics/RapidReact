@@ -172,11 +172,20 @@ public class RobotContainer {
   private void configureButtonBindings() {
     //Shooter
     // driverRightTrigger.toggleWhenPressed(new StayOnTarget(driveTrain)); 
-    driverRightTrigger.whenHeld(new MoveBallFromIntakeToShooter(loader, intake));
-    driverRightThumb.whenHeld(new ParallelCommandGroup(new ReverseLoader(loader), new ReverseIntake(intake)));
-    driverRightButton3.whenPressed(new TurnToAngle(driveTrain, 90));
-    driverRightButton4.whenPressed(new DriveDistance(driveTrain, -24, 0.6));
-    // driverLeftTrigger.whenHeld(new ShootBallBasedOnRPM(shooter, 3000));
+    driverRightTrigger.whenHeld(new RunLoader(loader));
+    driverRightThumb.whenHeld(new MoveBallFromIntakeToShooter(loader, intake));
+    // driverRightThumb.whenHeld(new ParallelCommandGroup(new ReverseLoader(loader), new ReverseIntake(intake)));
+    
+    //RightThumb(Intake and Loader)
+    //LeftTrigger starts limightlight and shooterbyrpm
+    //RightTrigger only run loader
+    // driverRightButton3.whenPressed(new TurnToAngle(driveTrain, 90));
+    // driverRightButton4.whenPressed(new DriveDistance(driveTrain, -24, 0.6));
+
+    driverLeftTrigger.whenHeld(new ParallelCommandGroup(
+      new StayOnTarget(driveTrain),
+      new ShootBallBasedOnRPM(shooter, 5700)
+    ));
     // driverLeftThumb.whenPressed(new DriveDistance(driveTrain, 24, 0.6));
     driverLeftButton4.toggleWhenPressed(new ShootBallBasedOnPower(shooter, 1));
     driverLeftButton3.toggleWhenPressed(new ShootBallBasedOnRPM(shooter, 5700));
@@ -190,15 +199,14 @@ public class RobotContainer {
 
     driverLeftButton4.whenPressed(new DriveOffAimAndShootOneBall(driveTrain, intake, loader, shooter));
     
-    operatorRB.whenPressed(new ShootOneBallUsingDirectPower(shooter,loader, 0.65, 2000));
-    
     //Intake
     operatorA.whenHeld(new RunIntake(intake));
-    operatorX.whenHeld(new RunLoader(loader));
-    operatorY.whenHeld(new ReverseLoader(loader));
-
     operatorB.whenPressed(new ConditionalCommand(new UndeployIntake(intake), new DeployIntake(intake), intake::isDeployed));
     operatorStart.whenPressed(new SetStartingPosition(intake));
+
+    //Loader
+    operatorX.whenHeld(new RunLoader(loader));
+    operatorY.whenHeld(new ReverseLoader(loader));
 
     //Elevator
     operatorUp.whileHeld(new LiftUp(elevator));

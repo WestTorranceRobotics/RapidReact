@@ -57,10 +57,10 @@ public class RobotMap {
     {
         public static int intakeMotorCANID = 5;
         public static int intakeDeployMotorCANID = 8;
-        public static double intakeMotorPower = -0.6;
+        public static double intakeMotorPower = -0.8;
         public static int deployEncoderChannel1 = 4;
         public static int deployEncoderChannel2 = 5;
-        public static double deployMotorPower = 0.4;
+        public static double deployMotorPower = 1;
 
         //0.735-0.745 Start
         public static double voltageValueForUndeployedLower = 0.735;

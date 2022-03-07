@@ -30,10 +30,11 @@ public class JoystickTankDrive extends CommandBase {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    if (leftHand.getY() > 0.1 || rightHand.getY() > 0.1 || rightHand.getY() < -0.1 || leftHand.getY() < -0.1){
-      leftHandIn = Math.pow(-leftHand.getY(), 1);
-  }
-  rightHandIn = Math.pow(-rightHand.getY(), 1);
+  //   if (leftHand.getY() > 0.1 || rightHand.getY() > 0.1 || rightHand.getY() < -0.1 || leftHand.getY() < -0.1){
+      
+  // }
+  leftHandIn = Math.pow(leftHand.getY(), 1);
+  rightHandIn = Math.pow(rightHand.getY(), 1);
   driveTrain.tankDrive(leftHandIn, rightHandIn);
   }
 

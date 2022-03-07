@@ -57,11 +57,11 @@ public class Intake extends SubsystemBase
   }
 
   public void deployIntake(){
-    deployMotor.set(ControlMode.PercentOutput, 0.3);
+    deployMotor.set(ControlMode.PercentOutput, 0.6);
   }
 
   public void unDeployIntake(){
-    deployMotor.set(ControlMode.PercentOutput, -0.3);
+    deployMotor.set(ControlMode.PercentOutput, -0.6);
   }
 
   public void stopIntake() {
