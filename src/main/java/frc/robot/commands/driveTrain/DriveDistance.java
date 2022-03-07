@@ -52,8 +52,7 @@ public class DriveDistance extends CommandBase {
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-    System.out.println("Ending");
-    driveTrain.tankDrive(0, 0);//Stop Moving
+    driveTrain.tankDrive(0, 0);
   }
 
   // Returns true when the command should end.

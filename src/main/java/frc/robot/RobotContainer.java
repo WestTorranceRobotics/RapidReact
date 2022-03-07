@@ -16,6 +16,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.ConditionalCommand;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.ParallelDeadlineGroup;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
@@ -64,12 +65,12 @@ public class RobotContainer {
   public JoystickButton operatorStickRight = new JoystickButton(operator, 12);
 
   public JoystickButton driverRightTrigger = new JoystickButton(driverRight, 1);
-  public JoystickButton driverRightButton2  = new JoystickButton(driverRight, 2);
+  public JoystickButton driverRightThumb  = new JoystickButton(driverRight, 2);
   public JoystickButton driverRightButton3 = new JoystickButton(driverRight, 3);
   public JoystickButton driverRightButton4 = new JoystickButton(driverRight, 4);
 
   public JoystickButton driverLeftTrigger = new JoystickButton(driverLeft, 1);
-  public JoystickButton driverLeftButton2 = new JoystickButton(driverLeft, 2);
+  // public JoystickButton driverLeftButton2 = new JoystickButton(driverLeft, 2);
   public JoystickButton driverLeftButton3 = new JoystickButton(driverLeft, 3);
   public JoystickButton driverLeftButton4 = new JoystickButton(driverLeft, 4);
 
@@ -171,32 +172,23 @@ public class RobotContainer {
 
   }
   private void configureButtonBindings() {
-    //Shooter
-    // driverRightTrigger.toggleWhenPressed(new StayOnTarget(driveTrain)); 
-    driverRightTrigger.whenHeld(new RunLoader(loader));
-    driverRightThumb.whenHeld(new MoveBallFromIntakeToShooter(loader, intake));
-    // driverRightThumb.whenHeld(new ParallelCommandGroup(new ReverseLoader(loader), new ReverseIntake(intake)));
-    
-    //RightThumb(Intake and Loader)
-    //LeftTrigger starts limightlight and shooterbyrpm
-    //RightTrigger only run loader
-    // driverRightButton3.whenPressed(new TurnToAngle(driveTrain, 90));
-    // driverRightButton4.whenPressed(new DriveDistance(driveTrain, -24, 0.6));
 
-    driverLeftTrigger.whenHeld(new ParallelCommandGroup(
-      new StayOnTarget(driveTrain),
-      new ShootBallBasedOnRPM(shooter, 5700)
-    ));
-    // driverLeftThumb.whenPressed(new DriveDistance(driveTrain, 24, 0.6));
-    // driverLeftButton4.toggleWhenPressed(new ShootBallBasedOnPower(shooter, 1));
-    // driverLeftButton3.toggleWhenPressed(new ShootBallBasedOnRPM(shooter, 5700));
-
-    // driverLeftButton3.toggleWhenPressed(new ShootOneBallUsingDirectPower(shooter, loader));
-    
-    // driverLeftTrigger.toggleWhenPressed(new ParallelDeadlineGroup(
-    //   new ShootOneBallUsingDirectPower(shooter, loader),
-    //   new StayOnTarget(driveTrain)
+    // rishi and dhruv controls
+    // driverRightTrigger.whenHeld(new RunLoader(loader)); // only run load
+    // driverRightThumb.whenHeld(new MoveBallFromIntakeToShooter(loader, intake)); // intake and load
+    // driverLeftTrigger.whenHeld(new ParallelCommandGroup( // aim and start up shooter
+    //   new StayOnTarget(driveTrain),
+    //   new ShootBallBasedOnRPM(shooter, 5700)
     // ));
+
+    // nothing to outtake
+
+    // debug controls
+    //Shooter
+
+    driverRightThumb.whenHeld(new ParallelCommandGroup(new ReverseLoader(loader), new ReverseIntake(intake)));
+
+    // driverRightButton3.whenPressed(new TurnToAngle(driveTrain, 90));
 
     driverLeftButton4.whenPressed(new DriveOffAimAndShootOneBall(driveTrain, intake, loader, shooter));
     driverLeftButton3.whenPressed(new DriveOffAimAndShootTwoBalls(driveTrain, intake, loader, shooter));
@@ -213,6 +205,9 @@ public class RobotContainer {
     //Elevator
     operatorUp.whileHeld(new LiftUp(elevator));
     operatorDown.whileHeld(new LiftDown(elevator));
+
+    // arms are separated.
+    operatorLT.whenHeld(new InstantCommand());
     operatorLeft.whenHeld(new LiftForwards(turningArms));
     operatorRight.whenHeld(new LiftBackwards(turningArms));
 

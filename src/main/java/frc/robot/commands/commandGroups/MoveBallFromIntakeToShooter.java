@@ -18,8 +18,6 @@ import frc.robot.subsystems.Loader;
 public class MoveBallFromIntakeToShooter extends ParallelCommandGroup {
   /** Creates a new MoveBallFromIntakeToShooter. */
   public MoveBallFromIntakeToShooter(Loader loader, Intake intake) {
-    // Add your commands in the addCommands() call, e.g.
-    // addCommands(new FooCommand(), new BarCommand());
     addCommands(new RunLoader(loader), new RunIntake(intake));
   }
 }

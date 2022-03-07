@@ -16,11 +16,11 @@ import frc.robot.subsystems.Shooter;
 // NOTE:  Consider using this command inline, rather than writing a subclass.  For more
 // information, see:
 // https://docs.wpilib.org/en/stable/docs/software/commandbased/convenience-features.html
-public class AutoDriveOffAndShoot extends SequentialCommandGroup {
+public class DriveOffAndShoot extends SequentialCommandGroup {
   /** Creates a new AutoDriveOffAndShoot. */
-  public AutoDriveOffAndShoot(DriveTrain driveTrain, Loader loader, Intake intake, Shooter shooter) {
-    addCommands(new DriveDistance(driveTrain, 200, 0.6),
-    new RunShooterAndIntakeToShooter(loader, intake, shooter, RobotMap.ShooterMap.shooterPowerLong));
+  public DriveOffAndShoot(DriveTrain driveTrain, Loader loader, Intake intake, Shooter shooter) {
+    addCommands(
+      new DriveDistance(driveTrain, 200, 0.6),
+      new RunShooterAndIntakeToShooter(loader, intake, shooter, RobotMap.ShooterMap.shooterPowerLong));
   }
-  
 }
