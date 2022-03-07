@@ -26,6 +26,7 @@ import frc.robot.commands.loader.SeeBallRunLoader;
 import frc.robot.commands.TurningArms.LiftBackwards;
 import frc.robot.commands.TurningArms.LiftForwards;
 import frc.robot.commands.auto.DriveOffAimAndShootOneBall;
+import frc.robot.commands.auto.DriveOffAimAndShootTwoBalls;
 import frc.robot.commands.commandGroups.AimAndShoot;
 import frc.robot.commands.commandGroups.MoveBallFromIntakeToShooter;
 import frc.robot.commands.driveTrain.DriveDistance;
@@ -63,12 +64,12 @@ public class RobotContainer {
   public JoystickButton operatorStickRight = new JoystickButton(operator, 12);
 
   public JoystickButton driverRightTrigger = new JoystickButton(driverRight, 1);
-  public JoystickButton driverRightThumb  = new JoystickButton(driverRight, 2);
+  public JoystickButton driverRightButton2  = new JoystickButton(driverRight, 2);
   public JoystickButton driverRightButton3 = new JoystickButton(driverRight, 3);
   public JoystickButton driverRightButton4 = new JoystickButton(driverRight, 4);
 
   public JoystickButton driverLeftTrigger = new JoystickButton(driverLeft, 1);
-  public JoystickButton driverLeftThumb = new JoystickButton(driverLeft, 2);
+  public JoystickButton driverLeftButton2 = new JoystickButton(driverLeft, 2);
   public JoystickButton driverLeftButton3 = new JoystickButton(driverLeft, 3);
   public JoystickButton driverLeftButton4 = new JoystickButton(driverLeft, 4);
 
@@ -173,13 +174,14 @@ public class RobotContainer {
     //Shooter
     // driverRightTrigger.toggleWhenPressed(new StayOnTarget(driveTrain)); 
     driverRightTrigger.whenHeld(new MoveBallFromIntakeToShooter(loader, intake));
-    driverRightThumb.whenHeld(new ParallelCommandGroup(new ReverseLoader(loader), new ReverseIntake(intake)));
+    driverRightButton2.whenHeld(new ParallelCommandGroup(new ReverseLoader(loader), new ReverseIntake(intake)));
     driverRightButton3.whenPressed(new TurnToAngle(driveTrain, 90));
-    driverRightButton4.whenPressed(new DriveDistance(driveTrain, -24, 0.6));
+    // driverRightButton4.whenPressed(new DriveDistance(driveTrain, -24, 0.6));
+    driverRightButton4.whenPressed(new ConditionalCommand(new UndeployIntake(intake), new DeployIntake(intake), intake::isDeployed));
     // driverLeftTrigger.whenHeld(new ShootBallBasedOnRPM(shooter, 3000));
     // driverLeftThumb.whenPressed(new DriveDistance(driveTrain, 24, 0.6));
-    driverLeftButton4.toggleWhenPressed(new ShootBallBasedOnPower(shooter, 1));
-    driverLeftButton3.toggleWhenPressed(new ShootBallBasedOnRPM(shooter, 5700));
+    // driverLeftButton4.toggleWhenPressed(new ShootBallBasedOnPower(shooter, 1));
+    // driverLeftButton3.toggleWhenPressed(new ShootBallBasedOnRPM(shooter, 5700));
 
     // driverLeftButton3.toggleWhenPressed(new ShootOneBallUsingDirectPower(shooter, loader));
     
@@ -189,6 +191,7 @@ public class RobotContainer {
     // ));
 
     driverLeftButton4.whenPressed(new DriveOffAimAndShootOneBall(driveTrain, intake, loader, shooter));
+    driverLeftButton3.whenPressed(new DriveOffAimAndShootTwoBalls(driveTrain, intake, loader, shooter));
     
     operatorRB.whenPressed(new ShootOneBallUsingDirectPower(shooter,loader, 0.65, 2000));
     
@@ -246,6 +249,6 @@ public class RobotContainer {
     // return autonomousCommandHashMap.get(autoSelector.getSelected());
 
 
-    return new ShootBallBasedOnPower(shooter, 0.5);
+    return new DriveOffAimAndShootTwoBalls(driveTrain, intake, loader, shooter);
   }
 }
