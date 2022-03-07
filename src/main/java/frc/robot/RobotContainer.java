@@ -26,6 +26,7 @@ import frc.robot.commands.loader.SeeBallRunLoader;
 import frc.robot.commands.TurningArms.LiftBackwards;
 import frc.robot.commands.TurningArms.LiftForwards;
 import frc.robot.commands.auto.DriveOffAimAndShootOneBall;
+import frc.robot.commands.auto.DriveOffAimAndShootTwoBalls;
 import frc.robot.commands.commandGroups.AimAndShoot;
 import frc.robot.commands.commandGroups.MoveBallFromIntakeToShooter;
 import frc.robot.commands.driveTrain.DriveDistance;
@@ -63,12 +64,12 @@ public class RobotContainer {
   public JoystickButton operatorStickRight = new JoystickButton(operator, 12);
 
   public JoystickButton driverRightTrigger = new JoystickButton(driverRight, 1);
-  public JoystickButton driverRightThumb  = new JoystickButton(driverRight, 2);
+  public JoystickButton driverRightButton2  = new JoystickButton(driverRight, 2);
   public JoystickButton driverRightButton3 = new JoystickButton(driverRight, 3);
   public JoystickButton driverRightButton4 = new JoystickButton(driverRight, 4);
 
   public JoystickButton driverLeftTrigger = new JoystickButton(driverLeft, 1);
-  public JoystickButton driverLeftThumb = new JoystickButton(driverLeft, 2);
+  public JoystickButton driverLeftButton2 = new JoystickButton(driverLeft, 2);
   public JoystickButton driverLeftButton3 = new JoystickButton(driverLeft, 3);
   public JoystickButton driverLeftButton4 = new JoystickButton(driverLeft, 4);
 
@@ -187,8 +188,8 @@ public class RobotContainer {
       new ShootBallBasedOnRPM(shooter, 5700)
     ));
     // driverLeftThumb.whenPressed(new DriveDistance(driveTrain, 24, 0.6));
-    driverLeftButton4.toggleWhenPressed(new ShootBallBasedOnPower(shooter, 1));
-    driverLeftButton3.toggleWhenPressed(new ShootBallBasedOnRPM(shooter, 5700));
+    // driverLeftButton4.toggleWhenPressed(new ShootBallBasedOnPower(shooter, 1));
+    // driverLeftButton3.toggleWhenPressed(new ShootBallBasedOnRPM(shooter, 5700));
 
     // driverLeftButton3.toggleWhenPressed(new ShootOneBallUsingDirectPower(shooter, loader));
     
@@ -198,6 +199,7 @@ public class RobotContainer {
     // ));
 
     driverLeftButton4.whenPressed(new DriveOffAimAndShootOneBall(driveTrain, intake, loader, shooter));
+    driverLeftButton3.whenPressed(new DriveOffAimAndShootTwoBalls(driveTrain, intake, loader, shooter));
     
     //Intake
     operatorA.whenHeld(new RunIntake(intake));
@@ -254,6 +256,6 @@ public class RobotContainer {
     // return autonomousCommandHashMap.get(autoSelector.getSelected());
 
 
-    return new ShootBallBasedOnPower(shooter, 0.5);
+    return new DriveOffAimAndShootTwoBalls(driveTrain, intake, loader, shooter);
   }
 }

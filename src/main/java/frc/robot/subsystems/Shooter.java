@@ -113,6 +113,10 @@ public class Shooter extends SubsystemBase {
     return ballsShot;
   }
 
+  public void addBallShot(){
+    ballsShot += 1;
+  }
+
   public void resetBallShot(){
     ballsShot = 0;
   }
