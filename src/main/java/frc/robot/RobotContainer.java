@@ -64,7 +64,7 @@ public class RobotContainer {
   public JoystickButton operatorStickRight = new JoystickButton(operator, 12);
 
   public JoystickButton driverRightTrigger = new JoystickButton(driverRight, 1);
-  public JoystickButton driverRightButton2  = new JoystickButton(driverRight, 2);
+  public JoystickButton driverRightThumb  = new JoystickButton(driverRight, 2);
   public JoystickButton driverRightButton3 = new JoystickButton(driverRight, 3);
   public JoystickButton driverRightButton4 = new JoystickButton(driverRight, 4);
 
