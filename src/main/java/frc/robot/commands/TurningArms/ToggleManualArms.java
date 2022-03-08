@@ -16,19 +16,11 @@ public class ToggleManualArms extends CommandBase {
   double rightPower = 0;
   TurningArms turningArms;
   XboxController operator;
-  public JoystickButton operatorLB = new JoystickButton(operator, 5);
-  public JoystickButton operatorRB = new JoystickButton(operator, 6);
-  public JoystickButton operatorLT = new JoystickButton(operator, 7);
-  public JoystickButton operatorRT = new JoystickButton(operator, 8);
   /** Creates a new ToggleManualArms. */
   public ToggleManualArms(TurningArms turningArms, XboxController controller) 
   {
     this.turningArms = turningArms;
     operator = controller;
-    operatorLB = new JoystickButton(operator, 5);
-    operatorRB = new JoystickButton(operator, 6);
-    operatorLT = new JoystickButton(operator, 7);
-    operatorRT = new JoystickButton(operator, 8);
     // Use addRequirements() here to declare subsystem dependencies.
     addRequirements(this.turningArms);
   }
@@ -41,27 +33,27 @@ public class ToggleManualArms extends CommandBase {
   @Override
   public void execute() 
   {
-    if(controller.getRightBumper())
-    {
-      leftPower = RobotMap.ElevatorMap.elevatorMotorDown;
-    }
-    // else if(controller.getRightTriggerAxis() < 0)
+    // if(controller.getRightBumper())
     // {
-    //   rightPower = RobotMap.ElevatorMap.elevatorMotorUp;
+    //   leftPower = RobotMap.ElevatorMap.elevatorMotorDown;
     // }
-    else{ rightPower = 0; }
+    // // else if(controller.getRightTriggerAxis() < 0)
+    // // {
+    // //   rightPower = RobotMap.ElevatorMap.elevatorMotorUp;
+    // // }
+    // else{ rightPower = 0; }
 
-    if(controller.getLeftBumper())
-    {
-      leftPower = RobotMap.ElevatorMap.elevatorMotorDown;
-    }
-    // else if(controller.getLeftTriggerAxis() < 0)
+    // if(controller.getLeftBumper())
     // {
-    //   leftPower = RobotMap.ElevatorMap.elevatorMotorUp;
+    //   leftPower = RobotMap.ElevatorMap.elevatorMotorDown;
     // }
-    else{ leftPower = 0; }
+    // // else if(controller.getLeftTriggerAxis() < 0)
+    // // {
+    // //   leftPower = RobotMap.ElevatorMap.elevatorMotorUp;
+    // // }
+    // else{ leftPower = 0; }
 
-    turningArms.ManualControl(leftPower, rightPower);
+    // turningArms.ManualControl(leftPower, rightPower);
   }
 
   // Called once the command ends or is interrupted.

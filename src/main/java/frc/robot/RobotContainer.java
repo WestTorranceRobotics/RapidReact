@@ -199,7 +199,26 @@ public class RobotContainer {
     // driverRightButton3.whenPressed(new TurnToAngle(driveTrain, 90));
 
     // driverLeftButton4.whenPressed(new DriveOffAimAndShootOneBall(driveTrain, intake, loader, shooter));
-    operatorLT.whenHeld(new Print());
+    operatorLT.whenHeld(new InstantCommand(
+      turningArms::leftArmForwards
+    ), false)
+    .whenReleased(new InstantCommand(turningArms::stopLeftArm), false);
+
+    operatorRT.whenHeld(new InstantCommand(
+      turningArms::rightArmForwards
+    ), false)
+    .whenReleased(new InstantCommand(turningArms::stopRightArm), false);
+
+    operatorLB.whenHeld(new InstantCommand(
+      turningArms::leftArmBackwards
+    ), false)
+    .whenReleased(new InstantCommand(turningArms::stopLeftArm), false);
+
+    operatorRB.whenHeld(new InstantCommand(
+      turningArms::rightArmBackwards
+    ), false)
+    .whenReleased(new InstantCommand(turningArms::stopRightArm), false);
+
     driverLeftButton4.whenPressed(new ConditionalCommand(new UndeployIntake(intake), new DeployIntake(intake), intake::isDeployed));
     driverLeftButton3.whenPressed(new DriveOffAimAndShootTwoBalls(driveTrain, intake, loader, shooter));
     

@@ -44,9 +44,33 @@ public class TurningArms extends SubsystemBase {
     leftTurningArm.set(RobotMap.ElevatorMap.elevatorMotorDown);
   }
 
+  public void rightArmForwards() {
+    rightTurningArm.set(RobotMap.ElevatorMap.elevatorMotorUp);
+  }
+
+  public void rightArmBackwards() {
+    rightTurningArm.set(RobotMap.ElevatorMap.elevatorMotorDown);
+  }
+
+  public void leftArmForwards() {
+    leftTurningArm.set(RobotMap.ElevatorMap.elevatorMotorUp);
+  }
+
+  public void leftArmBackwards() {
+    leftTurningArm.set(RobotMap.ElevatorMap.elevatorMotorDown);
+  }
+
   public void setNoPower(){
     rightTurningArm.set(RobotMap.ElevatorMap.elevatorHalt);
     leftTurningArm.set(RobotMap.ElevatorMap.elevatorHalt);
+  }
+
+  public void stopLeftArm() {
+    leftTurningArm.set(0);
+  }
+
+  public void stopRightArm() {
+    rightTurningArm.set(0);
   }
 
   public void ManualControl(double leftPower, double rightPower)
