@@ -53,7 +53,7 @@ public class ShootOneBallUsingDirectPower extends CommandBase {
       shootTimer.start();
     }
 
-    if (shootTimer.hasElapsed(0.5)) {
+    if (shootTimer.hasElapsed(1.5)) {
       isDone = true;
     }
 

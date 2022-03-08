@@ -197,7 +197,8 @@ public class RobotContainer {
 
     // driverRightButton3.whenPressed(new TurnToAngle(driveTrain, 90));
 
-    driverLeftButton4.whenPressed(new DriveOffAimAndShootOneBall(driveTrain, intake, loader, shooter));
+    // driverLeftButton4.whenPressed(new DriveOffAimAndShootOneBall(driveTrain, intake, loader, shooter));
+    driverLeftButton4.whenPressed(new ConditionalCommand(new UndeployIntake(intake), new DeployIntake(intake), intake::isDeployed));
     driverLeftButton3.whenPressed(new DriveOffAimAndShootTwoBalls(driveTrain, intake, loader, shooter));
     
     //Intake
@@ -215,25 +216,25 @@ public class RobotContainer {
 
     // arms are separated.
     // add something in shuffleboard that tells the operator if the arms are manually overridden
-    operatorBack.whenPressed(new ParallelCommandGroup(
-      new InstantCommand(leftArm::toggleManualOverride, leftArm),
-      new InstantCommand(rightArm::toggleManualOverride, rightArm)
-    ));
+    // operatorBack.whenPressed(new ParallelCommandGroup(
+    //   new InstantCommand(leftArm::toggleManualOverride, leftArm),
+    //   new InstantCommand(rightArm::toggleManualOverride, rightArm)
+    // ));
 
-    // these buttons only work when operatorBack has been pressed to toggle the override
-    operatorLT.whenHeld(new LeftArmForwards(leftArm, leftArm.isOverridden()));
-    operatorLB.whenHeld(new LeftArmBackwards(leftArm, leftArm.isOverridden()));
-    operatorRT.whenHeld(new RightArmForwards(rightArm, rightArm.isOverridden()));
-    operatorRB.whenHeld(new RightArmBackwards(rightArm, rightArm.isOverridden()));
+    // // these buttons only work when operatorBack has been pressed to toggle the override
+    // operatorLT.whenHeld(new LeftArmForwards(leftArm, leftArm.isOverridden()));
+    // operatorLB.whenHeld(new LeftArmBackwards(leftArm, leftArm.isOverridden()));
+    // operatorRT.whenHeld(new RightArmForwards(rightArm, rightArm.isOverridden()));
+    // operatorRB.whenHeld(new RightArmBackwards(rightArm, rightArm.isOverridden()));
 
-    operatorLeft.whenHeld(new ParallelCommandGroup(
-      new RightArmForwards(rightArm),
-      new LeftArmForwards(leftArm)
-    ));
-    operatorRight.whenHeld(new ParallelCommandGroup(
-      new RightArmBackwards(rightArm),
-      new LeftArmBackwards(leftArm)
-    ));
+    // operatorLeft.whenHeld(new ParallelCommandGroup(
+    //   new RightArmForwards(rightArm),
+    //   new LeftArmForwards(leftArm)
+    // ));
+    // operatorRight.whenHeld(new ParallelCommandGroup(
+    //   new RightArmBackwards(rightArm),
+    //   new LeftArmBackwards(leftArm)
+    // ));
     // at the end of a match, we need to get a way to reset the arm positions to starting position
 
     //Vision
