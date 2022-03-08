@@ -13,16 +13,16 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class TurningArms extends SubsystemBase {
   /** Creates a new TurningArms. */
-  private CANSparkMax elevatorTurningLeader;
-  private CANSparkMax elevatorTurningFollower;
+  private CANSparkMax rightTurningArm;
+  private CANSparkMax leftTurningArm;
   
   public TurningArms() {
-    elevatorTurningLeader = new CANSparkMax(RobotMap.ElevatorMap.elevatorTurningLeader, MotorType.kBrushless);
-    elevatorTurningFollower = new CANSparkMax(RobotMap.ElevatorMap.elevatorTurningFollower, MotorType.kBrushless);
-    elevatorTurningFollower.setIdleMode(IdleMode.kBrake);
-    elevatorTurningLeader.setIdleMode(IdleMode.kBrake);
-    elevatorTurningFollower.follow(elevatorTurningLeader);
-    elevatorTurningLeader.getEncoder().setPosition(0);
+    rightTurningArm = new CANSparkMax(RobotMap.ElevatorMap.elevatorTurningLeader, MotorType.kBrushless);
+    leftTurningArm = new CANSparkMax(RobotMap.ElevatorMap.elevatorTurningFollower, MotorType.kBrushless);
+    leftTurningArm.setIdleMode(IdleMode.kBrake);
+    rightTurningArm.setIdleMode(IdleMode.kBrake);
+    leftTurningArm.setInverted(true);
+    rightTurningArm.getEncoder().setPosition(0);
   }
 
   @Override
@@ -30,26 +30,28 @@ public class TurningArms extends SubsystemBase {
 
   }
 
-  public CANSparkMax getElevatorTurningLeader(){
-    return elevatorTurningLeader;
-  }
-
   public double getElevatorMotorTicks(){
-    return elevatorTurningLeader.getEncoder().getPosition();
+    return rightTurningArm.getEncoder().getPosition();
   }
 
   public void liftForwards(){
-    elevatorTurningLeader.set(RobotMap.ElevatorMap.elevatorMotorUp);
-    elevatorTurningFollower.set(-RobotMap.ElevatorMap.elevatorMotorUp);
+    rightTurningArm.set(RobotMap.ElevatorMap.elevatorMotorUp);
+    leftTurningArm.set(RobotMap.ElevatorMap.elevatorMotorUp);
   }
 
   public void liftBackwards(){
-    elevatorTurningLeader.set(-RobotMap.ElevatorMap.elevatorMotorDown);
-    elevatorTurningFollower.set(RobotMap.ElevatorMap.elevatorMotorUp);
+    rightTurningArm.set(RobotMap.ElevatorMap.elevatorMotorDown);
+    leftTurningArm.set(RobotMap.ElevatorMap.elevatorMotorDown);
   }
 
   public void setNoPower(){
-    elevatorTurningLeader.set(RobotMap.ElevatorMap.elevatorHalt);
-    elevatorTurningFollower.set(RobotMap.ElevatorMap.elevatorHalt);
+    rightTurningArm.set(RobotMap.ElevatorMap.elevatorHalt);
+    leftTurningArm.set(RobotMap.ElevatorMap.elevatorHalt);
+  }
+
+  public void ManualControl(double leftPower, double rightPower)
+  {
+    leftTurningArm.set(leftPower);
+    rightTurningArm.set(rightPower);
   }
 }
