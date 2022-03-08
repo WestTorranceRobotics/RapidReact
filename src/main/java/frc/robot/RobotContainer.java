@@ -8,12 +8,12 @@ import java.util.HashMap;
 
 import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj.Joystick;
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.shuffleboard.BuiltInWidgets;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.ConditionalCommand;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
@@ -24,7 +24,6 @@ import edu.wpi.first.wpilibj2.command.button.POVButton;
 import frc.robot.commands.loader.ReverseLoader;
 import frc.robot.commands.loader.RunLoader;
 import frc.robot.commands.loader.SeeBallRunLoader;
-import frc.robot.commands.TurningArms.ToggleManualArms;
 import frc.robot.commands.auto.DriveOffAimAndShootOneBall;
 import frc.robot.commands.auto.DriveOffAimAndShootTwoBalls;
 import frc.robot.commands.commandGroups.AimAndShoot;
@@ -32,7 +31,6 @@ import frc.robot.commands.commandGroups.MoveBallFromIntakeToShooter;
 import frc.robot.commands.commandGroups.MoveBallFromShooterToIntake;
 import frc.robot.commands.driveTrain.DriveDistance;
 import frc.robot.commands.driveTrain.JoystickTankDrive;
-import frc.robot.commands.driveTrain.Print;
 import frc.robot.commands.driveTrain.TurnToAngle;
 import frc.robot.commands.elevator.LiftDown;
 import frc.robot.commands.elevator.LiftUp;
@@ -70,7 +68,6 @@ public class RobotContainer {
   public JoystickButton driverRightButton4 = new JoystickButton(driverRight, 4);
 
   public JoystickButton driverLeftTrigger = new JoystickButton(driverLeft, 1);
-  // public JoystickButton driverLeftButton2 = new JoystickButton(driverLeft, 2);
   public JoystickButton driverLeftButton3 = new JoystickButton(driverLeft, 3);
   public JoystickButton driverLeftButton4 = new JoystickButton(driverLeft, 4);
 
@@ -89,19 +86,17 @@ public class RobotContainer {
   private Elevator elevator;
   private Loader loader;
   private TurningArms turningArms;
-  // private LeftArm leftArm;
-  // private RightArm rightArm;
 
-  public RobotContainer() 
-  {
-    // Configure the button bindings
+  Timer timer = new Timer();
+
+  public RobotContainer() {
     configureSubsystems();
     configureDefaultCommands();
     configureButtonBindings();
     configureShuffleboard();
   }
 
-  private void configureShuffleboard(){
+  private void configureShuffleboard() {
     NetworkTableInstance.getDefault().getTable("Vision").getEntry("rpm").setDouble(0);
     NetworkTableInstance.getDefault().getTable("Vision").getEntry("speed").setDouble(0);
 
@@ -109,7 +104,6 @@ public class RobotContainer {
     NetworkTableInstance.getDefault().getTable("Vision").getEntry("shootI").setDouble(0);
     NetworkTableInstance.getDefault().getTable("Vision").getEntry("shootD").setDouble(0);
     NetworkTableInstance.getDefault().getTable("Vision").getEntry("shootF").setDouble(0);
-    // NetworkTableInstance.getDefault().getTable("Vision").getEntry("").setDouble(0);
 
     NetworkTableInstance.getDefault().getTable("limelight").getEntry("pipeline").setDouble(1);
 
@@ -144,10 +138,28 @@ public class RobotContainer {
     //display.addNumber("Applied Power on Shooter", shooter::getCurrent).withWidget(BuiltInWidgets.kGraph).withSize(3, 3);
     display.addNumber("Velocity on Shooter", shooter::getVelocity).withWidget(BuiltInWidgets.kGraph).withSize(3, 3).withPosition(4, 1);
     // display.addBoolean("IN CENTER", RobotContainer::isCenter);
-
-    // display.addBoolean("Arms Overridden", leftArm::isOverridden);
     
-    configureAutonomousSelector(display);
+    // Actual Driver Shuffleboard screen
+    ShuffleboardTab screen = Shuffleboard.getTab("Divingstation");
+    // Shuffleboard.selectTab(screen.getTitle());
+    
+    // add limelight camera from cameraserver (might just have to open networktables tab and drag it in)
+    // add intake camera as well (might also have to drag it in from network tables)
+
+    configureAutonomousSelector(screen);
+    screen.addBoolean("INTAKE DEPLOYED?", intake::isDeployed).withPosition(0, 1).withSize(2, 1);
+    screen.addBoolean("INTAKE RUNNING?", intake::isRunning).withPosition(0, 2).withSize(2, 1);
+    screen.addBoolean("LOADER RUNNING?", loader::isRunning).withPosition(0, 3).withSize(2, 1);
+    screen.addBoolean("SHOOTER RUNNING?", shooter::active).withPosition(0, 4).withSize(2, 1);
+
+    // screen.addNumber("TIME LEFT", )
+    // Timer.getMatchTime();
+    screen.addNumber("TIME", this::getTimeRemaining).withPosition(0, 2);
+    // DriverStation station;
+  }
+
+  public int getTimeRemaining() {
+    return 150 - (int) Timer.getMatchTime();
   }
 
   private void configureAutonomousSelector(ShuffleboardTab display) {
@@ -156,11 +168,11 @@ public class RobotContainer {
     autoSelector.addOption("3 Ball", "3 Ball");
     autoSelector.addOption("Simple Drive Off", "Simple Drive Off");
 
-    // display.add("Start Position Selector", autoSelector)
-    // .withPosition(7, 0).withSize(2, 1).withWidget(BuiltInWidgets.kComboBoxChooser);
-
-    // autonomousCommandHashMap.put("1 Ball", new AimAndShoot(driveTrain, loader, intake, shooter));
-    // autonomousCommandHashMap.put("2 Ball", new Test1());
+    display.add("Auto Selector", autoSelector)
+    .withPosition(0, 0).withSize(2, 1).withWidget(BuiltInWidgets.kComboBoxChooser);
+    
+    autonomousCommandHashMap.put("1 Ball", new DriveOffAimAndShootOneBall(driveTrain, intake, loader, shooter));
+    autonomousCommandHashMap.put("2 Ball", new DriveOffAimAndShootTwoBalls(driveTrain, intake, loader, shooter));
     // autonomousCommandHashMap.put("3 Ball", new Test());
     // autonomousCommandHashMap.put("Simple Drive Off", new Test());
   }
@@ -173,7 +185,6 @@ public class RobotContainer {
   private void configureDefaultCommands() {
     driveTrain.setDefaultCommand(new JoystickTankDrive(driverLeft, driverRight, driveTrain));
     // loader.setDefaultCommand(new SeeBallRunLoader(loader));
-
   }
   private void configureButtonBindings() {
 
@@ -187,7 +198,7 @@ public class RobotContainer {
 
     // driverLeftTrigger.whenHeld(new ShootBallBasedOnPower(shooter, 0.3)) // for lower goal just in case
 
-    // needs a way to outtake
+  private void configureButtonBindings() {
     // driverRightButton3.whenHeld(new MoveBallFromShooterToIntake(intake, loader));
 
     // debug controls
@@ -195,7 +206,6 @@ public class RobotContainer {
 
     driverRightThumb.whenHeld(new ParallelCommandGroup(new ReverseLoader(loader), new ReverseIntake(intake)));
     
-
     // driverRightButton3.whenPressed(new TurnToAngle(driveTrain, 90));
 
     // driverLeftButton4.whenPressed(new DriveOffAimAndShootOneBall(driveTrain, intake, loader, shooter));
@@ -222,6 +232,18 @@ public class RobotContainer {
     // driverLeftButton4.whenPressed(new ConditionalCommand(new UndeployIntake(intake), new DeployIntake(intake), intake::isDeployed));
     // driverLeftButton3.whenPressed(new DriveOffAimAndShootTwoBalls(driveTrain, intake, loader, shooter));
     
+    // Correct Controls
+    // driverRightTrigger.whenHeld(new RunLoader(loader)); // only run load
+    // driverRightThumb.whenHeld(new MoveBallFromIntakeToShooter(loader, intake)); // intake and load
+    // driverLeftTrigger.whenHeld(new ParallelCommandGroup( // aim and start up shooter
+    //   new StayOnTarget(driveTrain),
+    //   new ShootBallBasedOnRPM(shooter, 5700)
+    // ));
+
+    // driverLeftTrigger.whenHeld(new ShootBallBasedOnPower(shooter, 0.3)) // for lower goal just in case
+
+    // needs a way to outtake
+
     //Intake
     operatorA.whenHeld(new RunIntake(intake));
     operatorB.whenPressed(new ConditionalCommand(new UndeployIntake(intake), new DeployIntake(intake), intake::isDeployed));
@@ -235,34 +257,18 @@ public class RobotContainer {
     operatorUp.whileHeld(new LiftUp(elevator));
     operatorDown.whileHeld(new LiftDown(elevator));
 
-    // arms are separated.
-    // add something in shuffleboard that tells the operator if the arms are manually overridden
-    // operatorBack.whenPressed(new ParallelCommandGroup(
-    //   new InstantCommand(leftArm::toggleManualOverride, leftArm),
-    //   new InstantCommand(rightArm::toggleManualOverride, rightArm)
-    // ));
-    operatorBack.toggleWhenPressed(new ToggleManualArms(turningArms, operator));
+    // Pivot Arms
+    operatorLT.whenHeld(new InstantCommand(turningArms::leftArmForwards), false)
+    .whenReleased(new InstantCommand(turningArms::stopLeftArm), false);
 
-    // these buttons only work when operatorBack has been pressed to toggle the override
-    // operatorLT.whenHeld(new LeftArmForwards(leftArm, leftArm.isOverridden()));
-    // operatorLB.whenHeld(new LeftArmBackwards(leftArm, leftArm.isOverridden()));
-    // operatorRT.whenHeld(new RightArmForwards(rightArm, rightArm.isOverridden()));
-    // operatorRB.whenHeld(new RightArmBackwards(rightArm, rightArm.isOverridden()));
+    operatorRT.whenHeld(new InstantCommand(turningArms::rightArmForwards), false)
+    .whenReleased(new InstantCommand(turningArms::stopRightArm), false);
 
-    // operatorLeft.whenHeld(new ParallelCommandGroup(
-    //   new RightArmForwards(rightArm),
-    //   new LeftArmForwards(leftArm)
-    // ));
-    // operatorRight.whenHeld(new ParallelCommandGroup(
-    //   new RightArmBackwards(rightArm),
-    //   new LeftArmBackwards(leftArm)
-    // ));
-    // operatorLeft.whenHeld();
-    // operatorRight.whenHeld();
-    // at the end of a match, we need to get a way to reset the arm positions to starting position
+    operatorLB.whenHeld(new InstantCommand(turningArms::leftArmBackwards), false)
+    .whenReleased(new InstantCommand(turningArms::stopLeftArm), false);
 
-    //Vision
-    // operatorLT.whenPressed(new ShootBallBasedOnRPM(shooter, 3000));
+    operatorRB.whenHeld(new InstantCommand(turningArms::rightArmBackwards), false)
+    .whenReleased(new InstantCommand(turningArms::stopRightArm), false);
   }
 
   private void configureSubsystems(){
@@ -272,8 +278,6 @@ public class RobotContainer {
     elevator = new Elevator();
     loader = new Loader();
     turningArms = new TurningArms();
-    // leftArm = new LeftArm();
-    // rightArm = new RightArm();
   }  
 
   public Command getAutonomousCommand() 
@@ -298,7 +302,7 @@ public class RobotContainer {
     */
 
     // if (autoSelector.getSelected() == null) {
-    //   return new ShootBallBasedOnPower(shooter, 0.5);
+    //   return new DriveOffAimAndShootTwoBalls(driveTrain, intake, loader, shooter);
     // }
     // return autonomousCommandHashMap.get(autoSelector.getSelected());
 

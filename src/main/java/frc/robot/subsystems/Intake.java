@@ -44,7 +44,7 @@ public class Intake extends SubsystemBase
 
   public void ReverseIntake()
   {
-    intakeMotor.set(RobotMap.IntakeMap.intakeMotorPower * -1);
+    intakeMotor.set(-RobotMap.IntakeMap.intakeMotorPower);
   }
 
   public void StopIntake()
@@ -79,6 +79,10 @@ public class Intake extends SubsystemBase
     else {
       return false;
     }
+  }
+
+  public boolean isRunning() {
+    return intakeMotor.getOutputCurrent() != 0;
   }
 
   public boolean ToggleIsDeployed() {
