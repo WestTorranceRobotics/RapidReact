@@ -178,12 +178,12 @@ public class RobotContainer {
   private void configureButtonBindings() {
 
     // rishi and dhruv controls
-    // driverRightTrigger.whenHeld(new RunLoader(loader)); // only run load
-    // driverRightThumb.whenHeld(new MoveBallFromIntakeToShooter(loader, intake)); // intake and load
-    // driverLeftTrigger.whenHeld(new ParallelCommandGroup( // aim and start up shooter
-    //   new StayOnTarget(driveTrain),
-    //   new ShootBallBasedOnRPM(shooter, 5700)
-    // ));
+    driverRightTrigger.whenHeld(new RunLoader(loader)); // only run load
+    driverRightThumb.whenHeld(new MoveBallFromIntakeToShooter(loader, intake)); // intake and load
+    driverLeftTrigger.whenHeld(new ParallelCommandGroup( // aim and start up shooter
+      new StayOnTarget(driveTrain),
+      new ShootBallBasedOnRPM(shooter, 5700)
+    ));
 
     // driverLeftTrigger.whenHeld(new ShootBallBasedOnPower(shooter, 0.3)) // for lower goal just in case
 
@@ -199,28 +199,28 @@ public class RobotContainer {
     // driverRightButton3.whenPressed(new TurnToAngle(driveTrain, 90));
 
     // driverLeftButton4.whenPressed(new DriveOffAimAndShootOneBall(driveTrain, intake, loader, shooter));
-    operatorLT.whenHeld(new InstantCommand(
+    operatorRT.whenHeld(new InstantCommand(
       turningArms::leftArmForwards
     ), false)
     .whenReleased(new InstantCommand(turningArms::stopLeftArm), false);
 
-    operatorRT.whenHeld(new InstantCommand(
+    operatorLT.whenHeld(new InstantCommand(
       turningArms::rightArmForwards
     ), false)
     .whenReleased(new InstantCommand(turningArms::stopRightArm), false);
 
-    operatorLB.whenHeld(new InstantCommand(
+    operatorRB.whenHeld(new InstantCommand(
       turningArms::leftArmBackwards
     ), false)
     .whenReleased(new InstantCommand(turningArms::stopLeftArm), false);
 
-    operatorRB.whenHeld(new InstantCommand(
+    operatorLB.whenHeld(new InstantCommand(
       turningArms::rightArmBackwards
     ), false)
     .whenReleased(new InstantCommand(turningArms::stopRightArm), false);
 
-    driverLeftButton4.whenPressed(new ConditionalCommand(new UndeployIntake(intake), new DeployIntake(intake), intake::isDeployed));
-    driverLeftButton3.whenPressed(new DriveOffAimAndShootTwoBalls(driveTrain, intake, loader, shooter));
+    // driverLeftButton4.whenPressed(new ConditionalCommand(new UndeployIntake(intake), new DeployIntake(intake), intake::isDeployed));
+    // driverLeftButton3.whenPressed(new DriveOffAimAndShootTwoBalls(driveTrain, intake, loader, shooter));
     
     //Intake
     operatorA.whenHeld(new RunIntake(intake));

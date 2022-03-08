@@ -32,9 +32,10 @@ public class RobotMap {
         public static final double elevatorMaxHeight = 232;
         public static final double elevatorMinHeight = 0;
 
-        public static final double climberMotorSpeed = 0.5;
-        public static final double elevatorMotorUp = 0.1;
-        public static final double elevatorMotorDown = -0.1;
+        public static final double climberMotorUp = 1;
+        public static final double climberMotorDown = -1;
+        public static final double elevatorMotorUp = 0.25;
+        public static final double elevatorMotorDown = -0.25;
         
         public static final double elevatorHalt = 0.0;
         public static final int upperLimit = 193;

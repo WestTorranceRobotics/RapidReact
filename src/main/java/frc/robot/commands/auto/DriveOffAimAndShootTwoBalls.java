@@ -23,15 +23,14 @@ public class DriveOffAimAndShootTwoBalls extends SequentialCommandGroup {
   /** Creates a new DrieOffAimAndShootTwoBalls. */
   public DriveOffAimAndShootTwoBalls(DriveTrain driveTrain, Intake intake, Loader loader, Shooter shooter) {
     addCommands(
-      new ShootOneBallUsingDirectPower(shooter,loader, 0.65, 2500),
       new DeployIntake(intake),
       // drive while continuously intaking, stop when finished driving
       new ParallelDeadlineGroup(
-        new DriveDistance(driveTrain, 64, 0.75),
+        new DriveDistance(driveTrain, 74, 0.75),
         new RunIntake(intake)
       ),
       new ParallelDeadlineGroup(
-        new DriveDistance(driveTrain, -64, 0.75),
+        new DriveDistance(driveTrain, -30, 0.75),
         new RunIntake(intake)
       ),
       // shoot while continuously aiming and intaking, stop when finished shooting

@@ -56,12 +56,12 @@ public class Elevator extends SubsystemBase {
 
   //lifts up elevator 
   public void liftUp(){
-    elevatorMotor.set(RobotMap.ElevatorMap.climberMotorSpeed);
+    elevatorMotor.set(RobotMap.ElevatorMap.climberMotorUp);
   }
 
   //lowers down elevator
   public void liftDown(){
-    elevatorMotor.set(-RobotMap.ElevatorMap.climberMotorSpeed);
+    elevatorMotor.set(RobotMap.ElevatorMap.climberMotorDown);
   }
 
   //stops elevator
