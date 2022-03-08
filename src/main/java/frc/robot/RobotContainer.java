@@ -28,6 +28,7 @@ import frc.robot.commands.TurningArms.LeftArmBackwards;
 import frc.robot.commands.TurningArms.LeftArmForwards;
 import frc.robot.commands.TurningArms.RightArmBackwards;
 import frc.robot.commands.TurningArms.RightArmForwards;
+import frc.robot.commands.TurningArms.ToggleManualArms;
 import frc.robot.commands.auto.DriveOffAimAndShootOneBall;
 import frc.robot.commands.auto.DriveOffAimAndShootTwoBalls;
 import frc.robot.commands.commandGroups.AimAndShoot;
@@ -90,9 +91,9 @@ public class RobotContainer {
   private Intake intake;
   private Elevator elevator;
   private Loader loader;
-  // private TurningArms turningArms;
-  private LeftArm leftArm;
-  private RightArm rightArm;
+  private TurningArms turningArms;
+  // private LeftArm leftArm;
+  // private RightArm rightArm;
 
   public RobotContainer() 
   {
@@ -215,25 +216,26 @@ public class RobotContainer {
 
     // arms are separated.
     // add something in shuffleboard that tells the operator if the arms are manually overridden
-    operatorBack.whenPressed(new ParallelCommandGroup(
-      new InstantCommand(leftArm::toggleManualOverride, leftArm),
-      new InstantCommand(rightArm::toggleManualOverride, rightArm)
-    ));
+    // operatorBack.whenPressed(new ParallelCommandGroup(
+    //   new InstantCommand(leftArm::toggleManualOverride, leftArm),
+    //   new InstantCommand(rightArm::toggleManualOverride, rightArm)
+    // ));
+    operatorBack.toggleWhenPressed(new ToggleManualArms(turningArms, operator));
 
     // these buttons only work when operatorBack has been pressed to toggle the override
-    operatorLT.whenHeld(new LeftArmForwards(leftArm, leftArm.isOverridden()));
-    operatorLB.whenHeld(new LeftArmBackwards(leftArm, leftArm.isOverridden()));
-    operatorRT.whenHeld(new RightArmForwards(rightArm, rightArm.isOverridden()));
-    operatorRB.whenHeld(new RightArmBackwards(rightArm, rightArm.isOverridden()));
+    // operatorLT.whenHeld(new LeftArmForwards(leftArm, leftArm.isOverridden()));
+    // operatorLB.whenHeld(new LeftArmBackwards(leftArm, leftArm.isOverridden()));
+    // operatorRT.whenHeld(new RightArmForwards(rightArm, rightArm.isOverridden()));
+    // operatorRB.whenHeld(new RightArmBackwards(rightArm, rightArm.isOverridden()));
 
-    operatorLeft.whenHeld(new ParallelCommandGroup(
-      new RightArmForwards(rightArm),
-      new LeftArmForwards(leftArm)
-    ));
-    operatorRight.whenHeld(new ParallelCommandGroup(
-      new RightArmBackwards(rightArm),
-      new LeftArmBackwards(leftArm)
-    ));
+    // operatorLeft.whenHeld(new ParallelCommandGroup(
+    //   new RightArmForwards(rightArm),
+    //   new LeftArmForwards(leftArm)
+    // ));
+    // operatorRight.whenHeld(new ParallelCommandGroup(
+    //   new RightArmBackwards(rightArm),
+    //   new LeftArmBackwards(leftArm)
+    // ));
     // at the end of a match, we need to get a way to reset the arm positions to starting position
 
     //Vision
@@ -246,9 +248,9 @@ public class RobotContainer {
     intake = new Intake();
     elevator = new Elevator();
     loader = new Loader();
-    // turningArms = new TurningArms();
-    leftArm = new LeftArm();
-    rightArm = new RightArm();
+    turningArms = new TurningArms();
+    // leftArm = new LeftArm();
+    // rightArm = new RightArm();
   }  
 
   public Command getAutonomousCommand() 
