@@ -3,9 +3,9 @@ package frc.robot;
 public class RobotMap {
     
     public static class DriveTrainMap{
-        public static final double kP = 0;
-        public static final double kI = 0;
-        public static final double kD = 0;
+        public static final double angleKP = 0.1945392;
+        public static final double angleKI = 0;
+        public static final double angleKD = 0.00323242;
         public static int leftLeaderCANID = 1;
         public static int leftFollowerCANID = 2;
         public static int rightLeaderCANID = 3;
@@ -21,7 +21,6 @@ public class RobotMap {
     }
 
     public static class ElevatorMap{
-
         //most are not actual values, will change later when I get a confirmed number for any (most are based off of previous year code)
         public static final int elevatorCANID = 10;
         public static final int elevatorTurningLeader = 11;
@@ -47,15 +46,13 @@ public class RobotMap {
         public static final int ShooterLeaderCANID = 6;
         public static final int ShooterFollowerCANID = 7;
         public static final double kP = 0.00061675; //0.00061675
-        
         public static final double kD = 0.52171675; //0.051675
         public static final double shooterPowerShort = 0.5;
         public static final double shooterPowerLong = 0.75;
         public static double ballCurrent = 15;
     }
     
-    public static class IntakeMap
-    {
+    public static class IntakeMap {
         public static int intakeMotorCANID = 5;
         public static int intakeDeployMotorCANID = 8;
         public static double intakeMotorPower = -0.8;
@@ -70,8 +67,6 @@ public class RobotMap {
         //0.37-0.38
         public static double voltageValueForDeployedLower = 0.37;
         public static double voltageValueForDeployedUpper = 0.385;
-
-
     }
 
     public static class LoaderMap{

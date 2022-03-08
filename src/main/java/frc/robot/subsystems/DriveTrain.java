@@ -26,19 +26,15 @@ public class DriveTrain extends SubsystemBase {
   private WPI_TalonSRX leftFollower;
   private WPI_TalonSRX rightFollower;
 
-  Encoder leftEncoder = new Encoder(0,1, false, EncodingType.k4X);
-  Encoder rightEncoder = new Encoder(2,3, false, EncodingType.k4X);
+  Encoder leftEncoder = new Encoder(0, 1, false, EncodingType.k4X);
+  Encoder rightEncoder = new Encoder(2, 3, false, EncodingType.k4X);
 
   private AHRS gyro;
 
   private DifferentialDrive differentialDrive;
 
   private PIDController anglePID;
-  private PIDController distancePID;
-
-  private double kP = 0;
-  private double kI = 0;
-  private double kD = 0;
+  // private PIDController distancePID;
 
   private boolean isAutomatic = false;
 
@@ -74,14 +70,12 @@ public class DriveTrain extends SubsystemBase {
     leftEncoder.setDistancePerPulse(RobotMap.DriveTrainMap.inchesPerPulse);
     rightEncoder.setDistancePerPulse(RobotMap.DriveTrainMap.inchesPerPulse);
 
-    anglePID = new PIDController(kP, kI, kD);
-    distancePID = new PIDController(0, 0, 0);
+    anglePID = new PIDController(0, 0, 0);
+    // distancePID = new PIDController(0, 0, 0);
   }
 
   public void tankDrive(double leftPower, double rightPower){
     differentialDrive.tankDrive(leftPower, rightPower);
-    // leftLeader.set(ControlMode.PercentOutput, leftPower);
-    // rightLeader.set(ControlMode.PercentOutput, rightPower);
   }
 
   public WPI_TalonSRX getleftLeader(){
@@ -152,53 +146,53 @@ public class DriveTrain extends SubsystemBase {
     return anglePID;
   }
 
-  public PIDController getDistanceController() {
-    return distancePID;
-  }
+  // public PIDController getDistanceController() {
+  //   return distancePID;
+  // }
 
-  public void setP(double kP) {
-    this.kP = kP;
-    anglePID.setP(kP);
-  }
+  // public void setP(double kP) {
+  //   this.kP = kP;
+  //   anglePID.setP(kP);
+  // }
 
-  public double getP() {
-    return kP;
-  }
+  // public double getP() {
+  //   return kP;
+  // }
 
-  public void setI(double kI) {
-    this.kI = kI;
-    anglePID.setP(kI);
-  }
+  // public void setI(double kI) {
+  //   this.kI = kI;
+  //   anglePID.setP(kI);
+  // }
 
-  public double getI() {
-    return kI;
-  }
+  // public double getI() {
+  //   return kI;
+  // }
 
-  public void setD(double kD) {
-    this.kD = kD;
-    anglePID.setP(kD);
-  }
+  // public void setD(double kD) {
+  //   this.kD = kD;
+  //   anglePID.setP(kD);
+  // }
 
-  public double getD() {
-    return kD;
-  }
+  // public double getD() {
+  //   return kD;
+  // }
 
   public void enablePID() {
-    anglePID.setP(RobotMap.DriveTrainMap.kP);
-    anglePID.setI(RobotMap.DriveTrainMap.kI);
-    anglePID.setD(RobotMap.DriveTrainMap.kD);
-    distancePID.setP(0.0);
-    distancePID.setI(0.0);
-    distancePID.setD(0.0);
+    anglePID.setP(RobotMap.DriveTrainMap.angleKP);
+    anglePID.setI(RobotMap.DriveTrainMap.angleKI);
+    anglePID.setD(RobotMap.DriveTrainMap.angleKD);
+    // distancePID.setP(0.0);
+    // distancePID.setI(0.0);
+    // distancePID.setD(0.0);
   }
 
   public void disablePID() {
     anglePID.setP(0.0);
     anglePID.setI(0.0);
     anglePID.setD(0.0);
-    distancePID.setP(0.0);
-    distancePID.setI(0.0);
-    distancePID.setD(0.0);
+    // distancePID.setP(0.0);
+    // distancePID.setI(0.0);
+    // distancePID.setD(0.0);
   }
 
   public double getDistanceFromTarget() {
