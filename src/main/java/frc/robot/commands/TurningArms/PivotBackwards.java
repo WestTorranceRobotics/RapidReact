@@ -5,21 +5,14 @@
 package frc.robot.commands.TurningArms;
 
 import edu.wpi.first.wpilibj2.command.CommandBase;
-import frc.robot.subsystems.RightArm;
+import frc.robot.subsystems.TurningArms;
 
-public class RightArmBackwards extends CommandBase {
-  /** Creates a new RightArmBackwards. */
-  private RightArm arm;
-  private boolean enabled;
-  public RightArmBackwards(RightArm arm) {
-    this.arm = arm;
-    enabled = true;
-    addRequirements(this.arm);
-  }
-
-  public RightArmBackwards(RightArm arm, boolean overrideEnabled) {
-    this.arm = arm;
-    enabled = overrideEnabled;
+public class PivotBackwards extends CommandBase {
+  private TurningArms arms;
+  /** Creates a new PivotBackwards. */
+  public PivotBackwards(TurningArms arms) {
+    this.arms = arms;
+    addRequirements(this.arms);
   }
 
   // Called when the command is initially scheduled.
@@ -29,15 +22,13 @@ public class RightArmBackwards extends CommandBase {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    if (enabled) {
-      arm.armBackwards();
-    }
+    arms.liftBackwards();
   }
 
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-    arm.stopArm();
+    arms.setNoPower();
   }
 
   // Returns true when the command should end.

@@ -6,6 +6,7 @@ package frc.robot.commands.TurningArms;
 
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.CommandBase;
+import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import frc.robot.RobotMap;
 import frc.robot.RobotMap.ElevatorMap;
 import frc.robot.subsystems.TurningArms;
@@ -14,12 +15,20 @@ public class ToggleManualArms extends CommandBase {
   double leftPower = 0;
   double rightPower = 0;
   TurningArms turningArms;
-  XboxController controller;
+  XboxController operator;
+  public JoystickButton operatorLB = new JoystickButton(operator, 5);
+  public JoystickButton operatorRB = new JoystickButton(operator, 6);
+  public JoystickButton operatorLT = new JoystickButton(operator, 7);
+  public JoystickButton operatorRT = new JoystickButton(operator, 8);
   /** Creates a new ToggleManualArms. */
   public ToggleManualArms(TurningArms turningArms, XboxController controller) 
   {
     this.turningArms = turningArms;
-    this.controller = controller;
+    operator = controller;
+    operatorLB = new JoystickButton(operator, 5);
+    operatorRB = new JoystickButton(operator, 6);
+    operatorLT = new JoystickButton(operator, 7);
+    operatorRT = new JoystickButton(operator, 8);
     // Use addRequirements() here to declare subsystem dependencies.
     addRequirements(this.turningArms);
   }
@@ -34,22 +43,22 @@ public class ToggleManualArms extends CommandBase {
   {
     if(controller.getRightBumper())
     {
-      rightPower = RobotMap.ElevatorMap.elevatorMotorDown;
+      leftPower = RobotMap.ElevatorMap.elevatorMotorDown;
     }
-    else if(controller.getRightTriggerAxis() >= 0.3)
-    {
-      rightPower = RobotMap.ElevatorMap.elevatorMotorUp;
-    }
+    // else if(controller.getRightTriggerAxis() < 0)
+    // {
+    //   rightPower = RobotMap.ElevatorMap.elevatorMotorUp;
+    // }
     else{ rightPower = 0; }
 
     if(controller.getLeftBumper())
     {
       leftPower = RobotMap.ElevatorMap.elevatorMotorDown;
     }
-    else if(controller.getLeftTriggerAxis() >= 0.3)
-    {
-      leftPower = RobotMap.ElevatorMap.elevatorMotorUp;
-    }
+    // else if(controller.getLeftTriggerAxis() < 0)
+    // {
+    //   leftPower = RobotMap.ElevatorMap.elevatorMotorUp;
+    // }
     else{ leftPower = 0; }
 
     turningArms.ManualControl(leftPower, rightPower);

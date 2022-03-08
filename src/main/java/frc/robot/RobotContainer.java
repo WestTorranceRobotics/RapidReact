@@ -24,10 +24,6 @@ import edu.wpi.first.wpilibj2.command.button.POVButton;
 import frc.robot.commands.loader.ReverseLoader;
 import frc.robot.commands.loader.RunLoader;
 import frc.robot.commands.loader.SeeBallRunLoader;
-import frc.robot.commands.TurningArms.LeftArmBackwards;
-import frc.robot.commands.TurningArms.LeftArmForwards;
-import frc.robot.commands.TurningArms.RightArmBackwards;
-import frc.robot.commands.TurningArms.RightArmForwards;
 import frc.robot.commands.TurningArms.ToggleManualArms;
 import frc.robot.commands.auto.DriveOffAimAndShootOneBall;
 import frc.robot.commands.auto.DriveOffAimAndShootTwoBalls;
@@ -36,6 +32,7 @@ import frc.robot.commands.commandGroups.MoveBallFromIntakeToShooter;
 import frc.robot.commands.commandGroups.MoveBallFromShooterToIntake;
 import frc.robot.commands.driveTrain.DriveDistance;
 import frc.robot.commands.driveTrain.JoystickTankDrive;
+import frc.robot.commands.driveTrain.Print;
 import frc.robot.commands.driveTrain.TurnToAngle;
 import frc.robot.commands.elevator.LiftDown;
 import frc.robot.commands.elevator.LiftUp;
@@ -188,6 +185,8 @@ public class RobotContainer {
     //   new ShootBallBasedOnRPM(shooter, 5700)
     // ));
 
+    // driverLeftTrigger.whenHeld(new ShootBallBasedOnPower(shooter, 0.3)) // for lower goal just in case
+
     // needs a way to outtake
     // driverRightButton3.whenHeld(new MoveBallFromShooterToIntake(intake, loader));
 
@@ -195,10 +194,12 @@ public class RobotContainer {
     //Shooter
 
     driverRightThumb.whenHeld(new ParallelCommandGroup(new ReverseLoader(loader), new ReverseIntake(intake)));
+    
 
     // driverRightButton3.whenPressed(new TurnToAngle(driveTrain, 90));
 
     // driverLeftButton4.whenPressed(new DriveOffAimAndShootOneBall(driveTrain, intake, loader, shooter));
+    operatorLT.whenHeld(new Print());
     driverLeftButton4.whenPressed(new ConditionalCommand(new UndeployIntake(intake), new DeployIntake(intake), intake::isDeployed));
     driverLeftButton3.whenPressed(new DriveOffAimAndShootTwoBalls(driveTrain, intake, loader, shooter));
     
@@ -237,6 +238,8 @@ public class RobotContainer {
     //   new RightArmBackwards(rightArm),
     //   new LeftArmBackwards(leftArm)
     // ));
+    // operatorLeft.whenHeld();
+    // operatorRight.whenHeld();
     // at the end of a match, we need to get a way to reset the arm positions to starting position
 
     //Vision
