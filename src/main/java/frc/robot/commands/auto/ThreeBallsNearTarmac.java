@@ -8,6 +8,7 @@ import edu.wpi.first.wpilibj2.command.ParallelDeadlineGroup;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import frc.robot.commands.driveTrain.DriveDistance;
 import frc.robot.commands.driveTrain.TurnToAngle;
+import frc.robot.commands.intake.DeployIntake;
 import frc.robot.commands.intake.RunIntake;
 import frc.robot.commands.shooter.ShootOneBallUsingDirectPower;
 import frc.robot.commands.shooter.StayOnTarget;
@@ -23,13 +24,29 @@ public class ThreeBallsNearTarmac extends SequentialCommandGroup {
   /** Creates a new ThreeBall. */
   public ThreeBallsNearTarmac(DriveTrain driveTrain, Intake intake, Loader loader, Shooter shooter) {
     addCommands(
-      new DriveOffAimAndShootTwoBalls(driveTrain, intake, loader, shooter),
-      new DriveDistance(driveTrain, -36, 0.6),
-      new TurnToAngle(driveTrain, 90),
-      new DriveDistance(driveTrain, 72, 0.6),
-      new TurnToAngle(driveTrain, -45),
+      new DeployIntake(intake),
+      // drive while continuously intaking, stop when finished driving
       new ParallelDeadlineGroup(
-        //new ShootOneBallUsingDirectPower(shooter, loader),
+        new DriveDistance(driveTrain, 74, 0.75),
+        new RunIntake(intake)
+      ),
+      new ParallelDeadlineGroup(
+        new DriveDistance(driveTrain, -30, 0.75),
+        new RunIntake(intake)
+      ),
+      // shoot while continuously aiming and intaking, stop when finished shooting
+      new ParallelDeadlineGroup(
+        new ShootOneBallUsingDirectPower(shooter, loader, 0.65, 2500),
+        new StayOnTarget(driveTrain),
+        new RunIntake(intake)
+      ),
+      new TurnToAngle(driveTrain, 73),
+      new ParallelDeadlineGroup(
+        new DriveDistance(driveTrain, 130, 0.75),
+        new RunIntake(intake)
+      ),
+      new ParallelDeadlineGroup(
+        new ShootOneBallUsingDirectPower(shooter, loader, 0.8, 2500),
         new StayOnTarget(driveTrain),
         new RunIntake(intake)
       )

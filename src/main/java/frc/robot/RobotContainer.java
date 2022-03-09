@@ -26,6 +26,7 @@ import frc.robot.commands.loader.RunLoader;
 import frc.robot.commands.loader.SeeBallRunLoader;
 import frc.robot.commands.auto.DriveOffAimAndShootOneBall;
 import frc.robot.commands.auto.DriveOffAimAndShootTwoBalls;
+import frc.robot.commands.auto.ThreeBallsNearTarmac;
 import frc.robot.commands.commandGroups.AimAndShoot;
 import frc.robot.commands.commandGroups.MoveBallFromIntakeToShooter;
 import frc.robot.commands.commandGroups.MoveBallFromShooterToIntake;
@@ -45,8 +46,8 @@ import frc.robot.commands.elevator.*;
 import frc.robot.subsystems.*;
 
 public class RobotContainer {
-  public static final Joystick driverLeft = new Joystick(0);
-  public static final Joystick driverRight = new Joystick(1);
+  public static final Joystick driverLeft = new Joystick(1);
+  public static final Joystick driverRight = new Joystick(0);
   public XboxController operator = new XboxController(2);
 
   public JoystickButton operatorX = new JoystickButton(operator, 1);
@@ -66,6 +67,7 @@ public class RobotContainer {
   public JoystickButton driverRightThumb  = new JoystickButton(driverRight, 2);
   public JoystickButton driverRightButton3 = new JoystickButton(driverRight, 3);
   public JoystickButton driverRightButton4 = new JoystickButton(driverRight, 4);
+  public JoystickButton driverRightButton5 = new JoystickButton(driverRight, 5);
 
   public JoystickButton driverLeftTrigger = new JoystickButton(driverLeft, 1);
   public JoystickButton driverLeftButton3 = new JoystickButton(driverLeft, 3);
@@ -97,51 +99,51 @@ public class RobotContainer {
   }
 
   private void configureShuffleboard() {
-    NetworkTableInstance.getDefault().getTable("Vision").getEntry("rpm").setDouble(0);
-    NetworkTableInstance.getDefault().getTable("Vision").getEntry("speed").setDouble(0);
+    // NetworkTableInstance.getDefault().getTable("Vision").getEntry("rpm").setDouble(0);
+    // NetworkTableInstance.getDefault().getTable("Vision").getEntry("speed").setDouble(0);
 
-    NetworkTableInstance.getDefault().getTable("Vision").getEntry("shootP").setDouble(0);
-    NetworkTableInstance.getDefault().getTable("Vision").getEntry("shootI").setDouble(0);
-    NetworkTableInstance.getDefault().getTable("Vision").getEntry("shootD").setDouble(0);
-    NetworkTableInstance.getDefault().getTable("Vision").getEntry("shootF").setDouble(0);
+    // NetworkTableInstance.getDefault().getTable("Vision").getEntry("shootP").setDouble(0);
+    // NetworkTableInstance.getDefault().getTable("Vision").getEntry("shootI").setDouble(0);
+    // NetworkTableInstance.getDefault().getTable("Vision").getEntry("shootD").setDouble(0);
+    // NetworkTableInstance.getDefault().getTable("Vision").getEntry("shootF").setDouble(0);
 
-    NetworkTableInstance.getDefault().getTable("limelight").getEntry("pipeline").setDouble(1);
+    NetworkTableInstance.getDefault().getTable("limelight").getEntry("pipeline").setDouble(0);
 
-    ShuffleboardTab display = Shuffleboard.getTab("RobotVision");
-    Shuffleboard.selectTab("RobotVision");
+    // ShuffleboardTab display = Shuffleboard.getTab("RobotVision");
+    // Shuffleboard.selectTab("RobotVision");
 
-    display.addNumber("hi", () -> NetworkTableInstance.getDefault().getTable("Vision").getEntry("Xposition").getDouble(0));
+    // display.addNumber("hi", () -> NetworkTableInstance.getDefault().getTable("Vision").getEntry("Xposition").getDouble(0));
 
-    display.addNumber("Left Encoder", driveTrain::getLeftEncoderTicks).withPosition(8, 2);
-    display.addNumber("Right Encoder", driveTrain::getRightEncoderTicks).withPosition(9, 2);
+    // display.addNumber("Left Encoder", driveTrain::getLeftEncoderTicks).withPosition(8, 2);
+    // display.addNumber("Right Encoder", driveTrain::getRightEncoderTicks).withPosition(9, 2);
 
-    display.addBoolean("IS DEPLOYED?", intake::isDeployed).withPosition(0, 1);
-    display.addNumber("Elevator Height", elevator::getElevatorMotorTicks);
+    // display.addBoolean("IS DEPLOYED?", intake::isDeployed).withPosition(0, 1);
+    // display.addNumber("Elevator Height", elevator::getElevatorMotorTicks);
 
-    display.addNumber("Poteniometer", intake::getAnalogIntakeValue).withWidget(BuiltInWidgets.kGraph).withSize(3, 3);
+    // display.addNumber("Poteniometer", intake::getAnalogIntakeValue).withWidget(BuiltInWidgets.kGraph).withSize(3, 3);
 
-    display.addNumber("Current", shooter::getCurrent).withPosition(5, 0);
-    display.addNumber("Loader applied output", loader::getAppliedOutput).withPosition(6, 0);
-    // display.addNumber("Balls shot", shooter::getBallsShot).withPosition(7, 0);
+    // display.addNumber("Current", shooter::getCurrent).withPosition(5, 0);
+    // display.addNumber("Loader applied output", loader::getAppliedOutput).withPosition(6, 0);
+    // // display.addNumber("Balls shot", shooter::getBallsShot).withPosition(7, 0);
 
-    // for finding the range of distances from target that we can shoot from
-    display.addNumber("Distance From Target", driveTrain::getDistanceFromTarget).withPosition(1, 1);
+    // // for finding the range of distances from target that we can shoot from
+    // display.addNumber("Distance From Target", driveTrain::getDistanceFromTarget).withPosition(1, 1);
 
-    // gets current current of shooter
-    display.addNumber("Current current of shooter", shooter::getCurrent).withPosition(2, 1);
-    display.addNumber("Balls shot", shooter::getBallsShot).withPosition(3, 1);
+    // // gets current current of shooter
+    // display.addNumber("Current current of shooter", shooter::getCurrent).withPosition(2, 1);
+    // display.addNumber("Balls shot", shooter::getBallsShot).withPosition(3, 1);
 
-    display.addBoolean("Shooter at speed", shooter::atSpeed).withPosition(9, 0);
+    // display.addBoolean("Shooter at speed", shooter::atSpeed).withPosition(9, 0);
 
-    display.addNumber("Current angle", driveTrain::getAngle).withPosition(0, 4);
+    // display.addNumber("Current angle", driveTrain::getAngle).withPosition(0, 4);
 
-    //display.addNumber("Applied Power on Shooter", shooter::getCurrent).withWidget(BuiltInWidgets.kGraph).withSize(3, 3);
-    display.addNumber("Velocity on Shooter", shooter::getVelocity).withWidget(BuiltInWidgets.kGraph).withSize(3, 3).withPosition(4, 1);
-    // display.addBoolean("IN CENTER", RobotContainer::isCenter);
+    // //display.addNumber("Applied Power on Shooter", shooter::getCurrent).withWidget(BuiltInWidgets.kGraph).withSize(3, 3);
+    // display.addNumber("Velocity on Shooter", shooter::getVelocity).withWidget(BuiltInWidgets.kGraph).withSize(3, 3).withPosition(4, 1);
+    // // display.addBoolean("IN CENTER", RobotContainer::isCenter);
     
     // Actual Driver Shuffleboard screen
     ShuffleboardTab screen = Shuffleboard.getTab("Divingstation");
-    // Shuffleboard.selectTab(screen.getTitle());
+    Shuffleboard.selectTab(screen.getTitle());
     
     // add limelight camera from cameraserver (might just have to open networktables tab and drag it in)
     // add intake camera as well (might also have to drag it in from network tables)
@@ -152,10 +154,7 @@ public class RobotContainer {
     screen.addBoolean("LOADER RUNNING?", loader::isRunning).withPosition(0, 3).withSize(2, 1);
     screen.addBoolean("SHOOTER RUNNING?", shooter::active).withPosition(0, 4).withSize(2, 1);
 
-    // screen.addNumber("TIME LEFT", )
-    // Timer.getMatchTime();
-    screen.addNumber("TIME", this::getTimeRemaining).withPosition(0, 2);
-    // DriverStation station;
+    screen.addNumber("TIME", this::getTimeRemaining).withPosition(2, 3);
   }
 
   public int getTimeRemaining() {
@@ -165,7 +164,7 @@ public class RobotContainer {
   private void configureAutonomousSelector(ShuffleboardTab display) {
     autoSelector.addOption("1 Ball", "1 Ball");
     autoSelector.addOption("2 Ball", "2 Ball");
-    autoSelector.addOption("3 Ball", "3 Ball");
+    // autoSelector.addOption("3 Ball", "3 Ball");
     autoSelector.addOption("Simple Drive Off", "Simple Drive Off");
 
     display.add("Auto Selector", autoSelector)
@@ -174,21 +173,37 @@ public class RobotContainer {
     autonomousCommandHashMap.put("1 Ball", new DriveOffAimAndShootOneBall(driveTrain, intake, loader, shooter));
     autonomousCommandHashMap.put("2 Ball", new DriveOffAimAndShootTwoBalls(driveTrain, intake, loader, shooter));
     // autonomousCommandHashMap.put("3 Ball", new Test());
-    // autonomousCommandHashMap.put("Simple Drive Off", new Test());
+    autonomousCommandHashMap.put("Simple Drive Off", new DriveDistance(driveTrain, 60, 0.6));
   }
 
-  private static boolean isCenter(){
-    return (NetworkTableInstance.getDefault().getTable("Vision").getEntry("Xposition").getDouble(0) < 200 &&
-    NetworkTableInstance.getDefault().getTable("Vision").getEntry("Xposition").getDouble(0) > 130);
-  }
+  // private static boolean isCenter(){
+  //   return (NetworkTableInstance.getDefault().getTable("Vision").getEntry("Xposition").getDouble(0) < 200 &&
+  //   NetworkTableInstance.getDefault().getTable("Vision").getEntry("Xposition").getDouble(0) > 130);
+  // }
 
   private void configureDefaultCommands() {
     driveTrain.setDefaultCommand(new JoystickTankDrive(driverLeft, driverRight, driveTrain));
-    // loader.setDefaultCommand(new SeeBallRunLoader(loader));
+    loader.setDefaultCommand(new SeeBallRunLoader(loader));
   }
-  private void configureButtonBindings() {
 
-    // rishi and dhruv controls
+  private void configureButtonBindings() {
+    // driverRightButton3.whenHeld(new MoveBallFromShooterToIntake(intake, loader));
+
+    // debug controls
+    
+
+    // driverRightThumb.whenHeld(new ParallelCommandGroup(new ReverseLoader(loader), new ReverseIntake(intake)));
+    
+    // driverRightButton3.toggleWhenPressed(new TurnToAngle(driveTrain, 90));
+    // driverRightButton3.whenPressed(new ThreeBallsNearTarmac(driveTrain, intake, loader, shooter));
+
+    // driverLeftButton4.toggleWhenPressed(new ShootOneBallUsingDirectPower(shooter, loader, 1, 2500));
+
+    // driverLeftButton4.whenPressed(new ConditionalCommand(new UndeployIntake(intake), new DeployIntake(intake), intake::isDeployed));
+    // driverLeftButton3.whenPressed(new DriveOffAimAndShootTwoBalls(driveTrain, intake, loader, shooter));
+    
+    // Correct Controls
+    // joystick controls
     driverRightTrigger.whenHeld(new RunLoader(loader)); // only run load
     driverRightThumb.whenHeld(new MoveBallFromIntakeToShooter(loader, intake)); // intake and load
     driverLeftTrigger.whenHeld(new ParallelCommandGroup( // aim and start up shooter
@@ -196,55 +211,10 @@ public class RobotContainer {
       new ShootBallBasedOnRPM(shooter, 5700)
     ));
 
-    // driverLeftTrigger.whenHeld(new ShootBallBasedOnPower(shooter, 0.3)) // for lower goal just in case
-
-  private void configureButtonBindings() {
-    // driverRightButton3.whenHeld(new MoveBallFromShooterToIntake(intake, loader));
-
-    // debug controls
-    //Shooter
-
-    driverRightThumb.whenHeld(new ParallelCommandGroup(new ReverseLoader(loader), new ReverseIntake(intake)));
-    
-    // driverRightButton3.whenPressed(new TurnToAngle(driveTrain, 90));
-
-    // driverLeftButton4.whenPressed(new DriveOffAimAndShootOneBall(driveTrain, intake, loader, shooter));
-    operatorRT.whenHeld(new InstantCommand(
-      turningArms::leftArmForwards
-    ), false)
-    .whenReleased(new InstantCommand(turningArms::stopLeftArm), false);
-
-    operatorLT.whenHeld(new InstantCommand(
-      turningArms::rightArmForwards
-    ), false)
-    .whenReleased(new InstantCommand(turningArms::stopRightArm), false);
-
-    operatorRB.whenHeld(new InstantCommand(
-      turningArms::leftArmBackwards
-    ), false)
-    .whenReleased(new InstantCommand(turningArms::stopLeftArm), false);
-
-    operatorLB.whenHeld(new InstantCommand(
-      turningArms::rightArmBackwards
-    ), false)
-    .whenReleased(new InstantCommand(turningArms::stopRightArm), false);
-
-    // driverLeftButton4.whenPressed(new ConditionalCommand(new UndeployIntake(intake), new DeployIntake(intake), intake::isDeployed));
-    // driverLeftButton3.whenPressed(new DriveOffAimAndShootTwoBalls(driveTrain, intake, loader, shooter));
-    
-    // Correct Controls
-    // driverRightTrigger.whenHeld(new RunLoader(loader)); // only run load
-    // driverRightThumb.whenHeld(new MoveBallFromIntakeToShooter(loader, intake)); // intake and load
-    // driverLeftTrigger.whenHeld(new ParallelCommandGroup( // aim and start up shooter
-    //   new StayOnTarget(driveTrain),
-    //   new ShootBallBasedOnRPM(shooter, 5700)
-    // ));
-
-    // driverLeftTrigger.whenHeld(new ShootBallBasedOnPower(shooter, 0.3)) // for lower goal just in case
-
-    // needs a way to outtake
+    driverRightButton5.whenHeld(new ShootBallBasedOnPower(shooter, 0.3)); // for lower goal just in case
 
     //Intake
+    operatorBack.whenHeld(new ParallelCommandGroup(new ReverseLoader(loader), new ReverseIntake(intake)));
     operatorA.whenHeld(new RunIntake(intake));
     operatorB.whenPressed(new ConditionalCommand(new UndeployIntake(intake), new DeployIntake(intake), intake::isDeployed));
     operatorStart.whenPressed(new SetStartingPosition(intake));
@@ -280,33 +250,11 @@ public class RobotContainer {
     turningArms = new TurningArms();
   }  
 
-  public Command getAutonomousCommand() 
-  {
-    /* 
-    Currently I am unsure if connecting to the FMS in the actual comp by 
-    ethernet at the alliance station allows us to connect to the robot before 
-    the match starts. I fear that if we do not connect to the robot, then 
-    the shuffleboard will not connect and then we will be unable to select
-    an auto from the shuffleboard as the options will be greyed out and 
-    unavailable. 
-
-    However, I do believe that it does connect because at comps before, 
-    we get a confirmation that we are connected because the options for 
-    teleop, auto, test, etc. on the driver station application are replaced
-    with something that simply says something like "Connected to FMS".
-    Maybe this means we are able to see stuff on shuffleboard.
-
-    This is why the if check is here. If there is indeed no autoSelector
-    widget created on the shuffleboard (or if there is nothing selected),
-    then we will run a default simple move off and shoot auto. 
-    */
-
-    // if (autoSelector.getSelected() == null) {
-    //   return new DriveOffAimAndShootTwoBalls(driveTrain, intake, loader, shooter);
-    // }
-    // return autonomousCommandHashMap.get(autoSelector.getSelected());
-
-
-    return new DriveOffAimAndShootTwoBalls(driveTrain, intake, loader, shooter);
+  public Command getAutonomousCommand() {
+    if (autoSelector.getSelected() == null) {
+      return new DriveOffAimAndShootTwoBalls(driveTrain, intake, loader, shooter);
+    }
+    return autonomousCommandHashMap.get(autoSelector.getSelected());
+    // return new DriveOffAimAndShootTwoBalls(driveTrain, intake, loader, shooter);
   }
 }

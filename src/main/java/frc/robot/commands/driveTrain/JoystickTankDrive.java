@@ -16,7 +16,7 @@ public class JoystickTankDrive extends CommandBase {
   private final DriveTrain driveTrain;
 
   /** Creates a new TankDrive. */
-  public JoystickTankDrive(Joystick leftHand, Joystick rightHand, DriveTrain driveTrain) {
+  public JoystickTankDrive(Joystick rightHand, Joystick leftHand, DriveTrain driveTrain) {
     this.leftHand = leftHand;
     this.rightHand = rightHand;
     this.driveTrain = driveTrain;

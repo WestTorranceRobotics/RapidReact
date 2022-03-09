@@ -39,7 +39,7 @@ public class DriveOffAimAndShootTwoBalls extends SequentialCommandGroup {
         new StayOnTarget(driveTrain),
         new RunIntake(intake)
       ),
-      new DriveDistance(driveTrain, 64, 0.75)
+      new DriveDistance(driveTrain, 44, 0.75)
     );
   }
 }

@@ -13,7 +13,7 @@ public class TurnToAngle extends CommandBase {
   DriveTrain driveTrain;
   double targetAngle;
   private AHRS gyro;
-  private double speed = 0.45;
+  private double speed = 0.75;
   private boolean isDone;
 
   /** Creates a new TurnToAngle. */
@@ -34,9 +34,9 @@ public class TurnToAngle extends CommandBase {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    if (gyro.getAngle() >= targetAngle + 10) { // counterclockwise
+    if (driveTrain.getAngle() >= targetAngle + 10) { // counterclockwise
       driveTrain.tankDrive(-speed, speed);
-    } else if (gyro.getAngle() <= targetAngle - 10) { // clockwise
+    } else if (driveTrain.getAngle() <= targetAngle - 10) { // clockwise
       driveTrain.tankDrive(speed, -speed);
     } else {
       isDone = true;
