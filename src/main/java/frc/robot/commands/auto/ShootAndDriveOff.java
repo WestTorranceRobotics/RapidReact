@@ -4,10 +4,13 @@
 
 package frc.robot.commands.auto;
 
+import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.ParallelDeadlineGroup;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
-import frc.robot.RobotMap;
-import frc.robot.commands.commandGroups.RunShooterAndIntakeToShooter;
 import frc.robot.commands.driveTrain.DriveDistance;
+import frc.robot.commands.intake.RunIntake;
+import frc.robot.commands.shooter.ShootOneBallUsingDirectPower;
+import frc.robot.commands.shooter.StayOnTarget;
 import frc.robot.subsystems.DriveTrain;
 import frc.robot.subsystems.Intake;
 import frc.robot.subsystems.Loader;
@@ -16,11 +19,17 @@ import frc.robot.subsystems.Shooter;
 // NOTE:  Consider using this command inline, rather than writing a subclass.  For more
 // information, see:
 // https://docs.wpilib.org/en/stable/docs/software/commandbased/convenience-features.html
-public class DriveOffAndShoot extends SequentialCommandGroup {
+public class ShootAndDriveOff extends SequentialCommandGroup {
   /** Creates a new AutoDriveOffAndShoot. */
-  public DriveOffAndShoot(DriveTrain driveTrain, Loader loader, Intake intake, Shooter shooter) {
+  public ShootAndDriveOff(DriveTrain driveTrain, Loader loader, Intake intake, Shooter shooter) {
     addCommands(
-      new DriveDistance(driveTrain, 200, 0.6),
-      new RunShooterAndIntakeToShooter(loader, intake, shooter, RobotMap.ShooterMap.shooterPowerLong));
+      new ParallelDeadlineGroup(
+        new ShootOneBallUsingDirectPower(shooter, loader, 0.65, 2500),
+        new StayOnTarget(driveTrain),
+        new RunIntake(intake)
+      ),
+      new DriveDistance(driveTrain, 44, 0.75),
+      new InstantCommand(loader::enableProxSensor, loader)
+    );
   }
 }

@@ -5,7 +5,6 @@
 package frc.robot.commands.elevator;
 
 import edu.wpi.first.wpilibj2.command.CommandBase;
-import frc.robot.RobotMap;
 import frc.robot.subsystems.Elevator;
 
 public class LiftUp extends CommandBase {

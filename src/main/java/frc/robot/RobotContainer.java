@@ -18,31 +18,22 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.ConditionalCommand;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
-import edu.wpi.first.wpilibj2.command.ParallelDeadlineGroup;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.POVButton;
 import frc.robot.commands.loader.ReverseLoader;
 import frc.robot.commands.loader.RunLoader;
 import frc.robot.commands.loader.SeeBallRunLoader;
-import frc.robot.commands.auto.DriveOffAimAndShootOneBall;
 import frc.robot.commands.auto.DriveOffAimAndShootTwoBalls;
-import frc.robot.commands.auto.ThreeBallsNearTarmac;
-import frc.robot.commands.commandGroups.AimAndShoot;
-import frc.robot.commands.commandGroups.MoveBallFromIntakeToShooter;
-import frc.robot.commands.commandGroups.MoveBallFromShooterToIntake;
-import frc.robot.commands.driveTrain.DriveDistance;
+import frc.robot.commands.auto.ShootAndDriveOff;
 import frc.robot.commands.driveTrain.JoystickTankDrive;
-import frc.robot.commands.driveTrain.TurnToAngle;
 import frc.robot.commands.elevator.LiftDown;
 import frc.robot.commands.elevator.LiftUp;
 import frc.robot.commands.intake.DeployIntake;
 import frc.robot.commands.intake.ReverseIntake;
 import frc.robot.commands.intake.RunIntake;
 import frc.robot.commands.intake.SetStartingPosition;
-import frc.robot.commands.intake.ToggleIntakeDeploy;
 import frc.robot.commands.intake.UndeployIntake;
 import frc.robot.commands.shooter.*;
-import frc.robot.commands.elevator.*;
 import frc.robot.subsystems.*;
 
 public class RobotContainer {
@@ -155,7 +146,7 @@ public class RobotContainer {
     screen.addBoolean("LOADER RUNNING?", loader::isRunning).withPosition(0, 3).withSize(2, 1);
     screen.addBoolean("SHOOTER RUNNING?", shooter::active).withPosition(0, 4).withSize(2, 1);
 
-    screen.addNumber("TIME", this::getTimeRemaining).withPosition(2, 3);
+    screen.addNumber("TIME", this::getTimeRemaining).withPosition(2, 0);
   }
 
   public int getTimeRemaining() {
@@ -163,18 +154,16 @@ public class RobotContainer {
   }
 
   private void configureAutonomousSelector(ShuffleboardTab display) {
-    autoSelector.addOption("1 Ball", "1 Ball");
+    // autoSelector.addOption("1 Ball", "1 Ball");
     autoSelector.addOption("2 Ball", "2 Ball");
-    // autoSelector.addOption("3 Ball", "3 Ball");
     autoSelector.addOption("Simple Drive Off", "Simple Drive Off");
 
     display.add("Auto Selector", autoSelector)
     .withPosition(0, 0).withSize(2, 1).withWidget(BuiltInWidgets.kComboBoxChooser);
     
-    autonomousCommandHashMap.put("1 Ball", new DriveOffAimAndShootOneBall(driveTrain, intake, loader, shooter));
+    // autonomousCommandHashMap.put("1 Ball", new DriveOffAimAndShootOneBall(driveTrain, intake, loader, shooter));
     autonomousCommandHashMap.put("2 Ball", new DriveOffAimAndShootTwoBalls(driveTrain, intake, loader, shooter));
-    // autonomousCommandHashMap.put("3 Ball", new Test());
-    autonomousCommandHashMap.put("Simple Drive Off", new DriveDistance(driveTrain, 60, 0.6));
+    autonomousCommandHashMap.put("ShootAndDriveOff", new ShootAndDriveOff(driveTrain, loader, intake, shooter));
   }
 
   // private static boolean isCenter(){
@@ -191,7 +180,6 @@ public class RobotContainer {
     // driverRightButton3.whenHeld(new MoveBallFromShooterToIntake(intake, loader));
 
     // debug controls
-    
 
     // driverRightThumb.whenHeld(new ParallelCommandGroup(new ReverseLoader(loader), new ReverseIntake(intake)));
     
@@ -204,7 +192,7 @@ public class RobotContainer {
     // driverLeftButton3.whenPressed(new DriveOffAimAndShootTwoBalls(driveTrain, intake, loader, shooter));
     
     // Correct Controls
-    // joystick controls
+    // Joystick controls
     driverRightTrigger.whenHeld(new RunLoader(loader)); // only run load
     driverRightThumb.whenHeld(new RunIntake(intake)); // intake and load
     driverLeftTrigger.whenHeld(new ParallelCommandGroup( // aim and start up shooter
@@ -215,13 +203,13 @@ public class RobotContainer {
 
     driverLeftButton5.whenHeld(new ShootBallBasedOnPower(shooter, 0.3)); // for lower goal just in case
     driverRightButton3.whenHeld(new ParallelCommandGroup( // aim and start up shooter
-    new StayOnTarget(driveTrain),
-    new ShootBallBasedOnPower(shooter, 0.55)
-  ));
+      new StayOnTarget(driveTrain),
+      new ShootBallBasedOnPower(shooter, 0.55)
+    ));
     driverRightButton5.whenHeld(new ParallelCommandGroup( // aim and start up shooter
-    new StayOnTarget(driveTrain),
-    new ShootBallBasedOnPower(shooter, 0.75)
-  ));
+      new StayOnTarget(driveTrain),
+      new ShootBallBasedOnPower(shooter, 0.75)
+    ));
 
     //Intake
     operatorBack.whenHeld(new ParallelCommandGroup(new ReverseLoader(loader), new ReverseIntake(intake)));
