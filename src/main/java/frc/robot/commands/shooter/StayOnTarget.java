@@ -67,7 +67,7 @@ public class StayOnTarget extends CommandBase {
     double tx = NetworkTableInstance.getDefault().getTable("limelight").getEntry("tx").getDouble(0);
 
     double steeringAdjust = 0;
-    steeringAdjust = MathUtil.clamp(anglePID.calculate(tx, 0), -0.7, 0.7);
+    steeringAdjust = MathUtil.clamp(anglePID.calculate(tx, 0), -0.8, 0.8);
     
     leftCommand -= steeringAdjust;
     rightCommand += steeringAdjust;

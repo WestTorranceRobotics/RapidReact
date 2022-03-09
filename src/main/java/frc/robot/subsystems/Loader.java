@@ -13,6 +13,7 @@ import frc.robot.RobotMap;
 
 public class Loader extends SubsystemBase {
   CANSparkMax loaderMotor;
+  private boolean proxSensorEnabled = false;
   private AnalogInput ballDetector;
   /** Creates a new Loader. */
   public Loader() {
@@ -31,7 +32,7 @@ public class Loader extends SubsystemBase {
   }
 
   public boolean seeBall(){
-    if (ballDetector.getVoltage() < 1.5){
+    if (proxSensorEnabled && ballDetector.getVoltage() < 1.5){
       return true;
     }
     return false;
@@ -47,6 +48,10 @@ public class Loader extends SubsystemBase {
 
   public boolean isRunning() {
     return Math.abs(loaderMotor.getAppliedOutput()) > 0;
+  }
+
+  public void enableProxSensor() {
+    proxSensorEnabled = true;
   }
 
   @Override

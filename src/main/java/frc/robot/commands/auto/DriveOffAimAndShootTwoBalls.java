@@ -4,6 +4,7 @@
 
 package frc.robot.commands.auto;
 
+import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.ParallelDeadlineGroup;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import frc.robot.commands.driveTrain.DriveDistance;
@@ -30,7 +31,7 @@ public class DriveOffAimAndShootTwoBalls extends SequentialCommandGroup {
         new RunIntake(intake)
       ),
       new ParallelDeadlineGroup(
-        new DriveDistance(driveTrain, -30, 0.75),
+        new DriveDistance(driveTrain, -33, 0.75),
         new RunIntake(intake)
       ),
       // shoot while continuously aiming and intaking, stop when finished shooting
@@ -39,7 +40,8 @@ public class DriveOffAimAndShootTwoBalls extends SequentialCommandGroup {
         new StayOnTarget(driveTrain),
         new RunIntake(intake)
       ),
-      new DriveDistance(driveTrain, 44, 0.75)
+      new DriveDistance(driveTrain, 44, 0.75),
+      new InstantCommand(loader::enableProxSensor, loader)
     );
   }
 }
