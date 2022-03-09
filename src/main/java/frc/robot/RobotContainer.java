@@ -72,6 +72,7 @@ public class RobotContainer {
   public JoystickButton driverLeftTrigger = new JoystickButton(driverLeft, 1);
   public JoystickButton driverLeftButton3 = new JoystickButton(driverLeft, 3);
   public JoystickButton driverLeftButton4 = new JoystickButton(driverLeft, 4);
+  public JoystickButton driverLeftButton5 = new JoystickButton(driverLeft, 5);
 
   public POVButton operatorUp = new POVButton(operator, 0);
   public POVButton operatorDown = new POVButton(operator, 180);
@@ -205,13 +206,22 @@ public class RobotContainer {
     // Correct Controls
     // joystick controls
     driverRightTrigger.whenHeld(new RunLoader(loader)); // only run load
-    driverRightThumb.whenHeld(new MoveBallFromIntakeToShooter(loader, intake)); // intake and load
+    driverRightThumb.whenHeld(new RunIntake(intake)); // intake and load
     driverLeftTrigger.whenHeld(new ParallelCommandGroup( // aim and start up shooter
       new StayOnTarget(driveTrain),
-      new ShootBallBasedOnRPM(shooter, 5700)
+      new ShootBallBasedOnPower(shooter, 0.65)
+      // new ShootBallBasedOnRPM(shooter, 5700)
     ));
 
-    driverRightButton5.whenHeld(new ShootBallBasedOnPower(shooter, 0.3)); // for lower goal just in case
+    driverLeftButton5.whenHeld(new ShootBallBasedOnPower(shooter, 0.3)); // for lower goal just in case
+    driverRightButton3.whenHeld(new ParallelCommandGroup( // aim and start up shooter
+    new StayOnTarget(driveTrain),
+    new ShootBallBasedOnPower(shooter, 0.55)
+  ));
+    driverRightButton5.whenHeld(new ParallelCommandGroup( // aim and start up shooter
+    new StayOnTarget(driveTrain),
+    new ShootBallBasedOnPower(shooter, 0.75)
+  ));
 
     //Intake
     operatorBack.whenHeld(new ParallelCommandGroup(new ReverseLoader(loader), new ReverseIntake(intake)));

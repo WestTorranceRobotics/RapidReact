@@ -25,7 +25,6 @@ public class DeployIntake extends CommandBase {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    System.out.println("HIIIII");
     if(mIntake.getAnalogIntakeValue() >= RobotMap.IntakeMap.voltageValueForDeployedLower && mIntake.getAnalogIntakeValue() <= RobotMap.IntakeMap.voltageValueForDeployedUpper)
       {
         isDeployed = true;

@@ -41,7 +41,6 @@ public class UndeployIntake extends CommandBase {
   @Override
   public void execute() {
     if(isDeployed && isFinished == false){
-      System.out.println("RUNNING UNDEPLOY");
       mIntake.unDeployIntake();
     if(mIntake.getAnalogIntakeValue() >= RobotMap.IntakeMap.voltageValueForUndeployedLower)
       {
