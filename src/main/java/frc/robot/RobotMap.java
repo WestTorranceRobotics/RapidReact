@@ -37,8 +37,8 @@ public class RobotMap {
         public static final double elevatorMotorDown = -0.25;
         
         public static final double elevatorHalt = 0.0;
-        public static final int upperLimit = 193;
-        public static final int lowerLimit = 2;
+        // public static final int upperLimit = 193; none of these are used
+        // public static final int lowerLimit = 2;
         public static final int modNumSolenoid = 0;
     }
     
@@ -67,7 +67,7 @@ public class RobotMap {
 
         //0.37-0.38
         public static double voltageValueForDeployedLower = 0.37;
-        public static double voltageValueForDeployedUpper = 0.385;
+        public static double voltageValueForDeployedUpper = 0.375;
     }
 
     public static class LoaderMap{

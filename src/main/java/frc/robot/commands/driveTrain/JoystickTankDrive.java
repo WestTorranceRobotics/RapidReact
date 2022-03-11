@@ -16,7 +16,7 @@ public class JoystickTankDrive extends CommandBase {
   private final DriveTrain driveTrain;
 
   /** Creates a new TankDrive. */
-  public JoystickTankDrive(Joystick rightHand, Joystick leftHand, DriveTrain driveTrain) {
+  public JoystickTankDrive(Joystick leftHand, Joystick rightHand, DriveTrain driveTrain) {
     this.leftHand = leftHand;
     this.rightHand = rightHand;
     this.driveTrain = driveTrain;
@@ -35,7 +35,7 @@ public class JoystickTankDrive extends CommandBase {
   // }
   leftHandIn = Math.pow(leftHand.getY(), 1);
   rightHandIn = Math.pow(rightHand.getY(), 1);
-  driveTrain.tankDrive(leftHandIn, rightHandIn);
+  driveTrain.tankDrive(-leftHandIn, -rightHandIn);
   }
 
   // Called once the command ends or is interrupted.

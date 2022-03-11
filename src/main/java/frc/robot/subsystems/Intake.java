@@ -10,6 +10,7 @@ import com.ctre.phoenix.motorcontrol.can.TalonSRX;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 
+import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.wpilibj.AnalogPotentiometer;
 import edu.wpi.first.wpilibj.Encoder;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -25,6 +26,9 @@ public class Intake extends SubsystemBase
   private Encoder deployEncoder;
   private boolean isDeployed;
 
+  private double setpoint = 0.50;
+  private PIDController controller;
+
   /** Creates a new Intake. */
   public Intake() 
   {
@@ -34,6 +38,7 @@ public class Intake extends SubsystemBase
     deployMotor = new TalonSRX(RobotMap.IntakeMap.intakeDeployMotorCANID);
     deployMotor.setNeutralMode(NeutralMode.Brake);
 
+    controller = new PIDController(0, 0, 0);
   }
 
   public void RunIntake()
@@ -56,7 +61,7 @@ public class Intake extends SubsystemBase
   }
 
   public void deployIntake(){
-    deployMotor.set(ControlMode.PercentOutput, 0.6);
+    deployMotor.set(ControlMode.PercentOutput, 0.33);
   }
 
   public void unDeployIntake(){
@@ -103,6 +108,8 @@ public class Intake extends SubsystemBase
   @Override
   public void periodic() 
   {
-    // This method will be called once per scheduler run
+    // double error = getAnalogIntakeValue() - setpoint;
+    // double kP = 0.02; 
+    // double power = kP * error;
   }
 }

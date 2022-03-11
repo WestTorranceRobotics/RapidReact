@@ -101,8 +101,8 @@ public class RobotContainer {
 
     NetworkTableInstance.getDefault().getTable("limelight").getEntry("pipeline").setDouble(0);
 
-    // ShuffleboardTab display = Shuffleboard.getTab("RobotVision");
-    // Shuffleboard.selectTab("RobotVision");
+    ShuffleboardTab display = Shuffleboard.getTab("RobotVision");
+    Shuffleboard.selectTab("RobotVision");
 
     // display.addNumber("hi", () -> NetworkTableInstance.getDefault().getTable("Vision").getEntry("Xposition").getDouble(0));
 
@@ -112,7 +112,7 @@ public class RobotContainer {
     // display.addBoolean("IS DEPLOYED?", intake::isDeployed).withPosition(0, 1);
     // display.addNumber("Elevator Height", elevator::getElevatorMotorTicks);
 
-    // display.addNumber("Poteniometer", intake::getAnalogIntakeValue).withWidget(BuiltInWidgets.kGraph).withSize(3, 3);
+    display.addNumber("Poteniometer", intake::getAnalogIntakeValue).withWidget(BuiltInWidgets.kGraph).withSize(3, 3);
 
     // display.addNumber("Current", shooter::getCurrent).withPosition(5, 0);
     // display.addNumber("Loader applied output", loader::getAppliedOutput).withPosition(6, 0);
@@ -173,7 +173,7 @@ public class RobotContainer {
 
   private void configureDefaultCommands() {
     driveTrain.setDefaultCommand(new JoystickTankDrive(driverLeft, driverRight, driveTrain));
-    loader.setDefaultCommand(new SeeBallRunLoader(loader));
+    // loader.setDefaultCommand(new SeeBallRunLoader(loader));
   }
 
   private void configureButtonBindings() {
@@ -196,19 +196,19 @@ public class RobotContainer {
     driverRightTrigger.whenHeld(new RunLoader(loader)); // only run load
     driverRightThumb.whenHeld(new RunIntake(intake)); // intake and load
     driverLeftTrigger.whenHeld(new ParallelCommandGroup( // aim and start up shooter
-      new StayOnTarget(driveTrain),
-      new ShootBallBasedOnPower(shooter, 0.65)
+      // new StayOnTarget(driveTrain),
+      new ShootBallBasedOnPower(shooter, 0.7)
       // new ShootBallBasedOnRPM(shooter, 5700)
     ));
 
     driverLeftButton5.whenHeld(new ShootBallBasedOnPower(shooter, 0.3)); // for lower goal just in case
     driverRightButton3.whenHeld(new ParallelCommandGroup( // aim and start up shooter
-      new StayOnTarget(driveTrain),
-      new ShootBallBasedOnPower(shooter, 0.55)
+      // new StayOnTarget(driveTrain),
+      new ShootBallBasedOnPower(shooter, 0.6)
     ));
     driverRightButton5.whenHeld(new ParallelCommandGroup( // aim and start up shooter
-      new StayOnTarget(driveTrain),
-      new ShootBallBasedOnPower(shooter, 0.75)
+      // new StayOnTarget(driveTrain),
+      new ShootBallBasedOnPower(shooter, 0.85)
     ));
 
     //Intake
@@ -220,22 +220,22 @@ public class RobotContainer {
     //Loader
     operatorX.whenHeld(new RunLoader(loader));
     operatorY.whenHeld(new ReverseLoader(loader));
-
+  
     //Elevator
     operatorUp.whileHeld(new LiftUp(elevator));
     operatorDown.whileHeld(new LiftDown(elevator));
 
     // Pivot Arms
-    operatorLT.whenHeld(new InstantCommand(turningArms::leftArmForwards), false)
+    operatorRT.whenHeld(new InstantCommand(turningArms::leftArmForwards), false)
     .whenReleased(new InstantCommand(turningArms::stopLeftArm), false);
 
-    operatorRT.whenHeld(new InstantCommand(turningArms::rightArmForwards), false)
+    operatorLT.whenHeld(new InstantCommand(turningArms::rightArmForwards), false)
     .whenReleased(new InstantCommand(turningArms::stopRightArm), false);
 
-    operatorLB.whenHeld(new InstantCommand(turningArms::leftArmBackwards), false)
+    operatorRB.whenHeld(new InstantCommand(turningArms::leftArmBackwards), false)
     .whenReleased(new InstantCommand(turningArms::stopLeftArm), false);
 
-    operatorRB.whenHeld(new InstantCommand(turningArms::rightArmBackwards), false)
+    operatorLB.whenHeld(new InstantCommand(turningArms::rightArmBackwards), false)
     .whenReleased(new InstantCommand(turningArms::stopRightArm), false);
   }
 

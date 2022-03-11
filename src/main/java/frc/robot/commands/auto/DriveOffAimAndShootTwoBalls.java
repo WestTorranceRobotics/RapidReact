@@ -37,7 +37,7 @@ public class DriveOffAimAndShootTwoBalls extends SequentialCommandGroup {
       // shoot while continuously aiming and intaking, stop when finished shooting
       new ParallelDeadlineGroup(
         new ShootOneBallUsingDirectPower(shooter, loader, 0.65, 2500),
-        new StayOnTarget(driveTrain),
+        // new StayOnTarget(driveTrain),
         new RunIntake(intake)
       ),
       new DriveDistance(driveTrain, 44, 0.75),
