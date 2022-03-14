@@ -110,9 +110,9 @@ public class RobotContainer {
     // display.addNumber("Right Encoder", driveTrain::getRightEncoderTicks).withPosition(9, 2);
 
     // display.addBoolean("IS DEPLOYED?", intake::isDeployed).withPosition(0, 1);
-    // display.addNumber("Elevator Height", elevator::getElevatorMotorTicks);
+    display.addNumber("Elevator Height", elevator::getElevatorMotorTicks);
 
-    display.addNumber("Poteniometer", intake::getAnalogIntakeValue).withWidget(BuiltInWidgets.kGraph).withSize(3, 3);
+    // display.addNumber("Poteniometer", intake::getAnalogIntakeValue).withWidget(BuiltInWidgets.kGraph).withSize(3, 3);
 
     // display.addNumber("Current", shooter::getCurrent).withPosition(5, 0);
     // display.addNumber("Loader applied output", loader::getAppliedOutput).withPosition(6, 0);
@@ -145,6 +145,10 @@ public class RobotContainer {
     screen.addBoolean("INTAKE RUNNING?", intake::isRunning).withPosition(0, 2).withSize(2, 1);
     screen.addBoolean("LOADER RUNNING?", loader::isRunning).withPosition(0, 3).withSize(2, 1);
     screen.addBoolean("SHOOTER RUNNING?", shooter::active).withPosition(0, 4).withSize(2, 1);
+    screen.addBoolean("BOTTOM LIMIT HIT", () -> elevator.getElevatorMotor().getEncoder().getPosition() <= RobotMap.ElevatorMap.elevatorMinHeight)
+    .withPosition(2, 0).withSize(2, 1);
+    screen.addBoolean("TOP LIMIT HIT", () -> elevator.getElevatorMotor().getEncoder().getPosition() >= RobotMap.ElevatorMap.elevatorMaxHeight)
+    .withPosition(2, 1).withSize(2, 1);
 
     screen.addNumber("TIME", this::getTimeRemaining).withPosition(2, 0);
   }
@@ -196,19 +200,19 @@ public class RobotContainer {
     driverRightTrigger.whenHeld(new RunLoader(loader)); // only run load
     driverRightThumb.whenHeld(new RunIntake(intake)); // intake and load
     driverLeftTrigger.whenHeld(new ParallelCommandGroup( // aim and start up shooter
-      // new StayOnTarget(driveTrain),
+      new StayOnTarget(driveTrain),
       new ShootBallBasedOnPower(shooter, 0.7)
       // new ShootBallBasedOnRPM(shooter, 5700)
     ));
 
     driverLeftButton5.whenHeld(new ShootBallBasedOnPower(shooter, 0.3)); // for lower goal just in case
     driverRightButton3.whenHeld(new ParallelCommandGroup( // aim and start up shooter
-      // new StayOnTarget(driveTrain),
+      new StayOnTarget(driveTrain),
       new ShootBallBasedOnPower(shooter, 0.6)
     ));
     driverRightButton5.whenHeld(new ParallelCommandGroup( // aim and start up shooter
-      // new StayOnTarget(driveTrain),
-      new ShootBallBasedOnPower(shooter, 0.85)
+      new StayOnTarget(driveTrain),
+      new ShootBallBasedOnPower(shooter, 1)
     ));
 
     //Intake
@@ -249,10 +253,10 @@ public class RobotContainer {
   }  
 
   public Command getAutonomousCommand() {
-    if (autoSelector.getSelected() == null) {
-      return new DriveOffAimAndShootTwoBalls(driveTrain, intake, loader, shooter);
-    }
-    return autonomousCommandHashMap.get(autoSelector.getSelected());
-    // return new DriveOffAimAndShootTwoBalls(driveTrain, intake, loader, shooter);
+    // if (autoSelector.getSelected() == null) {
+    //   return new DriveOffAimAndShootTwoBalls(driveTrain, intake, loader, shooter);
+    // }
+    // return autonomousCommandHashMap.get(autoSelector.getSelected());
+    return new DriveOffAimAndShootTwoBalls(driveTrain, intake, loader, shooter);
   }
 }

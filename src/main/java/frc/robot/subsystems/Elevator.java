@@ -5,6 +5,8 @@
 package frc.robot.subsystems;
 
 
+import com.ctre.phoenix.motorcontrol.NeutralMode;
+import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkMax.IdleMode;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
@@ -17,15 +19,21 @@ import frc.robot.RobotMap;
 public class Elevator extends SubsystemBase {
   //motor for elevator may be victor spx or falcon 500
   private CANSparkMax elevatorMotor;
+  // private WPI_TalonFX elevatorMotor;
   private DigitalInput topLimit;
+
   private DigitalInput bottomLimit;
   private Solenoid breakOff;
+  public boolean resetMode = true;
 
   /** Creates a new Elevator. */
   public Elevator() {
     //declaring motor and limits to their can ids
     elevatorMotor = new CANSparkMax(RobotMap.ElevatorMap.elevatorCANID, MotorType.kBrushless);
     elevatorMotor.setIdleMode(IdleMode.kBrake);
+    // elevatorMotor = new WPI_TalonFX(RobotMap.ElevatorMap.elevatorCANID);
+    // elevatorMotor.setNeutralMode(NeutralMode.Brake);
+
     // TopLimit = new DigitalInput(RobotMap.ElevatorMap.topLimitChannelID);
     // BottomLimit = new DigitalInput(RobotMap.ElevatorMap.bottomLimitChannelID);
     // BreakOff = new Solenoid(PneumaticsModuleType.CTREPCM, RobotMap.ElevatorMap.elevatorSolenoid);
@@ -33,6 +41,7 @@ public class Elevator extends SubsystemBase {
     // ElevatorMotor.setIdleMode(IdleMode.Brake);
 
     elevatorMotor.setInverted(true);
+    // elevatorMotor.setSelectedSensorPosition(0);
     elevatorMotor.getEncoder().setPosition(0);
   }
 
@@ -45,8 +54,13 @@ public class Elevator extends SubsystemBase {
     return elevatorMotor;
   }
 
+  // public WPI_TalonFX getElevatorMotor(){
+  //   return elevatorMotor;
+  // }
+
   public double getElevatorMotorTicks(){
     return elevatorMotor.getEncoder().getPosition();
+    // return elevatorMotor.getSelectedSensorPosition();
   }
 
   /*victorspx requires controlmode value (all options can be seen with ctrl + click on ControlMode)

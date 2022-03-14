@@ -5,6 +5,7 @@
 package frc.robot.commands.elevator;
 
 import edu.wpi.first.wpilibj2.command.CommandBase;
+import frc.robot.RobotMap;
 import frc.robot.subsystems.Elevator;
 
 public class LiftUp extends CommandBase {
@@ -29,15 +30,18 @@ public class LiftUp extends CommandBase {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    /*this area is for checking if the climb is too high using encoders
-      but the encoders originally used last year are from cansparkmax, not victorspx
-      im planning to use gear ratios of elevatormotor to calculate this instead, may not be the case and will change accordingly later*/
       // set limits on elevator
-      // if(elevator.getElevatorMotor().getEncoder().getPosition() >= RobotMap.ElevatorMap.elevatorMaxHeight){
-      //   elevator.setNoPower();
-      //   isFinished = true;
-      // }
-    }
+    // if (elevator.resetMode) {
+    //   elevator.liftUp();
+    // }
+    // else if (elevator.getElevatorMotor().getEncoder().getPosition() >= RobotMap.ElevatorMap.elevatorMaxHeight) {
+    //   elevator.getElevatorMotor().set(0);
+    //   isFinished = true;
+    // } 
+    // else {
+    //   elevator.liftUp();
+    // }
+  }
   
 
   // Called once the command ends or is interrupted.
