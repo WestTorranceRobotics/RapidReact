@@ -5,6 +5,7 @@
 package frc.robot.commands.elevator;
 
 import edu.wpi.first.wpilibj2.command.CommandBase;
+import frc.robot.RobotMap;
 import frc.robot.subsystems.Elevator;
 
 public class LiftDown extends CommandBase {
@@ -21,19 +22,27 @@ public class LiftDown extends CommandBase {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    //when started up, elevator will go down
     elevator.liftDown();
+    //when started up, elevator will go down
+    // if (elevator.resetMode) {
+    //   elevator.liftDown();
+    // }
+    // else if (elevator.getElevatorMotor().getEncoder().getPosition() <= RobotMap.ElevatorMap.elevatorMinHeight){
+    //   elevator.getElevatorMotor().set(0);
+    //   isFinished = true;
+    // }
+    // else {
+    //   elevator.liftDown();
+    // }
+    // System.out.println(elevator.getElevatorMotor().getEncoder().getPosition() <= RobotMap.ElevatorMap.elevatorMinHeight);
+    // System.out.println(isFinished);
   }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    // if(elevator.getElevatorMotor().getEncoder().getPosition() <= RobotMap.ElevatorMap.elevatorMinHeight){
-    //   elevator.setNoPower();
-    //   isFinished = true;
-    // }
-    /*see LiftUp command for basic rundown,
-      except that instead of if it's too high, it is if it's too low*/
+    
+    
   }
 
   // Called once the command ends or is interrupted.

@@ -28,8 +28,8 @@ public class RobotMap {
         public static final int topLimitChannelID = 1;
         public static final int bottomLimitChannelID = 2;
         public static final int elevatorSolenoid = 2;
-        public static final double elevatorMaxHeight = 232;
-        public static final double elevatorMinHeight = 0;
+        public static final double elevatorMaxHeight = 379;
+        public static final double elevatorMinHeight = 20;
 
         public static final double climberMotorUp = 1;
         public static final double climberMotorDown = -1;

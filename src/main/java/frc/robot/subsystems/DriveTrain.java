@@ -37,6 +37,7 @@ public class DriveTrain extends SubsystemBase {
   // private PIDController distancePID;
 
   private boolean isAutomatic = false;
+  private boolean limelightEnabled = true;
 
   /** Creates a new DriveTrain. */
   public DriveTrain() {
@@ -140,6 +141,14 @@ public class DriveTrain extends SubsystemBase {
   
   public boolean isAutomatic() {
     return isAutomatic;
+  }
+
+  public void toggleLimelightEnabled() {
+    limelightEnabled = !limelightEnabled;
+  }
+
+  public boolean isEnabledLimelight() {
+    return limelightEnabled;
   }
 
   public PIDController getAngleController() {
