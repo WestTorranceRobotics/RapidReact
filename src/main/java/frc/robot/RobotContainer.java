@@ -74,12 +74,13 @@ public class RobotContainer {
   private HashMap<String, Command> autonomousCommandHashMap = new HashMap<>();
   private SendableChooser<String> autoSelector = new SendableChooser<String>();
 
-  private Shooter shooter;
+  //private Shooter shooter;
   private DriveTrain driveTrain;
   private Intake intake;
   private Elevator elevator;
   private Loader loader;
   private TurningArms turningArms;
+  private TestShooter testShooter;
 
   Timer timer = new Timer();
 
@@ -144,7 +145,9 @@ public class RobotContainer {
     screen.addBoolean("INTAKE DEPLOYED?", intake::isDeployed).withPosition(0, 1).withSize(2, 1);
     screen.addBoolean("INTAKE RUNNING?", intake::isRunning).withPosition(0, 2).withSize(2, 1);
     screen.addBoolean("LOADER RUNNING?", loader::isRunning).withPosition(0, 3).withSize(2, 1);
-    screen.addBoolean("SHOOTER RUNNING?", shooter::active).withPosition(0, 4).withSize(2, 1);
+    //screen.addBoolean("SHOOTER RUNNING?", shooter::active).withPosition(0, 4).withSize(2, 1);
+    screen.addNumber("TestShooter Leader Velocity", testShooter::getVelocityLeader);
+    screen.addNumber("TestShooter Follower Velocity", testShooter::getVelocityFollower);
     screen.addBoolean("BOTTOM LIMIT HIT", () -> elevator.getElevatorMotor().getEncoder().getPosition() <= RobotMap.ElevatorMap.elevatorMinHeight)
     .withPosition(2, 0).withSize(2, 1);
     screen.addBoolean("TOP LIMIT HIT", () -> elevator.getElevatorMotor().getEncoder().getPosition() >= RobotMap.ElevatorMap.elevatorMaxHeight)
@@ -166,8 +169,8 @@ public class RobotContainer {
     .withPosition(0, 0).withSize(2, 1).withWidget(BuiltInWidgets.kComboBoxChooser);
     
     // autonomousCommandHashMap.put("1 Ball", new DriveOffAimAndShootOneBall(driveTrain, intake, loader, shooter));
-    autonomousCommandHashMap.put("2 Ball", new DriveOffAimAndShootTwoBalls(driveTrain, intake, loader, shooter));
-    autonomousCommandHashMap.put("ShootAndDriveOff", new ShootAndDriveOff(driveTrain, loader, intake, shooter));
+    // autonomousCommandHashMap.put("2 Ball", new DriveOffAimAndShootTwoBalls(driveTrain, intake, loader, shooter));
+    // autonomousCommandHashMap.put("ShootAndDriveOff", new ShootAndDriveOff(driveTrain, loader, intake, shooter));
   }
 
   // private static boolean isCenter(){
@@ -199,27 +202,28 @@ public class RobotContainer {
     // Joystick controls
     driverRightTrigger.whenHeld(new RunLoader(loader)); // only run load
     driverRightThumb.whenHeld(new RunIntake(intake)); // intake and load
-    driverLeftTrigger.whenHeld(new ParallelCommandGroup( // aim and start up shooter
-      new StayOnTarget(driveTrain),
-      new ShootBallBasedOnPower(shooter, 0.7)
-      // new ShootBallBasedOnRPM(shooter, 5700)
-    ));
+    // driverLeftTrigger.whenHeld(new ParallelCommandGroup( // aim and start up shooter
+    //   new StayOnTarget(driveTrain),
+    //   new ShootBallBasedOnPower(shooter, 0.7)
+    //   // new ShootBallBasedOnRPM(shooter, 5700)
+    // ));
 
-    driverLeftButton5.whenHeld(new ShootBallBasedOnPower(shooter, 0.3)); // for lower goal just in case
-    driverRightButton3.whenHeld(new ParallelCommandGroup( // aim and start up shooter
-      new StayOnTarget(driveTrain),
-      new ShootBallBasedOnPower(shooter, 0.6)
-    ));
-    driverRightButton5.whenHeld(new ParallelCommandGroup( // aim and start up shooter
-      new StayOnTarget(driveTrain),
-      new ShootBallBasedOnPower(shooter, 1)
-    ));
+    // driverLeftButton5.whenHeld(new ShootBallBasedOnPower(shooter, 0.3)); // for lower goal just in case
+    // driverRightButton3.whenHeld(new ParallelCommandGroup( // aim and start up shooter
+    //   new StayOnTarget(driveTrain),
+    //   new ShootBallBasedOnPower(shooter, 0.6)
+    // ));
+    // driverRightButton5.whenHeld(new ParallelCommandGroup( // aim and start up shooter
+    //   new StayOnTarget(driveTrain),
+    //   new ShootBallBasedOnPower(shooter, 1)
+    // ));
 
     //Intake
     operatorBack.whenHeld(new ParallelCommandGroup(new ReverseLoader(loader), new ReverseIntake(intake)));
     operatorA.whenHeld(new RunIntake(intake));
     operatorB.whenPressed(new ConditionalCommand(new UndeployIntake(intake), new DeployIntake(intake), intake::isDeployed));
     operatorStart.whenPressed(new SetStartingPosition(intake));
+    operatorBack.whenHeld(new ShootingUsingLQR(testShooter));
 
     //Loader
     operatorX.whenHeld(new RunLoader(loader));
@@ -244,12 +248,13 @@ public class RobotContainer {
   }
 
   private void configureSubsystems(){
-    shooter = new Shooter();
+    // shooter = new Shooter();
     driveTrain = new DriveTrain();
     intake = new Intake();
     elevator = new Elevator();
     loader = new Loader();
     turningArms = new TurningArms();
+    testShooter = new TestShooter();
   }  
 
   public Command getAutonomousCommand() {
@@ -257,6 +262,7 @@ public class RobotContainer {
     //   return new DriveOffAimAndShootTwoBalls(driveTrain, intake, loader, shooter);
     // }
     // return autonomousCommandHashMap.get(autoSelector.getSelected());
-    return new DriveOffAimAndShootTwoBalls(driveTrain, intake, loader, shooter);
+    //return new DriveOffAimAndShootTwoBalls(driveTrain, intake, loader, shooter);
+    return null;//new ShootingUsingLQR(testShooter);
   }
 }

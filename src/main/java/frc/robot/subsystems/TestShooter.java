@@ -33,7 +33,7 @@ public class TestShooter extends SubsystemBase {
   private boolean atSpeed;
   private int ballsShot = 0;
   private boolean passedBallCurrent = false;
-  private static final double kSpinupRadPerSec = Units.rotationsPerMinuteToRadiansPerSecond(500.0);
+  private static final double kSpinupRadPerSec = 500;
 
   private final LinearSystem<N1,N1,N1> m_flyWheel = LinearSystemId.identifyVelocitySystem(RobotMap.ShooterMap.kV, RobotMap.ShooterMap.KA);
   
@@ -64,25 +64,17 @@ public class TestShooter extends SubsystemBase {
 
   /** Creates a new TestShooter. */
   public TestShooter() {
+  //leader
     shootMotorLeader.restoreFactoryDefaults();
     shootMotorLeader.setIdleMode(IdleMode.kCoast);
-    shootMotorLeader.setInverted(true);
-    shootMotorLeader.getPIDController().setP(RobotMap.ShooterMap.kP);
-    shootMotorLeader.getPIDController().setD(RobotMap.ShooterMap.kD);
-    shootMotorLeader.getPIDController().setFF(0.8);
-    shootMotorLeader.getPIDController().setOutputRange(-1, 1);
   //follower
     shootMotorFollower.restoreFactoryDefaults();
     shootMotorFollower.setIdleMode(IdleMode.kCoast);
-    // shootMotorFollower.setInverted(true);
-    shootMotorFollower.getPIDController().setP(RobotMap.ShooterMap.kP);
-    shootMotorFollower.getPIDController().setD(RobotMap.ShooterMap.kD);
-    shootMotorFollower.getPIDController().setFF(0.8);
-    shootMotorFollower.getPIDController().setOutputRange(-1, 1);
+    shootMotorFollower.follow(shootMotorLeader, true);
 
   //Space State Controller
     m_loopLeader.reset(VecBuilder.fill(shootMotorLeader.getEncoder().getVelocity()));
-    m_loopFollower.reset(VecBuilder.fill(shootMotorFollower.getEncoder().getVelocity()));
+    // m_loopFollower.reset(VecBuilder.fill(shootMotorFollower.getEncoder().getVelocity()));
     m_controller.latencyCompensate(m_flyWheel, 0.02, 0.25);
   }
 
@@ -96,12 +88,12 @@ public class TestShooter extends SubsystemBase {
 
   public void setReferenceVelocity(){
     m_loopLeader.setNextR(VecBuilder.fill(kSpinupRadPerSec));
-    m_loopFollower.setNextR(VecBuilder.fill(kSpinupRadPerSec));
+    //m_loopFollower.setNextR(VecBuilder.fill(kSpinupRadPerSec));
   }
 
   public void zeroReferenceVelocity(){
     m_loopLeader.setNextR(VecBuilder.fill(0));
-    m_loopFollower.setNextR(VecBuilder.fill(0));
+    //m_loopFollower.setNextR(VecBuilder.fill(0));
   }
 
   public double getVelocityLeader(){
