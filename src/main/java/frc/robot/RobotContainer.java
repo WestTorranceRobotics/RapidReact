@@ -80,6 +80,7 @@ public class RobotContainer {
   private Elevator elevator;
   private Loader loader;
   private TurningArms turningArms;
+  //private TestShooter testShooter;
 
   Timer timer = new Timer();
 
@@ -214,6 +215,7 @@ public class RobotContainer {
       new StayOnTarget(driveTrain),
       new ShootBallBasedOnPower(shooter, 1)
     ));
+    //operatorStart.whenHeld(new ShootingUsingLQR(testShooter));
 
     //Intake
     operatorBack.whenHeld(new ParallelCommandGroup(new ReverseLoader(loader), new ReverseIntake(intake)));
@@ -250,6 +252,7 @@ public class RobotContainer {
     elevator = new Elevator();
     loader = new Loader();
     turningArms = new TurningArms();
+    //testShooter = new TestShooter();
   }  
 
   public Command getAutonomousCommand() {
