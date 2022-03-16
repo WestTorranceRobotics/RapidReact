@@ -1,0 +1,11 @@
+{
+  "SysId": {
+    "Analysis Type": "General Mechanism",
+    "AnalyzerJSONLocation": "C:\\Users\\ianbb\\Documents\\characterization\\sysid_data20220315-171219.json",
+    "NetworkTables Settings": {
+      "serverTeam": "5124"
+    },
+    "mode": "Client",
+    "serverTeam": "5124"
+  }
+}

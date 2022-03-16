@@ -26,6 +26,7 @@ import frc.robot.commands.loader.SeeBallRunLoader;
 import frc.robot.commands.auto.DriveOffAimAndShootTwoBalls;
 import frc.robot.commands.auto.ShootAndDriveOff;
 import frc.robot.commands.driveTrain.JoystickTankDrive;
+import frc.robot.commands.driveTrain.TurnToAngleWithVisionTakeover;
 import frc.robot.commands.elevator.LiftDown;
 import frc.robot.commands.elevator.LiftUp;
 import frc.robot.commands.intake.DeployIntake;
@@ -98,6 +99,8 @@ public class RobotContainer {
     // NetworkTableInstance.getDefault().getTable("Vision").getEntry("shootI").setDouble(0);
     // NetworkTableInstance.getDefault().getTable("Vision").getEntry("shootD").setDouble(0);
     // NetworkTableInstance.getDefault().getTable("Vision").getEntry("shootF").setDouble(0);
+    NetworkTableInstance.getDefault().getTable("Vision").getEntry("kP").setDouble(0.1945392);
+    NetworkTableInstance.getDefault().getTable("Vision").getEntry("kI").setDouble(0);
 
     NetworkTableInstance.getDefault().getTable("limelight").getEntry("pipeline").setDouble(0);
 
@@ -111,6 +114,7 @@ public class RobotContainer {
 
     // display.addBoolean("IS DEPLOYED?", intake::isDeployed).withPosition(0, 1);
     display.addNumber("Elevator Height", elevator::getElevatorMotorTicks);
+    display.addNumber("vx", () -> NetworkTableInstance.getDefault().getTable("Vision").getEntry("vx").getDouble(0));
 
     // display.addNumber("Poteniometer", intake::getAnalogIntakeValue).withWidget(BuiltInWidgets.kGraph).withSize(3, 3);
 
@@ -135,7 +139,7 @@ public class RobotContainer {
     
     // Actual Driver Shuffleboard screen
     ShuffleboardTab screen = Shuffleboard.getTab("Divingstation");
-    Shuffleboard.selectTab(screen.getTitle());
+    // Shuffleboard.selectTab(screen.getTitle());
     
     // add limelight camera from cameraserver (might just have to open networktables tab and drag it in)
     // add intake camera as well (might also have to drag it in from network tables)
@@ -185,7 +189,7 @@ public class RobotContainer {
 
     // debug controls
 
-    // driverRightThumb.whenHeld(new ParallelCommandGroup(new ReverseLoader(loader), new ReverseIntake(intake)));
+    driverRightTrigger.whenHeld(new TurnToAngleWithVisionTakeover(driveTrain, 0));
     
     // driverRightButton3.toggleWhenPressed(new TurnToAngle(driveTrain, 90));
     // driverRightButton3.whenPressed(new ThreeBallsNearTarmac(driveTrain, intake, loader, shooter));
@@ -197,23 +201,23 @@ public class RobotContainer {
     
     // Correct Controls
     // Joystick controls
-    driverRightTrigger.whenHeld(new RunLoader(loader)); // only run load
-    driverRightThumb.whenHeld(new RunIntake(intake)); // intake and load
-    driverLeftTrigger.whenHeld(new ParallelCommandGroup( // aim and start up shooter
-      new StayOnTarget(driveTrain),
-      new ShootBallBasedOnPower(shooter, 0.7)
-      // new ShootBallBasedOnRPM(shooter, 5700)
-    ));
+    // driverRightTrigger.whenHeld(new RunLoader(loader)); // only run load
+    // driverRightThumb.whenHeld(new RunIntake(intake)); // intake and load
+    // driverLeftTrigger.whenHeld(new ParallelCommandGroup( // aim and start up shooter
+    //   new StayOnTarget(driveTrain),
+    //   new ShootBallBasedOnPower(shooter, 0.7)
+    //   // new ShootBallBasedOnRPM(shooter, 5700)
+    // ));
 
-    driverLeftButton5.whenHeld(new ShootBallBasedOnPower(shooter, 0.3)); // for lower goal just in case
-    driverRightButton3.whenHeld(new ParallelCommandGroup( // aim and start up shooter
-      new StayOnTarget(driveTrain),
-      new ShootBallBasedOnPower(shooter, 0.6)
-    ));
-    driverRightButton5.whenHeld(new ParallelCommandGroup( // aim and start up shooter
-      new StayOnTarget(driveTrain),
-      new ShootBallBasedOnPower(shooter, 1)
-    ));
+    // driverLeftButton5.whenHeld(new ShootBallBasedOnPower(shooter, 0.3)); // for lower goal just in case
+    // driverRightButton3.whenHeld(new ParallelCommandGroup( // aim and start up shooter
+    //   new StayOnTarget(driveTrain),
+    //   new ShootBallBasedOnPower(shooter, 0.6)
+    // ));
+    // driverRightButton5.whenHeld(new ParallelCommandGroup( // aim and start up shooter
+    //   new StayOnTarget(driveTrain),
+    //   new ShootBallBasedOnPower(shooter, 1)
+    // ));
 
     //Intake
     operatorBack.whenHeld(new ParallelCommandGroup(new ReverseLoader(loader), new ReverseIntake(intake)));
