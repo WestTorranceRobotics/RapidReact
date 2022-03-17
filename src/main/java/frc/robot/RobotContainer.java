@@ -219,7 +219,7 @@ public class RobotContainer {
     // ));
 
     //Intake
-    operatorBack.whenHeld(new ParallelCommandGroup(new ReverseLoader(loader), new ReverseIntake(intake)));
+    //operatorBack.whenHeld(new ParallelCommandGroup(new ReverseLoader(loader), new ReverseIntake(intake)));
     operatorA.whenHeld(new RunIntake(intake));
     operatorB.whenPressed(new ConditionalCommand(new UndeployIntake(intake), new DeployIntake(intake), intake::isDeployed));
     operatorStart.whenPressed(new SetStartingPosition(intake));

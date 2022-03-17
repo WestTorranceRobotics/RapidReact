@@ -21,6 +21,8 @@ import edu.wpi.first.math.system.LinearSystem;
 import edu.wpi.first.math.system.LinearSystemLoop;
 import edu.wpi.first.math.system.plant.LinearSystemId;
 import edu.wpi.first.math.util.Units;
+import edu.wpi.first.networktables.NetworkTableEntry;
+import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj.Encoder;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.RobotMap;
@@ -33,7 +35,7 @@ public class TestShooter extends SubsystemBase {
   private boolean atSpeed;
   private int ballsShot = 0;
   private boolean passedBallCurrent = false;
-  private static final double kSpinupRadPerSec = 500;
+  private static double kSpinupRadPerSec = 3500;
 
   private final LinearSystem<N1,N1,N1> m_flyWheel = LinearSystemId.identifyVelocitySystem(RobotMap.ShooterMap.kV, RobotMap.ShooterMap.KA);
   
@@ -42,8 +44,8 @@ public class TestShooter extends SubsystemBase {
     Nat.N1(), 
     Nat.N1(), 
     m_flyWheel, 
-    VecBuilder.fill(3.0), //How accurate we think our model is  
-    VecBuilder.fill(0.01), //How accurate we think our encoder data is
+    VecBuilder.fill(1.0), //How accurate we think our model is  
+    VecBuilder.fill(0.001), //How accurate we think our encoder data is
     0.020);
 
   private final LinearQuadraticRegulator<N1,N1,N1> m_controller = 
@@ -114,6 +116,7 @@ public class TestShooter extends SubsystemBase {
 
   @Override
   public void periodic() {
+    //kSpinupRadPerSec = NetworkTableInstance.getDefault().getTable("vision").getEntry("x").getDouble(0);
     // This method will be called once per scheduler run
   }
 }

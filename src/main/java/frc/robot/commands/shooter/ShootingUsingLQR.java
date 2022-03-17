@@ -56,6 +56,7 @@ public class ShootingUsingLQR extends CommandBase {
   @Override
   public void end(boolean interrupted) {
     mShooter.zeroReferenceVelocity();
+    mShooter.getShootMotorLeader().setVoltage(0);
   }
 
   // Returns true when the command should end.
