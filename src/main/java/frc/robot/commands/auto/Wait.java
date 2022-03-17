@@ -2,44 +2,46 @@
 // Open Source Software; you can modify and/or share it under the terms of
 // the WPILib BSD license file in the root directory of this project.
 
-package frc.robot.commands.loader;
+package frc.robot.commands.auto;
 
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.CommandBase;
-import frc.robot.subsystems.Loader;
 
-public class RunLoader extends CommandBase {
-  Loader mLoader;
-  double power;
-  /** Creates a new RunLoader. */
-  public RunLoader(Loader loader, double power) {
-    mLoader = loader;
-    this.power = power;
-
-    addRequirements(mLoader);
-    // Use addRequirements() here to declare subsystem dependencies.
+public class Wait extends CommandBase {
+  private Timer timer;
+  private double timeToWait;
+  private boolean isDone;
+  /** Creates a new Wait. */
+  public Wait(double timeToWait) {
+    timer = new Timer();
+    this.timeToWait = timeToWait;
+    isDone = false;
   }
 
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-
+    timer.reset();
+    timer.start();
   }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    mLoader.runLoader(power);
+    if (timer.hasElapsed(timeToWait)) {
+      isDone = true;
+    }
   }
 
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-    mLoader.stopLoader();
+    timer.stop();
   }
 
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return false;
+    return isDone;
   }
 }

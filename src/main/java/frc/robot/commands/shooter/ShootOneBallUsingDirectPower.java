@@ -46,7 +46,7 @@ public class ShootOneBallUsingDirectPower extends CommandBase {
     }
 
     if (mshooter.atSpeed()) {
-      mLoader.runLoader();
+      mLoader.runLoader(-0.3);
     }
     
     if(mshooter.atSpeed() && mLoader.getAppliedOutput() < 0) {

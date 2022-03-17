@@ -37,7 +37,7 @@ public class ShootTwoBallsUsingDirectPower extends CommandBase {
     }
 
     if (mshooter.atSpeed()) {
-      mLoader.runLoader();
+      mLoader.runLoader(-0.3);
     }
     
     // unsure if two balls will allow the shooter to reach the velocity in line 35,

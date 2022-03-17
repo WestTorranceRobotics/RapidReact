@@ -23,8 +23,8 @@ public class Loader extends SubsystemBase {
     ballDetector = new AnalogInput(1);
   }
 
-  public void runLoader(){
-    loaderMotor.set(-0.3);
+  public void runLoader(double power){
+    loaderMotor.set(power); // -0.3
   }
 
   public double getProxVoltage() {

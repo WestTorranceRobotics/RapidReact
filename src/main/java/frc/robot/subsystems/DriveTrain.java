@@ -34,7 +34,7 @@ public class DriveTrain extends SubsystemBase {
   private DifferentialDrive differentialDrive;
 
   private PIDController anglePID;
-  // private PIDController distancePID;
+  private PIDController distancePID;
 
   private boolean isAutomatic = false;
   private boolean limelightEnabled = true;
@@ -72,11 +72,15 @@ public class DriveTrain extends SubsystemBase {
     rightEncoder.setDistancePerPulse(RobotMap.DriveTrainMap.inchesPerPulse);
 
     anglePID = new PIDController(0, 0, 0);
-    // distancePID = new PIDController(0, 0, 0);
+    distancePID = new PIDController(0, 0, 0);
   }
 
   public void tankDrive(double leftPower, double rightPower){
     differentialDrive.tankDrive(leftPower, rightPower);
+  }
+
+  public void arcadeDrive(double power, double rotation) {
+    differentialDrive.arcadeDrive(power, rotation);
   }
 
   public WPI_TalonSRX getleftLeader(){
@@ -155,9 +159,9 @@ public class DriveTrain extends SubsystemBase {
     return anglePID;
   }
 
-  // public PIDController getDistanceController() {
-  //   return distancePID;
-  // }
+  public PIDController getDistanceController() {
+    return distancePID;
+  }
 
   // public void setP(double kP) {
   //   this.kP = kP;

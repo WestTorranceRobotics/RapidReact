@@ -36,7 +36,6 @@ public class DriveDistance extends CommandBase {
   @Override
   public void execute() {
     double distanceTraveled = driveTrain.getLeftEncoder().getDistance();
-    SmartDashboard.putNumber("Encoder Distance Traveled", distanceTraveled);
 
     if (Math.abs(distanceTraveled) >= Math.abs(distanceToTravel)) {
       isFinished = true;

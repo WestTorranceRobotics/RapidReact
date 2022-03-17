@@ -24,6 +24,7 @@ import frc.robot.commands.loader.ReverseLoader;
 import frc.robot.commands.loader.RunLoader;
 import frc.robot.commands.loader.SeeBallRunLoader;
 import frc.robot.commands.auto.DriveOffAimAndShootTwoBalls;
+import frc.robot.commands.auto.FourBallAuto;
 import frc.robot.commands.auto.ShootAndDriveOff;
 import frc.robot.commands.driveTrain.JoystickTankDrive;
 import frc.robot.commands.driveTrain.TurnToAngleWithVisionTakeover;
@@ -99,8 +100,13 @@ public class RobotContainer {
     // NetworkTableInstance.getDefault().getTable("Vision").getEntry("shootI").setDouble(0);
     // NetworkTableInstance.getDefault().getTable("Vision").getEntry("shootD").setDouble(0);
     // NetworkTableInstance.getDefault().getTable("Vision").getEntry("shootF").setDouble(0);
+    NetworkTableInstance.getDefault().getTable("Vision").getEntry("isRed").setBoolean(false);
+    NetworkTableInstance.getDefault().getTable("Vision").getEntry("aimbot").setBoolean(true);
+
     NetworkTableInstance.getDefault().getTable("Vision").getEntry("kP").setDouble(0.1945392);
     NetworkTableInstance.getDefault().getTable("Vision").getEntry("kI").setDouble(0);
+    NetworkTableInstance.getDefault().getTable("Vision").getEntry("kPDist").setDouble(0);
+    NetworkTableInstance.getDefault().getTable("Vision").getEntry("kIDist").setDouble(0);
 
     NetworkTableInstance.getDefault().getTable("limelight").getEntry("pipeline").setDouble(0);
 
@@ -115,6 +121,7 @@ public class RobotContainer {
     // display.addBoolean("IS DEPLOYED?", intake::isDeployed).withPosition(0, 1);
     display.addNumber("Elevator Height", elevator::getElevatorMotorTicks);
     display.addNumber("vx", () -> NetworkTableInstance.getDefault().getTable("Vision").getEntry("vx").getDouble(0));
+    display.addNumber("vy", () -> NetworkTableInstance.getDefault().getTable("Vision").getEntry("vy").getDouble(0));
 
     // display.addNumber("Poteniometer", intake::getAnalogIntakeValue).withWidget(BuiltInWidgets.kGraph).withSize(3, 3);
 
@@ -162,34 +169,34 @@ public class RobotContainer {
   }
 
   private void configureAutonomousSelector(ShuffleboardTab display) {
-    // autoSelector.addOption("1 Ball", "1 Ball");
     autoSelector.addOption("2 Ball", "2 Ball");
     autoSelector.addOption("Simple Drive Off", "Simple Drive Off");
 
     display.add("Auto Selector", autoSelector)
     .withPosition(0, 0).withSize(2, 1).withWidget(BuiltInWidgets.kComboBoxChooser);
     
-    // autonomousCommandHashMap.put("1 Ball", new DriveOffAimAndShootOneBall(driveTrain, intake, loader, shooter));
     autonomousCommandHashMap.put("2 Ball", new DriveOffAimAndShootTwoBalls(driveTrain, intake, loader, shooter));
     autonomousCommandHashMap.put("ShootAndDriveOff", new ShootAndDriveOff(driveTrain, loader, intake, shooter));
   }
-
-  // private static boolean isCenter(){
-  //   return (NetworkTableInstance.getDefault().getTable("Vision").getEntry("Xposition").getDouble(0) < 200 &&
-  //   NetworkTableInstance.getDefault().getTable("Vision").getEntry("Xposition").getDouble(0) > 130);
-  // }
 
   private void configureDefaultCommands() {
     driveTrain.setDefaultCommand(new JoystickTankDrive(driverLeft, driverRight, driveTrain));
     // loader.setDefaultCommand(new SeeBallRunLoader(loader));
   }
 
+  private void toggleColorBallTracking() {
+    boolean isRed = NetworkTableInstance.getDefault().getTable("Vision").getEntry("isRed").getBoolean(false);
+    NetworkTableInstance.getDefault().getTable("Vision").getEntry("isRed").setBoolean(!isRed);
+  }
+  
   private void configureButtonBindings() {
     // driverRightButton3.whenHeld(new MoveBallFromShooterToIntake(intake, loader));
 
     // debug controls
 
-    driverRightTrigger.whenHeld(new TurnToAngleWithVisionTakeover(driveTrain, 0));
+    driverRightTrigger.whenPressed(new FourBallAuto(driveTrain, intake, loader, shooter));
+    // driverRightTrigger.whenPressed(new TurnToAngleWithVisionTakeover(driveTrain, 75));
+    driverRightButton5.whenPressed(new InstantCommand(this::toggleColorBallTracking));
     
     // driverRightButton3.toggleWhenPressed(new TurnToAngle(driveTrain, 90));
     // driverRightButton3.whenPressed(new ThreeBallsNearTarmac(driveTrain, intake, loader, shooter));
@@ -226,7 +233,7 @@ public class RobotContainer {
     operatorStart.whenPressed(new SetStartingPosition(intake));
 
     //Loader
-    operatorX.whenHeld(new RunLoader(loader));
+    operatorX.whenHeld(new RunLoader(loader, -0.3));
     operatorY.whenHeld(new ReverseLoader(loader));
   
     //Elevator

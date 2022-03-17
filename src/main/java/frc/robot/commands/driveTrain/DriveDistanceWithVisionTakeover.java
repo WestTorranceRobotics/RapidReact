@@ -4,6 +4,7 @@
 
 package frc.robot.commands.driveTrain;
 
+
 import com.kauailabs.navx.frc.AHRS;
 
 import edu.wpi.first.math.MathUtil;
@@ -13,27 +14,26 @@ import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.subsystems.DriveTrain;
 
-public class TurnToAngleWithVisionTakeover extends CommandBase {
+
+public class DriveDistanceWithVisionTakeover extends CommandBase {
   private DriveTrain driveTrain;
   private PIDController anglePID;
   private PIDController distancePID;
   private AHRS gyro;
 
-  private double targetAngle;
-  private double initTurningSpeed = 0.69;
   private boolean ballFound;
   private boolean isAligned;
 
   private boolean isDone;
+
   private NetworkTable VTable = NetworkTableInstance.getDefault().getTable("Vision");
 
-  public TurnToAngleWithVisionTakeover(DriveTrain driveTrain, double targetAngle) {
-    this.driveTrain = driveTrain;
+  /** Creates a new DriveDistanceWithVisionTakeover. */
+  public DriveDistanceWithVisionTakeover(DriveTrain driveTrain) {
     anglePID = driveTrain.getAngleController();
     distancePID = driveTrain.getDistanceController();
     gyro = driveTrain.getGyro();
 
-    this.targetAngle = targetAngle;
     ballFound = false;
     isAligned = false;
     isDone = false;
@@ -49,8 +49,6 @@ public class TurnToAngleWithVisionTakeover extends CommandBase {
     anglePID.setSetpoint(0);
     anglePID.reset();
     driveTrain.enablePID();
-    ballFound = false;
-    isDone = false;
   }
 
   // Called every time the scheduler runs while the command is scheduled.
@@ -59,22 +57,21 @@ public class TurnToAngleWithVisionTakeover extends CommandBase {
     double vx = NetworkTableInstance.getDefault().getTable("Vision").getEntry("vx").getDouble(-999);
     double vy = NetworkTableInstance.getDefault().getTable("Vision").getEntry("vy").getDouble(-999);
     boolean targetAcquired = NetworkTableInstance.getDefault().getTable("Vision").getEntry("Ball Found").getBoolean(false);
-    if (vx != -999 && vy != -999) {
-      ballFound = true;
-    }
+    // if (vx != -999 && vy != -999) {
+    //   ballFound = true;
+    // }
 
-    if (ballFound) {
+    // if (ballFound) {
+    if (targetAcquired) {
       double leftCommand = 0;
       double rightCommand = 0;
 
       /* turn to face the target  */
       double steeringAdjust = 0;
-      anglePID.setP(0.01472);
+      anglePID.setP(0.01772);
       anglePID.setI(0.011);
-      // anglePID.setP(VTable.getEntry("kP").getDouble(0.1945392));
-      // anglePID.setI(VTable.getEntry("kI").getDouble(0));
+      
       steeringAdjust = MathUtil.clamp(anglePID.calculate(vx), -1, 1);
-      System.out.println(steeringAdjust);
       
       leftCommand -= steeringAdjust;
       rightCommand += steeringAdjust;
@@ -93,35 +90,19 @@ public class TurnToAngleWithVisionTakeover extends CommandBase {
       }
     }
     else {
-      // blindly turning to a general angle
-      if (driveTrain.getAngle() >= targetAngle + 10) { // counterclockwise
-        driveTrain.tankDrive(-initTurningSpeed, initTurningSpeed);
-      } 
-      else if (driveTrain.getAngle() <= targetAngle - 10) { // clockwise
-        driveTrain.tankDrive(initTurningSpeed, -initTurningSpeed);
-      }
+      // just drive 
+      double speed = 0.7;
+      driveTrain.tankDrive(speed, speed);
     }
   }
 
   // Called once the command ends or is interrupted.
   @Override
-  public void end(boolean interrupted) {
-    driveTrain.disablePID();
-    isDone = false;
-  }
+  public void end(boolean interrupted) {}
 
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return isDone;
+    return false;
   }
 }
-/*
-4 ball auto:
--normal two ball auto (but with aiming)
--turn to angle towards human player station
--visionAssistedDriving:
-  drive forward with no assistance
-  When a ball is seen, use same vision takeover from turnToAngleWithVisionTakeover
-  Basically, the algorithm is the same except that in the beginning, drive distance is used instead of turn to angle
-*/

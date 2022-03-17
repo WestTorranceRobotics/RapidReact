@@ -72,10 +72,4 @@ public class TurningArms extends SubsystemBase {
   public void stopRightArm() {
     rightTurningArm.set(0);
   }
-
-  public void ManualControl(double leftPower, double rightPower)
-  {
-    leftTurningArm.set(leftPower);
-    rightTurningArm.set(rightPower);
-  }
 }
