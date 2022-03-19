@@ -158,6 +158,8 @@ public class RobotContainer {
     screen.addBoolean("INTAKE RUNNING?", intake::isRunning).withPosition(0, 2).withSize(2, 1);
     screen.addBoolean("LOADER RUNNING?", loader::isRunning).withPosition(0, 3).withSize(2, 1);
     screen.addBoolean("SHOOTER RUNNING?", shooter::active).withPosition(0, 4).withSize(2, 1);
+    screen.addNumber("Intake Deploy", intake::getAnalogIntakeValue);
+    screen.addNumber("Proximity voltage", loader::getProxVoltage);
     screen.addBoolean("BOTTOM LIMIT HIT", () -> elevator.getElevatorMotor().getEncoder().getPosition() <= RobotMap.ElevatorMap.elevatorMinHeight)
     .withPosition(2, 0).withSize(2, 1);
     screen.addBoolean("TOP LIMIT HIT", () -> elevator.getElevatorMotor().getEncoder().getPosition() >= RobotMap.ElevatorMap.elevatorMaxHeight)
@@ -187,7 +189,7 @@ public class RobotContainer {
 
   private void configureDefaultCommands() {
     driveTrain.setDefaultCommand(new JoystickTankDrive(driverLeft, driverRight, driveTrain));
-    // loader.setDefaultCommand(new SeeBallRunLoader(loader));
+    loader.setDefaultCommand(new SeeBallRunLoader(loader));
   }
 
   private void toggleColorBallTracking() {
