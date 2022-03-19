@@ -12,9 +12,9 @@ import frc.robot.subsystems.Shooter;
 import frc.robot.subsystems.TestShooter;
 
 public class ShootingUsingLQR extends CommandBase {
-  TestShooter mShooter;
+  Shooter mShooter;
   /** Creates a new ShootingUsingLQR. */
-  public ShootingUsingLQR(TestShooter shooter) {
+  public ShootingUsingLQR(Shooter shooter) {
     mShooter = shooter;
     addRequirements(mShooter);
     // Use addRequirements() here to declare subsystem dependencies.
