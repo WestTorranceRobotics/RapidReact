@@ -26,7 +26,7 @@ public class SeeBallRunLoader extends CommandBase {
   @Override
   public void execute() {
     if(mLoader.seeBall()){
-      mLoader.runLoader(-0.3);
+      mLoader.runLoader(-0.3);;
       if(!mLoader.seeBall()){
         mLoader.stopLoader();
         isFinished = true;

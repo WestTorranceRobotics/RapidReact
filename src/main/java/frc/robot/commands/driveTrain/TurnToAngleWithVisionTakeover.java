@@ -27,6 +27,8 @@ public class TurnToAngleWithVisionTakeover extends CommandBase {
   private boolean isDone;
   private NetworkTable VTable = NetworkTableInstance.getDefault().getTable("Vision");
 
+  private double startingAngle;
+
   public TurnToAngleWithVisionTakeover(DriveTrain driveTrain, double targetAngle) {
     this.driveTrain = driveTrain;
     anglePID = driveTrain.getAngleController();
@@ -43,8 +45,9 @@ public class TurnToAngleWithVisionTakeover extends CommandBase {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    gyro.reset();
-    gyro.zeroYaw();
+    // gyro.reset();
+    // gyro.zeroYaw();
+    startingAngle = gyro.getAngle();
 
     anglePID.setSetpoint(0);
     anglePID.reset();
@@ -94,10 +97,12 @@ public class TurnToAngleWithVisionTakeover extends CommandBase {
     }
     else {
       // blindly turning to a general angle
-      if (driveTrain.getAngle() >= targetAngle + 10) { // counterclockwise
+      double angleTurned = GetAngleTurned();
+
+      if (angleTurned >= targetAngle + 10) { // counterclockwise
         driveTrain.tankDrive(-initTurningSpeed, initTurningSpeed);
       } 
-      else if (driveTrain.getAngle() <= targetAngle - 10) { // clockwise
+      else if (angleTurned <= targetAngle - 10) { // clockwise
         driveTrain.tankDrive(initTurningSpeed, -initTurningSpeed);
       }
     }
@@ -114,6 +119,14 @@ public class TurnToAngleWithVisionTakeover extends CommandBase {
   @Override
   public boolean isFinished() {
     return isDone;
+  }
+
+  public double GetAngleTurned()
+  {
+    double angle = gyro.getAngle()-startingAngle;
+    angle = angle%360;
+    if(angle > 180){ angle-=180; }
+    return angle;
   }
 }
 /*

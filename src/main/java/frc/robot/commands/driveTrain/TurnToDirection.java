@@ -12,37 +12,33 @@ import com.kauailabs.navx.frc.AHRS;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.subsystems.DriveTrain;
 
-public class TurnToAngle extends CommandBase {
+public class TurnToDirection extends CommandBase {
   DriveTrain driveTrain;
-  double targetAngle;
+  double targetDirection;
   private AHRS gyro;
   private double speed = 0.75;
   private boolean isDone;
-  private double startingAngle = 0;
 
   /** Creates a new TurnToAngle. */
-  public TurnToAngle(DriveTrain driveTrain, double targetAngle) {
+  public TurnToDirection(DriveTrain driveTrain, double targetDirection) {
     this.driveTrain = driveTrain;
-    this.targetAngle = targetAngle;
+    this.targetDirection = targetDirection;
     gyro = driveTrain.getGyro();
   }
 
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    // gyro.reset();
-    // gyro.zeroYaw();
-    startingAngle = gyro.getAngle();
     isDone = false;
   }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    double angleError = GetAngleTurned();
-    if (angleError >= targetAngle + 10) { // counterclockwise
+    double angleError = GetAngleError();
+    if (angleError >= 5) { // counterclockwise
       driveTrain.tankDrive(-speed, speed);
-    } else if (angleError <= targetAngle - 10) { // clockwise
+    } else if (angleError <= 5) { // clockwise
       driveTrain.tankDrive(speed, -speed);
     } else {
       isDone = true;
@@ -61,9 +57,9 @@ public class TurnToAngle extends CommandBase {
     return isDone;
   }
 
-  public double GetAngleTurned()
+  public double GetAngleError()
   {
-    double angle = gyro.getAngle()-startingAngle;
+    double angle = gyro.getAngle()-targetDirection;
     angle = angle%360;
     if(angle > 180){ angle-=180; }
     return angle;

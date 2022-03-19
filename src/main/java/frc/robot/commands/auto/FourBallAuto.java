@@ -8,10 +8,14 @@ import edu.wpi.first.wpilibj2.command.ParallelDeadlineGroup;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import frc.robot.commands.driveTrain.DriveDistance;
 import frc.robot.commands.driveTrain.DriveDistanceWithVisionTakeover;
+import frc.robot.commands.driveTrain.Print;
+import frc.robot.commands.driveTrain.TurnToAngle;
 import frc.robot.commands.driveTrain.TurnToAngleWithVisionTakeover;
+import frc.robot.commands.driveTrain.TurnToDirection;
 import frc.robot.commands.intake.DeployIntake;
 import frc.robot.commands.intake.RunIntake;
 import frc.robot.commands.loader.RunLoader;
+import frc.robot.commands.loader.SeeBallRunLoader;
 import frc.robot.commands.shooter.ShootOneBallUsingDirectPower;
 import frc.robot.commands.shooter.StayOnTarget;
 import frc.robot.subsystems.DriveTrain;
@@ -25,44 +29,62 @@ import frc.robot.subsystems.Shooter;
 public class FourBallAuto extends SequentialCommandGroup {
   /** Creates a new FourBallAuto. */
   public FourBallAuto(DriveTrain driveTrain, Intake intake, Loader loader, Shooter shooter) {
+    System.out.println("4 Ball Auto");
     addCommands(
       // original two ball auto
       new DeployIntake(intake),
       // drive while continuously intaking, stop when finished driving
       new ParallelDeadlineGroup(
-        new DriveDistance(driveTrain, 74, 0.75),
+        new DriveDistance(driveTrain, 90, 0.75),
+        new SeeBallRunLoader(loader),
         new RunIntake(intake)
       ),
       new ParallelDeadlineGroup(
         new DriveDistance(driveTrain, -33, 0.75),
+        new SeeBallRunLoader(loader),
         new RunIntake(intake)
       ),
+      new TurnToAngle(driveTrain, -15),
       // shoot while continuously aiming and intaking, stop when finished shooting
       new ParallelDeadlineGroup(
         new ShootOneBallUsingDirectPower(shooter, loader, 0.65, 2500),
         // new StayOnTarget(driveTrain),
         new RunIntake(intake)
       ),
-      //
-      new DriveDistance(driveTrain, 36, 0.75),
+      new TurnToAngle(driveTrain, 25),
+      new DriveDistance(driveTrain, 210, 0.90),
       new ParallelDeadlineGroup(
         new TurnToAngleWithVisionTakeover(driveTrain, 1),
         new RunIntake(intake)
       ),
+
       new ParallelDeadlineGroup(
-        new Wait(1),
-        new RunIntake(intake)
+        new DriveDistance(driveTrain, 10, 0.90),
+        new RunIntake(intake),
+        new SeeBallRunLoader(loader)
       ),
+
       new ParallelDeadlineGroup(
-        new DriveDistance(driveTrain, -33, 0.75),
-        new RunIntake(intake)
+        new Wait(2),
+        new RunIntake(intake),
+        new SeeBallRunLoader(loader)
       ),
-      // shoot while continuously aiming and intaking, stop when finished shooting
-      new ParallelDeadlineGroup(
-        new ShootOneBallUsingDirectPower(shooter, loader, 0.65, 2500),
-        // new StayOnTarget(driveTrain),
-        new RunIntake(intake)
-      )
+
+      new TurnToDirection(driveTrain, -22)//,
+      // new ParallelDeadlineGroup(
+      //   new DriveDistance(driveTrain, -300, 0.9),
+      //   new RunIntake(intake)
+      // ),
+
+      // new TurnToAngle(driveTrain, -90),
+      // // shoot while continuously aiming and intaking, stop when finished shooting
+      // new ParallelDeadlineGroup(
+      //   new ShootOneBallUsingDirectPower(shooter, loader, 0.65, 2500),
+      //   // new StayOnTarget(driveTrain),
+      //   new RunIntake(intake)
+      // )
+
+      //-------
       // new DriveOffAimAndShootTwoBalls(driveTrain, intake, loader, shooter),
       // new ParallelDeadlineGroup(
       //   new DriveDistanceWithVisionTakeover(driveTrain),

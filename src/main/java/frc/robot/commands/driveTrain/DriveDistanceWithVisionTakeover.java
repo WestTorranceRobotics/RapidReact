@@ -28,6 +28,8 @@ public class DriveDistanceWithVisionTakeover extends CommandBase {
 
   private NetworkTable VTable = NetworkTableInstance.getDefault().getTable("Vision");
 
+  private double startingAngle;
+
   /** Creates a new DriveDistanceWithVisionTakeover. */
   public DriveDistanceWithVisionTakeover(DriveTrain driveTrain) {
     anglePID = driveTrain.getAngleController();
@@ -43,8 +45,9 @@ public class DriveDistanceWithVisionTakeover extends CommandBase {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    gyro.reset();
-    gyro.zeroYaw();
+    // gyro.reset();
+    // gyro.zeroYaw();
+    startingAngle = gyro.getAngle();
 
     anglePID.setSetpoint(0);
     anglePID.reset();
@@ -85,7 +88,7 @@ public class DriveDistanceWithVisionTakeover extends CommandBase {
 
       driveTrain.tankDrive(leftCommand, rightCommand);
 
-      if (vy <= -25) {
+      if (vy <= -35) {
         isDone = true;
       }
     }
@@ -104,5 +107,13 @@ public class DriveDistanceWithVisionTakeover extends CommandBase {
   @Override
   public boolean isFinished() {
     return false;
+  }
+
+  public double GetAngleTurned()
+  {
+    double angle = gyro.getAngle()-startingAngle;
+    angle = angle%360;
+    if(angle > 180){ angle-=180; }
+    return angle;
   }
 }

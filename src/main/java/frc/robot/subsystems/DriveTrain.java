@@ -64,6 +64,7 @@ public class DriveTrain extends SubsystemBase {
 
     differentialDrive = new DifferentialDrive(leftLeader, rightLeader);   
     
+    gyro.calibrate();
     gyro.reset();
     gyro.zeroYaw();
 

@@ -13,7 +13,7 @@ import frc.robot.RobotMap;
 
 public class Loader extends SubsystemBase {
   CANSparkMax loaderMotor;
-  private boolean proxSensorEnabled = false;
+  private boolean proxSensorEnabled = true;
   private AnalogInput ballDetector;
   /** Creates a new Loader. */
   public Loader() {

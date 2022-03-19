@@ -18,6 +18,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.ConditionalCommand;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
+import edu.wpi.first.wpilibj2.command.ParallelDeadlineGroup;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.POVButton;
 import frc.robot.commands.loader.ReverseLoader;
@@ -26,6 +27,7 @@ import frc.robot.commands.loader.SeeBallRunLoader;
 import frc.robot.commands.auto.DriveOffAimAndShootTwoBalls;
 import frc.robot.commands.auto.FourBallAuto;
 import frc.robot.commands.auto.ShootAndDriveOff;
+import frc.robot.commands.driveTrain.DriveDistanceWithVisionTakeover;
 import frc.robot.commands.driveTrain.JoystickTankDrive;
 import frc.robot.commands.driveTrain.TurnToAngleWithVisionTakeover;
 import frc.robot.commands.elevator.LiftDown;
@@ -160,6 +162,8 @@ public class RobotContainer {
     .withPosition(2, 0).withSize(2, 1);
     screen.addBoolean("TOP LIMIT HIT", () -> elevator.getElevatorMotor().getEncoder().getPosition() >= RobotMap.ElevatorMap.elevatorMaxHeight)
     .withPosition(2, 1).withSize(2, 1);
+    screen.addBoolean("CAN SEE BALl", loader::seeBall);
+    screen.addNumber("GYRO ANGLE", driveTrain::getAngle);
 
     screen.addNumber("TIME", this::getTimeRemaining).withPosition(2, 0);
   }
@@ -171,12 +175,14 @@ public class RobotContainer {
   private void configureAutonomousSelector(ShuffleboardTab display) {
     autoSelector.addOption("2 Ball", "2 Ball");
     autoSelector.addOption("Simple Drive Off", "Simple Drive Off");
+    autoSelector.addOption("4 Ball", "4 Ball");
 
     display.add("Auto Selector", autoSelector)
     .withPosition(0, 0).withSize(2, 1).withWidget(BuiltInWidgets.kComboBoxChooser);
     
     autonomousCommandHashMap.put("2 Ball", new DriveOffAimAndShootTwoBalls(driveTrain, intake, loader, shooter));
     autonomousCommandHashMap.put("ShootAndDriveOff", new ShootAndDriveOff(driveTrain, loader, intake, shooter));
+    autonomousCommandHashMap.put("4 Ball", new FourBallAuto(driveTrain, intake, loader, shooter));
   }
 
   private void configureDefaultCommands() {
@@ -230,6 +236,7 @@ public class RobotContainer {
     operatorBack.whenHeld(new ParallelCommandGroup(new ReverseLoader(loader), new ReverseIntake(intake)));
     operatorA.whenHeld(new RunIntake(intake));
     operatorB.whenPressed(new ConditionalCommand(new UndeployIntake(intake), new DeployIntake(intake), intake::isDeployed));
+    //operatorB.whenPressed(new ParallelDeadlineGroup(new TurnToAngleWithVisionTakeover(driveTrain, 1), new RunIntake(intake)));
     operatorStart.whenPressed(new SetStartingPosition(intake));
 
     //Loader
@@ -264,10 +271,10 @@ public class RobotContainer {
   }  
 
   public Command getAutonomousCommand() {
-    // if (autoSelector.getSelected() == null) {
-    //   return new DriveOffAimAndShootTwoBalls(driveTrain, intake, loader, shooter);
-    // }
-    // return autonomousCommandHashMap.get(autoSelector.getSelected());
-    return new DriveOffAimAndShootTwoBalls(driveTrain, intake, loader, shooter);
+    if (autoSelector.getSelected() == null) {
+      return new DriveOffAimAndShootTwoBalls(driveTrain, intake, loader, shooter);
+    }
+    return autonomousCommandHashMap.get(autoSelector.getSelected());
+    //return new DriveOffAimAndShootTwoBalls(driveTrain, intake, loader, shooter);
   }
 }
