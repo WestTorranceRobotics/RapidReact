@@ -233,11 +233,12 @@ public class RobotContainer {
     // ));
 
     //Intake
-    operatorBack.whenHeld(new ParallelCommandGroup(new ReverseLoader(loader), new ReverseIntake(intake)));
+    // operatorBack.whenHeld(new ParallelCommandGroup(new ReverseLoader(loader), new ReverseIntake(intake)));
     operatorA.whenHeld(new RunIntake(intake));
     operatorB.whenPressed(new ConditionalCommand(new UndeployIntake(intake), new DeployIntake(intake), intake::isDeployed));
     //operatorB.whenPressed(new ParallelDeadlineGroup(new TurnToAngleWithVisionTakeover(driveTrain, 1), new RunIntake(intake)));
     operatorStart.whenPressed(new SetStartingPosition(intake));
+    operatorBack.whenHeld(new ShootingUsingLQR(shooter, 3500));
 
     //Loader
     operatorX.whenHeld(new RunLoader(loader, -0.3));
