@@ -124,8 +124,8 @@ public class Shooter extends SubsystemBase {
   }
 
   public void setPower(double power) {
-    shootMotorLeader.set(-power);
-    shootMotorFollower.set(-power);
+    shootMotorLeader.set(power);
+    shootMotorFollower.set(power);
   }
 
   public int getBallsShot() {

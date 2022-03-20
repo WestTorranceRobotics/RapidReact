@@ -58,9 +58,9 @@ public class DriveTrain extends SubsystemBase {
     rightFollower.setInverted(InvertType.FollowMaster);
 
     leftLeader.setNeutralMode(NeutralMode.Brake);
-    leftFollower.setNeutralMode(NeutralMode.Coast);
+    leftFollower.setNeutralMode(NeutralMode.Brake);
     rightLeader.setNeutralMode(NeutralMode.Brake);
-    rightFollower.setNeutralMode(NeutralMode.Coast);
+    rightFollower.setNeutralMode(NeutralMode.Brake);
 
     differentialDrive = new DifferentialDrive(leftLeader, rightLeader);   
     
@@ -77,7 +77,11 @@ public class DriveTrain extends SubsystemBase {
   }
 
   public void tankDrive(double leftPower, double rightPower){
-    differentialDrive.tankDrive(leftPower, rightPower);
+    // differentialDrive.tankDrive(leftPower, rightPower);
+    leftLeader.set(-leftPower);
+    leftFollower.set(-leftPower);
+    rightLeader.set(rightPower);
+    rightFollower.set(rightPower);
   }
 
   public void arcadeDrive(double power, double rotation) {

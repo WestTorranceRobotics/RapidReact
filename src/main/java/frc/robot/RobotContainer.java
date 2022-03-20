@@ -158,7 +158,7 @@ public class RobotContainer {
     screen.addBoolean("INTAKE RUNNING?", intake::isRunning).withPosition(0, 2).withSize(2, 1);
     screen.addBoolean("LOADER RUNNING?", loader::isRunning).withPosition(0, 3).withSize(2, 1);
     screen.addBoolean("SHOOTER RUNNING?", shooter::active).withPosition(0, 4).withSize(2, 1);
-    screen.addNumber("Intake Deploy", intake::getAnalogIntakeValue);
+    screen.addNumber("Intake Deploy", shooter::getVelocity);
     screen.addNumber("Proximity voltage", loader::getProxVoltage);
     screen.addBoolean("BOTTOM LIMIT HIT", () -> elevator.getElevatorMotor().getEncoder().getPosition() <= RobotMap.ElevatorMap.elevatorMinHeight)
     .withPosition(2, 0).withSize(2, 1);
@@ -189,7 +189,7 @@ public class RobotContainer {
 
   private void configureDefaultCommands() {
     driveTrain.setDefaultCommand(new JoystickTankDrive(driverLeft, driverRight, driveTrain));
-    loader.setDefaultCommand(new SeeBallRunLoader(loader));
+    //loader.setDefaultCommand(new SeeBallRunLoader(loader));
   }
 
   private void toggleColorBallTracking() {
@@ -202,9 +202,9 @@ public class RobotContainer {
 
     // debug controls
 
-    driverRightTrigger.whenPressed(new FourBallAuto(driveTrain, intake, loader, shooter));
+    //driverRightTrigger.whenPressed(new FourBallAuto(driveTrain, intake, loader, shooter));
     // driverRightTrigger.whenPressed(new TurnToAngleWithVisionTakeover(driveTrain, 75));
-    driverRightButton5.whenPressed(new InstantCommand(this::toggleColorBallTracking));
+    //driverRightButton5.whenPressed(new InstantCommand(this::toggleColorBallTracking));
     
     // driverRightButton3.toggleWhenPressed(new TurnToAngle(driveTrain, 90));
     // driverRightButton3.whenPressed(new ThreeBallsNearTarmac(driveTrain, intake, loader, shooter));
@@ -216,23 +216,24 @@ public class RobotContainer {
     
     // Correct Controls
     // Joystick controls
-    // driverRightTrigger.whenHeld(new RunLoader(loader)); // only run load
-    // driverRightThumb.whenHeld(new RunIntake(intake)); // intake and load
-    // driverLeftTrigger.whenHeld(new ParallelCommandGroup( // aim and start up shooter
-    //   new StayOnTarget(driveTrain),
-    //   new ShootBallBasedOnPower(shooter, 0.7)
-    //   // new ShootBallBasedOnRPM(shooter, 5700)
-    // ));
+    driverRightTrigger.whenHeld(new RunLoader(loader, -0.4)); // only run load
+    driverRightThumb.whenHeld(new RunIntake(intake)); // intake and load
+    driverLeftTrigger.whenHeld(new ParallelCommandGroup( // aim and start up shooter
+      new StayOnTarget(driveTrain),
+      new ShootingUsingLQR(shooter, 3500)
+      //new ShootBallBasedOnPower(shooter, 0.7);
+      // new ShootBallBasedOnRPM(shooter, 5700)
+    ));
 
-    // driverLeftButton5.whenHeld(new ShootBallBasedOnPower(shooter, 0.3)); // for lower goal just in case
-    // driverRightButton3.whenHeld(new ParallelCommandGroup( // aim and start up shooter
-    //   new StayOnTarget(driveTrain),
-    //   new ShootBallBasedOnPower(shooter, 0.6)
-    // ));
-    // driverRightButton5.whenHeld(new ParallelCommandGroup( // aim and start up shooter
-    //   new StayOnTarget(driveTrain),
-    //   new ShootBallBasedOnPower(shooter, 1)
-    // ));
+    driverLeftButton5.whenHeld(new ShootBallBasedOnPower(shooter, 0.3)); // for lower goal just in case
+    driverRightButton3.whenHeld(new ParallelCommandGroup( // aim and start up shooter
+      new StayOnTarget(driveTrain),
+      new ShootBallBasedOnPower(shooter, 0.6)
+    ));
+    driverRightButton5.whenHeld(new ParallelCommandGroup( // aim and start up shooter
+      new StayOnTarget(driveTrain),
+      new ShootBallBasedOnPower(shooter, 1)
+    ));
 
     //Intake
     // operatorBack.whenHeld(new ParallelCommandGroup(new ReverseLoader(loader), new ReverseIntake(intake)));
@@ -274,10 +275,11 @@ public class RobotContainer {
   }  
 
   public Command getAutonomousCommand() {
-    if (autoSelector.getSelected() == null) {
-      return new DriveOffAimAndShootTwoBalls(driveTrain, intake, loader, shooter);
-    }
-    return autonomousCommandHashMap.get(autoSelector.getSelected());
+    // if (autoSelector.getSelected() == null) {
+    //   return new DriveOffAimAndShootTwoBalls(driveTrain, intake, loader, shooter);
+    // }
+    // return autonomousCommandHashMap.get(autoSelector.getSelected());
+    return new FourBallAuto(driveTrain, intake, loader, shooter);
     //return new DriveOffAimAndShootTwoBalls(driveTrain, intake, loader, shooter);
   }
 }

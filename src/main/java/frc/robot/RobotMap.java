@@ -59,7 +59,7 @@ public class RobotMap {
     public static class IntakeMap {
         public static int intakeMotorCANID = 5;
         public static int intakeDeployMotorCANID = 8;
-        public static double intakeMotorPower = -0.8;
+        public static double intakeMotorPower = -1;
         public static int deployEncoderChannel1 = 4;
         public static int deployEncoderChannel2 = 5;
         public static double deployMotorPower = 1;
