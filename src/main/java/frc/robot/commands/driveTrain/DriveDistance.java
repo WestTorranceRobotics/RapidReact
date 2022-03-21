@@ -52,6 +52,7 @@ public class DriveDistance extends CommandBase {
   @Override
   public void end(boolean interrupted) {
     driveTrain.tankDrive(0, 0);
+    isFinished = false;
   }
 
   // Returns true when the command should end.

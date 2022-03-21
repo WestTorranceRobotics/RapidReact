@@ -40,9 +40,9 @@ public class TurnToAngle extends CommandBase {
   @Override
   public void execute() {
     double angleError = GetAngleTurned();
-    if (angleError >= targetAngle + 10) { // counterclockwise
+    if (angleError >= targetAngle + 7) { // counterclockwise
       driveTrain.tankDrive(-speed, speed);
-    } else if (angleError <= targetAngle - 10) { // clockwise
+    } else if (angleError <= targetAngle - 7) { // clockwise
       driveTrain.tankDrive(speed, -speed);
     } else {
       isDone = true;
@@ -65,7 +65,7 @@ public class TurnToAngle extends CommandBase {
   {
     double angle = gyro.getAngle()-startingAngle;
     angle = angle%360;
-    if(angle > 180){ angle-=180; }
+    if(angle > 180){ angle-=360; }
     return angle;
   }
 }

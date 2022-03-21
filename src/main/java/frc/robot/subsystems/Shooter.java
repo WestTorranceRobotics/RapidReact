@@ -30,7 +30,7 @@ public class Shooter extends SubsystemBase {
   private int ballsShot = 0;
   private boolean passedBallCurrent = false;
 
-  private static double kSpinupRadPerSec = 3500;
+  //private static double kSpinupRadPerSec = 3500;
 
   private final LinearSystem<N1,N1,N1> m_flyWheel = LinearSystemId.identifyVelocitySystem(RobotMap.ShooterMap.kV, RobotMap.ShooterMap.KA);
   
@@ -149,7 +149,7 @@ public class Shooter extends SubsystemBase {
   }
 
   public void setReferenceVelocity(double kSpinupRadperSec){
-    m_loopLeader.setNextR(VecBuilder.fill(kSpinupRadPerSec));
+    m_loopLeader.setNextR(VecBuilder.fill(kSpinupRadperSec));
     //m_loopFollower.setNextR(VecBuilder.fill(kSpinupRadPerSec));
   }
 

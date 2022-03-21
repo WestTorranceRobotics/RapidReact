@@ -61,7 +61,7 @@ public class TurnToDirection extends CommandBase {
   {
     double angle = gyro.getAngle()-targetDirection;
     angle = angle%360;
-    if(angle > 180){ angle-=180; }
+    if(angle > 180){ angle-=360; }
     return angle;
   }
 }

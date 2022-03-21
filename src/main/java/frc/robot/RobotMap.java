@@ -52,7 +52,7 @@ public class RobotMap {
         public static final double shooterPowerLong = 0.75;
         public static double ballCurrent = 15;
 
-        public static final double kV = 0.0021363;
+        public static final double kV = 0.0022763;
         public static final double KA = 0.0106166;
     }
     
@@ -69,8 +69,8 @@ public class RobotMap {
         public static double voltageValueForUndeployedUpper = 0.75;
 
         //0.37-0.38
-        public static double voltageValueForDeployedLower = 0.38;
-        public static double voltageValueForDeployedUpper = 0.385;
+        public static double voltageValueForDeployedLower = 0.40;
+        public static double voltageValueForDeployedUpper = 0.410;
     }
 
     public static class LoaderMap{

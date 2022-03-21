@@ -32,7 +32,7 @@ public class Loader extends SubsystemBase {
   }
 
   public boolean seeBall(){
-    if (proxSensorEnabled && ballDetector.getVoltage() < 1.5){
+    if (ballDetector.getVoltage() < 1.5){
       return true;
     }
     return false;

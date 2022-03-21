@@ -77,11 +77,11 @@ public class DriveTrain extends SubsystemBase {
   }
 
   public void tankDrive(double leftPower, double rightPower){
-    // differentialDrive.tankDrive(leftPower, rightPower);
-    leftLeader.set(-leftPower);
-    leftFollower.set(-leftPower);
-    rightLeader.set(rightPower);
-    rightFollower.set(rightPower);
+    differentialDrive.tankDrive(leftPower, rightPower);
+    // leftLeader.set(-leftPower);
+    // leftFollower.set(-leftPower);
+    // rightLeader.set(rightPower);
+    // rightFollower.set(rightPower);
   }
 
   public void arcadeDrive(double power, double rotation) {

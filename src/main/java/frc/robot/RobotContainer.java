@@ -30,6 +30,7 @@ import frc.robot.commands.auto.ShootAndDriveOff;
 import frc.robot.commands.driveTrain.DriveDistanceWithVisionTakeover;
 import frc.robot.commands.driveTrain.JoystickTankDrive;
 import frc.robot.commands.driveTrain.TurnToAngleWithVisionTakeover;
+import frc.robot.commands.driveTrain.TurnToDirection;
 import frc.robot.commands.elevator.LiftDown;
 import frc.robot.commands.elevator.LiftUp;
 import frc.robot.commands.intake.DeployIntake;
@@ -158,8 +159,9 @@ public class RobotContainer {
     screen.addBoolean("INTAKE RUNNING?", intake::isRunning).withPosition(0, 2).withSize(2, 1);
     screen.addBoolean("LOADER RUNNING?", loader::isRunning).withPosition(0, 3).withSize(2, 1);
     screen.addBoolean("SHOOTER RUNNING?", shooter::active).withPosition(0, 4).withSize(2, 1);
-    screen.addNumber("Intake Deploy", shooter::getVelocity);
-    screen.addNumber("Proximity voltage", loader::getProxVoltage);
+    screen.addNumber("Shooter", shooter::getVelocity);
+    screen.addNumber("Proximity voltage", intake::getAnalogIntakeValue);
+    screen.addBoolean("CAN SEE BALL", loader::seeBall);
     screen.addBoolean("BOTTOM LIMIT HIT", () -> elevator.getElevatorMotor().getEncoder().getPosition() <= RobotMap.ElevatorMap.elevatorMinHeight)
     .withPosition(2, 0).withSize(2, 1);
     screen.addBoolean("TOP LIMIT HIT", () -> elevator.getElevatorMotor().getEncoder().getPosition() >= RobotMap.ElevatorMap.elevatorMaxHeight)
@@ -236,12 +238,12 @@ public class RobotContainer {
     ));
 
     //Intake
-    // operatorBack.whenHeld(new ParallelCommandGroup(new ReverseLoader(loader), new ReverseIntake(intake)));
+    operatorBack.whenHeld(new ParallelCommandGroup(new ReverseLoader(loader), new ReverseIntake(intake)));
     operatorA.whenHeld(new RunIntake(intake));
     operatorB.whenPressed(new ConditionalCommand(new UndeployIntake(intake), new DeployIntake(intake), intake::isDeployed));
-    //operatorB.whenPressed(new ParallelDeadlineGroup(new TurnToAngleWithVisionTakeover(driveTrain, 1), new RunIntake(intake)));
+    //operatorB.whenPressed(new TurnToDirection(driveTrain, 90));
     operatorStart.whenPressed(new SetStartingPosition(intake));
-    operatorBack.whenHeld(new ShootingUsingLQR(shooter, 3500));
+    //operatorBack.whenHeld(new ShootingUsingLQR(shooter, 3500));
 
     //Loader
     operatorX.whenHeld(new RunLoader(loader, -0.3));
