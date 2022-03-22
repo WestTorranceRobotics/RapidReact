@@ -72,7 +72,7 @@ public class TurnToAngleWithVisionTakeover extends CommandBase {
 
       /* turn to face the target  */
       double steeringAdjust = 0;
-      anglePID.setP(0.01472);
+      anglePID.setP(0.01072);
       anglePID.setI(0.011);
       // anglePID.setP(VTable.getEntry("kP").getDouble(0.1945392));
       // anglePID.setI(VTable.getEntry("kI").getDouble(0));
@@ -84,14 +84,14 @@ public class TurnToAngleWithVisionTakeover extends CommandBase {
       /* moves towards the ball until the ball stops being seen, meaning the ball has been intaked (hopefully) 
       after the ball goes past a vy value, a timer will start. Once it finishes, the command will end. The next command
       will be drive distance with constant intaking. Then the shooter will aim and shoot. */
-      double distAdjust = 0.7;
+      double distAdjust = 0.5;
 
       leftCommand += distAdjust;
       rightCommand += distAdjust;
 
       driveTrain.tankDrive(leftCommand, rightCommand);
 
-      if (vy <= -25) {
+      if (vy <= -10) {
         isDone = true;
       }
     }

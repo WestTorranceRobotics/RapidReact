@@ -56,34 +56,37 @@ public class FourBallAuto extends SequentialCommandGroup {
         new StopIntake(intake)
         //new RunIntake(intake)
       ),
-      new TurnToAngle(driveTrain, 15),
-      new DriveDistance(driveTrain, 180, 0.90),
+      new TurnToAngle(driveTrain, 9),
+      new DriveDistance(driveTrain, 140, 0.90),
       new ParallelDeadlineGroup(
         new TurnToAngleWithVisionTakeover(driveTrain, 1),
         new RunIntake(intake)
       ),
 
       new ParallelDeadlineGroup(
-        new DriveDistance(driveTrain, 25, 0.90),
+        new DriveDistance(driveTrain, 25, 1),
         new RunIntake(intake),
         new SeeBallRunLoader(loader)
       ),
 
       new ParallelDeadlineGroup(
-        new Wait(2),
+        new Wait(0.5),
         new RunIntake(intake),
         new SeeBallRunLoader(loader)
       ),
 
       //new TurnToDirection(driveTrain, -22),
-      new TurnToAngle(driveTrain, 10),
+      new TurnToAngle(driveTrain, -15),
 
       new ParallelDeadlineGroup(
-        new DriveDistance(driveTrain, -300, 0.9)
+        new DriveDistance(driveTrain, -300, 1),
+        new ParallelDeadlineGroup(
+          new Wait(1),
+          new RunLoader(loader, -0.2))
         // new RunIntake(intake)
       ),
 
-      //new TurnToAngle(driveTrain, -90),
+      new TurnToAngle(driveTrain, -15),
       // shoot while continuously aiming and intaking, stop when finished shooting
       new ParallelDeadlineGroup(
         new ShootOneBallUsingDirectPower(shooter, loader, 0.65, 2500),

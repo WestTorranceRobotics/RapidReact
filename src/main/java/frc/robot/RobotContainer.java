@@ -205,7 +205,7 @@ public class RobotContainer {
     // debug controls
 
     //driverRightTrigger.whenPressed(new FourBallAuto(driveTrain, intake, loader, shooter));
-    // driverRightTrigger.whenPressed(new TurnToAngleWithVisionTakeover(driveTrain, 75));
+    operatorX.whenPressed(new TurnToDirection(driveTrain, 90));
     //driverRightButton5.whenPressed(new InstantCommand(this::toggleColorBallTracking));
     
     // driverRightButton3.toggleWhenPressed(new TurnToAngle(driveTrain, 90));
@@ -218,14 +218,14 @@ public class RobotContainer {
     
     // Correct Controls
     // Joystick controls
-    driverRightTrigger.whenHeld(new RunLoader(loader, -0.4)); // only run load
-    driverRightThumb.whenHeld(new RunIntake(intake)); // intake and load
-    driverLeftTrigger.whenHeld(new ParallelCommandGroup( // aim and start up shooter
-      new StayOnTarget(driveTrain),
-      new ShootingUsingLQR(shooter, 3500)
-      //new ShootBallBasedOnPower(shooter, 0.7);
-      // new ShootBallBasedOnRPM(shooter, 5700)
-    ));
+    // driverRightTrigger.whenHeld(new RunLoader(loader, -0.4)); // only run load
+    // driverRightThumb.whenHeld(new RunIntake(intake)); // intake and load
+    // driverLeftTrigger.whenHeld(new ParallelCommandGroup( // aim and start up shooter
+    //   new StayOnTarget(driveTrain),
+    //   new ShootingUsingLQR(shooter, 3500)
+    //   //new ShootBallBasedOnPower(shooter, 0.7);
+    //   // new ShootBallBasedOnRPM(shooter, 5700)
+    // ));
 
     driverLeftButton5.whenHeld(new ShootBallBasedOnPower(shooter, 0.3)); // for lower goal just in case
     driverRightButton3.whenHeld(new ParallelCommandGroup( // aim and start up shooter
@@ -246,7 +246,7 @@ public class RobotContainer {
     //operatorBack.whenHeld(new ShootingUsingLQR(shooter, 3500));
 
     //Loader
-    operatorX.whenHeld(new RunLoader(loader, -0.3));
+    // operatorX.whenHeld(new RunLoader(loader, -0.3));
     operatorY.whenHeld(new ReverseLoader(loader));
   
     //Elevator

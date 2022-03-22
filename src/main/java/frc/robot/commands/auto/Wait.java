@@ -30,6 +30,7 @@ public class Wait extends CommandBase {
   public void execute() {
     if (timer.hasElapsed(timeToWait)) {
       isDone = true;
+      System.out.println("DONE");
     }
   }
 
