@@ -103,6 +103,8 @@ public class RobotContainer {
     // NetworkTableInstance.getDefault().getTable("Vision").getEntry("shootI").setDouble(0);
     // NetworkTableInstance.getDefault().getTable("Vision").getEntry("shootD").setDouble(0);
     // NetworkTableInstance.getDefault().getTable("Vision").getEntry("shootF").setDouble(0);
+    NetworkTableInstance.getDefault().getTable("Shooter").getEntry("RPM").setDouble(0);
+
     NetworkTableInstance.getDefault().getTable("Vision").getEntry("isRed").setBoolean(false);
     NetworkTableInstance.getDefault().getTable("Vision").getEntry("aimbot").setBoolean(true);
 
@@ -133,7 +135,7 @@ public class RobotContainer {
     // // display.addNumber("Balls shot", shooter::getBallsShot).withPosition(7, 0);
 
     // // for finding the range of distances from target that we can shoot from
-    // display.addNumber("Distance From Target", driveTrain::getDistanceFromTarget).withPosition(1, 1);
+    display.addNumber("Distance From Target", driveTrain::getDistanceFromTarget).withPosition(1, 1);
 
     // // gets current current of shooter
     // display.addNumber("Current current of shooter", shooter::getCurrent).withPosition(2, 1);
@@ -203,9 +205,7 @@ public class RobotContainer {
     // driverRightButton3.whenHeld(new MoveBallFromShooterToIntake(intake, loader));
 
     // debug controls
-
-    //driverRightTrigger.whenPressed(new FourBallAuto(driveTrain, intake, loader, shooter));
-    operatorX.whenPressed(new TurnToDirection(driveTrain, 90));
+    // operatorX.whenPressed(new TurnToDirection(driveTrain, -30));
     //driverRightButton5.whenPressed(new InstantCommand(this::toggleColorBallTracking));
     
     // driverRightButton3.toggleWhenPressed(new TurnToAngle(driveTrain, 90));
@@ -218,14 +218,16 @@ public class RobotContainer {
     
     // Correct Controls
     // Joystick controls
-    // driverRightTrigger.whenHeld(new RunLoader(loader, -0.4)); // only run load
-    // driverRightThumb.whenHeld(new RunIntake(intake)); // intake and load
-    // driverLeftTrigger.whenHeld(new ParallelCommandGroup( // aim and start up shooter
-    //   new StayOnTarget(driveTrain),
-    //   new ShootingUsingLQR(shooter, 3500)
-    //   //new ShootBallBasedOnPower(shooter, 0.7);
-    //   // new ShootBallBasedOnRPM(shooter, 5700)
-    // ));
+    driverRightTrigger.whenHeld(new RunLoader(loader, -0.4)); // only run load
+    driverRightThumb.whenHeld(new RunIntake(intake)); // intake and load
+    driverLeftTrigger.whenHeld(new ParallelCommandGroup( // aim and start up shooter
+      new StayOnTarget(driveTrain),
+      new ShootingUsingLQR(shooter, 
+        2
+      )
+      //new ShootBallBasedOnPower(shooter, 0.7);
+      // new ShootBallBasedOnRPM(shooter, 5700)
+    ));
 
     driverLeftButton5.whenHeld(new ShootBallBasedOnPower(shooter, 0.3)); // for lower goal just in case
     driverRightButton3.whenHeld(new ParallelCommandGroup( // aim and start up shooter

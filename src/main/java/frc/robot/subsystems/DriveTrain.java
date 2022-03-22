@@ -219,12 +219,12 @@ public class DriveTrain extends SubsystemBase {
     double ty = NetworkTableInstance.getDefault().getTable("limelight").getEntry("ty").getDouble(0);
     double radiansTY = ty * (3.14159 / 180.0);
     double h2 = 37.5;
-    double angleLL = 50 * (3.14159 / 180.0);
+    double angleLL = Math.atan(55.0 / 113.0);
     return (104 - h2) / Math.tan(angleLL + radiansTY);
   }
 
   @Override
   public void periodic() {
-    // This method will be called once per scheduler run
+    NetworkTableInstance.getDefault().getTable("Shooter").getEntry("distance").setDouble(getDistanceFromTarget());
   }
 }

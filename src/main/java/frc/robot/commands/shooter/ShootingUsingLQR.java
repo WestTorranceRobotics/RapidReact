@@ -7,12 +7,15 @@ package frc.robot.commands.shooter;
 import javax.swing.plaf.metal.MetalIconFactory.FolderIcon16;
 
 import edu.wpi.first.math.VecBuilder;
+import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.subsystems.Shooter;
 
 public class ShootingUsingLQR extends CommandBase {
   Shooter mShooter;
   double m_rpm;
+  double prevRPM;
+  boolean isShot = false;
   /** Creates a new ShootingUsingLQR. */
   public ShootingUsingLQR(Shooter shooter, double rpm) {
     mShooter = shooter;
@@ -25,13 +28,23 @@ public class ShootingUsingLQR extends CommandBase {
   @Override
   public void initialize() {
     mShooter.getLinearSystemLoopLeader().reset(VecBuilder.fill(mShooter.getVelocityLeader()));
+    m_rpm = getSpeed(NetworkTableInstance.getDefault().getTable("Shooter").getEntry("distance").getDouble(0));
+    prevRPM = m_rpm;
+    System.out.println("INIT)");
     //mShooter.getLinearSystemLoopFollower().reset(VecBuilder.fill(mShooter.getVelocityFollower()));
   }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
+    if (isShot == false){
+      m_rpm = getSpeed(NetworkTableInstance.getDefault().getTable("Shooter").getEntry("distance").getDouble(0));
+      isShot = true;
+    }
+    // m_rpm = getSpeed(NetworkTableInstance.getDefault().getTable("Shooter").getEntry("distance").getDouble(0));
      mShooter.setReferenceVelocity(m_rpm);
+     System.out.println(m_rpm);
+     System.out.println(NetworkTableInstance.getDefault().getTable("Shooter").getEntry("distance").getDouble(0));
 
      // Correct our Kalman filter's state vector estimate with encoder data.
      mShooter.getLinearSystemLoopLeader().correct(VecBuilder.fill(mShooter.getVelocityLeader()));
@@ -57,7 +70,12 @@ public class ShootingUsingLQR extends CommandBase {
   @Override
   public void end(boolean interrupted) {
     mShooter.zeroReferenceVelocity();
+    isShot = false;
     mShooter.getShootMotorLeader().setVoltage(0);
+  }
+
+  public double getSpeed(double distance) {
+    return (7.3 * distance) + 2100;
   }
 
   // Returns true when the command should end.

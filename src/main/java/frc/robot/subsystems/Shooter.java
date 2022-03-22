@@ -26,7 +26,7 @@ public class Shooter extends SubsystemBase {
   private CANSparkMax shootMotorFollower = new CANSparkMax(RobotMap.ShooterMap.ShooterFollowerCANID, MotorType.kBrushless);
   private CANSparkMax shootMotorLeader = new CANSparkMax(RobotMap.ShooterMap.ShooterLeaderCANID, MotorType.kBrushless);
   // private CANPIDController shootPID;
-  private boolean atSpeed;
+  private boolean atSpeed = false;
   private int ballsShot = 0;
   private boolean passedBallCurrent = false;
 

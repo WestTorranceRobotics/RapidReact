@@ -16,7 +16,7 @@ public class TurnToDirection extends CommandBase {
   DriveTrain driveTrain;
   double targetDirection;
   private AHRS gyro;
-  private double speed = 0.75;
+  private double speed = 0.65;
   private boolean isDone;
 
   /** Creates a new TurnToAngle. */
@@ -36,9 +36,10 @@ public class TurnToDirection extends CommandBase {
   @Override
   public void execute() {
     double angleError = GetAngleError();
-    if (angleError >= 5) { // counterclockwise
+    System.out.println(angleError);
+    if (angleError >= 3) { // counterclockwise
       driveTrain.tankDrive(-speed, speed);
-    } else if (angleError <= 5) { // clockwise
+    } else if (angleError <= -3) { // clockwise
       driveTrain.tankDrive(speed, -speed);
     } else {
       isDone = true;
