@@ -4,23 +4,23 @@ import edu.wpi.first.math.kinematics.DifferentialDriveKinematics;
 
 public class RobotMap {
     public static class DriveTrainMap {
-        public static final int rightLeaderCanID = 1;
-        public static final int rightFollowerCanID = 2;
-        public static final int leftLeaderCanID = 4;
-        public static final int leftFollowerCanID = 3;
+        public static final int rightLeaderCanID = 4;
+        public static final int rightFollowerCanID = 3;
+        public static final int leftLeaderCanID = 1;
+        public static final int leftFollowerCanID = 2;
 
         // The Robot Characterization Toolsuite provides a convenient tool for obtaining these
         // values for your robot.
-        public static final double ksVolts = 0.66904; //0.6384
-        public static final double kvVoltSecondsPerMeter = 0.022005; //0.023005
-        public static final double kaVoltSecondsSquaredPerMeter = 0.002674; //0.0014474
+        public static final double ksVolts = 1.5994; //0.6384
+        public static final double kvVoltSecondsPerMeter = 1.9714; //0.023005
+        public static final double kaVoltSecondsSquaredPerMeter = 2.1399; //0.0014474
 
         // Example value only - as above, this must be tuned for your drive!
-        public static final double kPDriveVel = 0.061451;  //0.061451
+        public static final double kPDriveVel = 0.025953;  //0.061451
         public static final double kTrackwidthMeters = 0.6604;
 
-        public static final double kMaxSpeedMetersPerSecond = 3;
-        public static final double kMaxAccelerationMetersPerSecondSquared = 3;
+        public static final double kMaxSpeedMetersPerSecond = 5;
+        public static final double kMaxAccelerationMetersPerSecondSquared = 10;
 
         public static final double ticksToMeters = 0.000023482232685981534717425546180214;
         //2.3482232685981534717425546180214e-5 for ticks to Meters
