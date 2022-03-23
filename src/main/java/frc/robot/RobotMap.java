@@ -16,7 +16,7 @@ public class RobotMap {
         public static final double kaVoltSecondsSquaredPerMeter = 2.1399; //0.0014474
 
         // Example value only - as above, this must be tuned for your drive!
-        public static final double kPDriveVel = 0.025953;  //0.061451
+        public static final double kPDriveVel = 6.1059;  //0.061451
         public static final double kTrackwidthMeters = 0.6604;
 
         public static final double kMaxSpeedMetersPerSecond = 5;
