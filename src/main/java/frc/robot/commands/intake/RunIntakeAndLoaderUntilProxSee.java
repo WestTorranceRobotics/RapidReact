@@ -4,19 +4,17 @@
 
 package frc.robot.commands.intake;
 
-import com.fasterxml.jackson.databind.ser.std.StdArraySerializers.BooleanArraySerializer;
-
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.subsystems.Intake;
 import frc.robot.subsystems.Loader;
 
-public class RunIntakeUntilProxSee extends CommandBase {
+public class RunIntakeAndLoaderUntilProxSee extends CommandBase {
   Intake mIntake;
   Loader mLoader;
   boolean isDone = false;
 
   /** Creates a new RunIntakeUntilProxSee. */
-  public RunIntakeUntilProxSee(Intake intake, Loader loader) {
+  public RunIntakeAndLoaderUntilProxSee(Intake intake, Loader loader) {
     mLoader = loader;
     mIntake = intake;
     addRequirements(mIntake, mLoader);
@@ -32,13 +30,16 @@ public class RunIntakeUntilProxSee extends CommandBase {
   public void execute() {
     if(!mLoader.seeBall()){
       mIntake.RunIntake();
+      mLoader.runLoader(-0.3);
       if(mLoader.seeBall()){
         mIntake.stopIntake();
+        mLoader.stopLoader();
         isDone = true;
       }
     }
     else{
       mIntake.stopIntake();
+      mLoader.stopLoader();
     }
   }
 

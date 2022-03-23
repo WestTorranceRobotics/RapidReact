@@ -76,6 +76,11 @@ public class DriveTrain extends SubsystemBase {
     distancePID = new PIDController(0, 0, 0);
   }
 
+  public void resetGyro() {
+    gyro.reset();
+    gyro.zeroYaw();
+  }
+
   public void tankDrive(double leftPower, double rightPower){
     differentialDrive.tankDrive(leftPower, rightPower);
     // leftLeader.set(-leftPower);

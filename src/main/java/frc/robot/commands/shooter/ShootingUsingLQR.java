@@ -13,13 +13,13 @@ import frc.robot.subsystems.Shooter;
 
 public class ShootingUsingLQR extends CommandBase {
   Shooter mShooter;
-  double m_rpm;
-  double prevRPM;
+  double m_rpm = 0;
+  int prevDistance = 0;
   boolean isShot = false;
   /** Creates a new ShootingUsingLQR. */
   public ShootingUsingLQR(Shooter shooter, double rpm) {
     mShooter = shooter;
-    m_rpm = rpm;
+    m_rpm = 0;
     addRequirements(mShooter);
     // Use addRequirements() here to declare subsystem dependencies.
   }
@@ -28,8 +28,9 @@ public class ShootingUsingLQR extends CommandBase {
   @Override
   public void initialize() {
     mShooter.getLinearSystemLoopLeader().reset(VecBuilder.fill(mShooter.getVelocityLeader()));
-    m_rpm = getSpeed(NetworkTableInstance.getDefault().getTable("Shooter").getEntry("distance").getDouble(0));
-    prevRPM = m_rpm;
+    // m_rpm = getSpeed(NetworkTableInstance.getDefault().getTable("Shooter").getEntry("distance").getDouble(0));
+    // double dist = NetworkTableInstance.getDefault().getTable("Shooter").getEntry("distance").getDouble(0);
+    // m_rpm = 2100.0 + 7.3 * dist;
     System.out.println("INIT)");
     //mShooter.getLinearSystemLoopFollower().reset(VecBuilder.fill(mShooter.getVelocityFollower()));
   }
@@ -37,12 +38,15 @@ public class ShootingUsingLQR extends CommandBase {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    if (isShot == false){
-      m_rpm = getSpeed(NetworkTableInstance.getDefault().getTable("Shooter").getEntry("distance").getDouble(0));
-      isShot = true;
+    // System.out.println(isShot);
+    if (mShooter.getCurrent() == 0)
+    {
+      double distance = NetworkTableInstance.getDefault().getTable("Shooter").getEntry("distance").getDouble(0);
+      m_rpm = getSpeed(distance);
     }
-    // m_rpm = getSpeed(NetworkTableInstance.getDefault().getTable("Shooter").getEntry("distance").getDouble(0));
+
      mShooter.setReferenceVelocity(m_rpm);
+    //  System.out.println(mShooter.getVoltage());
      System.out.println(m_rpm);
      System.out.println(NetworkTableInstance.getDefault().getTable("Shooter").getEntry("distance").getDouble(0));
 
@@ -72,10 +76,11 @@ public class ShootingUsingLQR extends CommandBase {
     mShooter.zeroReferenceVelocity();
     isShot = false;
     mShooter.getShootMotorLeader().setVoltage(0);
+
   }
 
   public double getSpeed(double distance) {
-    return (7.3 * distance) + 2100;
+    return ((7.3 * distance) + 2100.0);
   }
 
   // Returns true when the command should end.

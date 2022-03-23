@@ -36,6 +36,7 @@ import frc.robot.commands.elevator.LiftUp;
 import frc.robot.commands.intake.DeployIntake;
 import frc.robot.commands.intake.ReverseIntake;
 import frc.robot.commands.intake.RunIntake;
+import frc.robot.commands.intake.RunIntakeAndLoaderUntilProxSee;
 import frc.robot.commands.intake.SetStartingPosition;
 import frc.robot.commands.intake.UndeployIntake;
 import frc.robot.commands.shooter.*;
@@ -162,6 +163,7 @@ public class RobotContainer {
     screen.addBoolean("LOADER RUNNING?", loader::isRunning).withPosition(0, 3).withSize(2, 1);
     screen.addBoolean("SHOOTER RUNNING?", shooter::active).withPosition(0, 4).withSize(2, 1);
     screen.addNumber("Shooter", shooter::getVelocity);
+    screen.addNumber("Shooter current", shooter::getCurrent);
     screen.addNumber("Proximity voltage", intake::getAnalogIntakeValue);
     screen.addBoolean("CAN SEE BALL", loader::seeBall);
     screen.addBoolean("BOTTOM LIMIT HIT", () -> elevator.getElevatorMotor().getEncoder().getPosition() <= RobotMap.ElevatorMap.elevatorMinHeight)
@@ -218,15 +220,13 @@ public class RobotContainer {
     
     // Correct Controls
     // Joystick controls
-    driverRightTrigger.whenHeld(new RunLoader(loader, -0.4)); // only run load
+    driverRightTrigger.whenHeld(new ShootingUsingLQR(shooter, 2));
+    // driverRightTrigger.whenHeld(new ShootingUsingLQR(shooter, 3350));
+    // driverRightTrigger.whenHeld(new RunLoader(loader, -0.4)); // only run load
     driverRightThumb.whenHeld(new RunIntake(intake)); // intake and load
     driverLeftTrigger.whenHeld(new ParallelCommandGroup( // aim and start up shooter
       new StayOnTarget(driveTrain),
-      new ShootingUsingLQR(shooter, 
-        2
-      )
-      //new ShootBallBasedOnPower(shooter, 0.7);
-      // new ShootBallBasedOnRPM(shooter, 5700)
+      new ShootingUsingLQR(shooter, 2)
     ));
 
     driverLeftButton5.whenHeld(new ShootBallBasedOnPower(shooter, 0.3)); // for lower goal just in case
@@ -248,7 +248,7 @@ public class RobotContainer {
     //operatorBack.whenHeld(new ShootingUsingLQR(shooter, 3500));
 
     //Loader
-    // operatorX.whenHeld(new RunLoader(loader, -0.3));
+    operatorX.whenHeld(new RunLoader(loader, -0.3));
     operatorY.whenHeld(new ReverseLoader(loader));
   
     //Elevator

@@ -2,24 +2,23 @@
 // Open Source Software; you can modify and/or share it under the terms of
 // the WPILib BSD license file in the root directory of this project.
 
-package frc.robot.commands.intake;
+package frc.robot.commands.loader;
 
-import com.fasterxml.jackson.databind.ser.std.StdArraySerializers.BooleanArraySerializer;
-
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.CommandBase;
-import frc.robot.subsystems.Intake;
 import frc.robot.subsystems.Loader;
 
-public class RunIntakeUntilProxSee extends CommandBase {
-  Intake mIntake;
-  Loader mLoader;
-  boolean isDone = false;
-
-  /** Creates a new RunIntakeUntilProxSee. */
-  public RunIntakeUntilProxSee(Intake intake, Loader loader) {
+public class SeeBallRunLoaderLonger extends CommandBase {
+  private Loader mLoader;
+  private boolean isFinished = false;
+  private boolean seeingBall = false;
+  Timer timer;
+  /** Creates a new SeeBallRunLoader. */
+  public SeeBallRunLoaderLonger(Loader loader) {
     mLoader = loader;
-    mIntake = intake;
-    addRequirements(mIntake, mLoader);
+    timer = new Timer();
+
+    addRequirements(mLoader);
     // Use addRequirements() here to declare subsystem dependencies.
   }
 
@@ -30,28 +29,30 @@ public class RunIntakeUntilProxSee extends CommandBase {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    if(!mLoader.seeBall()){
-      mIntake.RunIntake();
-      if(mLoader.seeBall()){
-        mIntake.stopIntake();
-        isDone = true;
-      }
+    if(mLoader.seeBall()){
+      mLoader.runLoader(-0.4);
+      timer.start();
     }
     else{
-      mIntake.stopIntake();
+      
+      if (timer.hasElapsed(0.2)) {
+        mLoader.stopLoader();
+      }
+      
+      //isFinished = true;
     }
   }
 
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-    isDone = false;
-    mIntake.stopIntake();
+    isFinished = false;
+    mLoader.stopLoader();
   }
 
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return isDone;
+    return isFinished;
   }
 }

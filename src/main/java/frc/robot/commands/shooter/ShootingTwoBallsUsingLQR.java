@@ -34,6 +34,7 @@ public class ShootingTwoBallsUsingLQR extends CommandBase {
   @Override
   public void initialize() {
     shootTimer.reset();
+    shotBall = 0;
   }
 
   // Called every time the scheduler runs while the command is scheduled.
@@ -80,6 +81,8 @@ public class ShootingTwoBallsUsingLQR extends CommandBase {
     // }
 
     if (shotBall == 2 || shootTimer.hasElapsed(1.50)) {
+      System.out.println(shotBall);
+      System.out.println(shootTimer.hasElapsed(1.50));
       isDone = true;
     }
   }

@@ -84,14 +84,14 @@ public class TurnToAngleWithVisionTakeover extends CommandBase {
       /* moves towards the ball until the ball stops being seen, meaning the ball has been intaked (hopefully) 
       after the ball goes past a vy value, a timer will start. Once it finishes, the command will end. The next command
       will be drive distance with constant intaking. Then the shooter will aim and shoot. */
-      double distAdjust = 0.5;
+      double distAdjust = 0.55;
 
       leftCommand += distAdjust;
       rightCommand += distAdjust;
 
       driveTrain.tankDrive(leftCommand, rightCommand);
 
-      if (vy <= -10) {
+      if (vy <= -24) {
         isDone = true;
       }
     }
