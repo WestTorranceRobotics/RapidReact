@@ -27,7 +27,7 @@ public class DriveTrain extends SubsystemBase {
   private WPI_TalonFX leftFollower;
 
   Encoder leftEncoder = new Encoder(0, 1, false, EncodingType.k4X);
-  Encoder rightEncoder = new Encoder(2, 3, false, EncodingType.k4X);
+  Encoder rightEncoder = new Encoder(2, 3, true, EncodingType.k4X);
 
   private AHRS gyro;
 
@@ -49,9 +49,9 @@ public class DriveTrain extends SubsystemBase {
     // rightFollower.follow(rightLeader);
 
     rightLeader.setNeutralMode(NeutralMode.Brake);
-    rightFollower.setNeutralMode(NeutralMode.Coast);
+    rightFollower.setNeutralMode(NeutralMode.Brake);
     leftLeader.setNeutralMode(NeutralMode.Brake);
-    leftFollower.setNeutralMode(NeutralMode.Coast);
+    leftFollower.setNeutralMode(NeutralMode.Brake);
 
     leftLeader.setInverted(true);
     leftFollower.setInverted(true);
@@ -62,6 +62,7 @@ public class DriveTrain extends SubsystemBase {
     MotorControllerGroup rightSide = new MotorControllerGroup(rightLeader, rightFollower);
 
     gyro = new AHRS(SPI.Port.kMXP);
+    gyro.reset();
 
     odometry = new DifferentialDriveOdometry(gyro.getRotation2d());
 
@@ -69,8 +70,8 @@ public class DriveTrain extends SubsystemBase {
     differentialDrive.setSafetyEnabled(true);
 
     rightEncoder.setReverseDirection(true);
-    leftEncoder.setDistancePerPulse(RobotMap.DriveTrainMap.inchesPerPulse);
-    rightEncoder.setDistancePerPulse(RobotMap.DriveTrainMap.inchesPerPulse);
+    leftEncoder.setDistancePerPulse(RobotMap.DriveTrainMap.metersPerPulse);
+    rightEncoder.setDistancePerPulse(RobotMap.DriveTrainMap.metersPerPulse);
 
     differentialDriveKinematics = new DifferentialDriveKinematics(RobotMap.DriveTrainMap.kTrackwidthMeters);
     resetEncoders();
@@ -85,8 +86,8 @@ public class DriveTrain extends SubsystemBase {
   
     odometry.update(
         gyro.getRotation2d(), 
-        leftLeader.getSelectedSensorPosition() * RobotMap.DriveTrainMap.ticksToMeters, 
-        rightLeader.getSelectedSensorPosition() * RobotMap.DriveTrainMap.ticksToMeters
+        leftEncoder.getDistance(), 
+        rightEncoder.getDistance()
         );
 
   }
@@ -108,11 +109,11 @@ public class DriveTrain extends SubsystemBase {
  }
 
  public double getRightEncoderTicks(){
-  return rightLeader.getSelectedSensorPosition();
+  return rightEncoder.get();
  }
 
  public double getLeftFollowerEncoderTicks(){
-  return leftFollower.getSelectedSensorPosition();
+  return leftEncoder.get();
 }
 
 public double getRightFollowerEncoderTicks(){
@@ -150,8 +151,8 @@ public void resetEncoders(){
 }
 
 public void tankDriveVolts(double leftVolts, double rightVolts) {
-  leftLeader.setVoltage(leftVolts);
-  rightLeader.setVoltage(rightVolts);
+  leftLeader.setVoltage(-leftVolts);
+  rightLeader.setVoltage(-rightVolts);
   differentialDrive.feed();
 }
 

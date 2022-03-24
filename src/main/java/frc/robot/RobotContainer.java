@@ -107,7 +107,7 @@ public class RobotContainer {
     display.addNumber("Current Robot follower right encoder", driveTrain::getRightFollowerEncoderTicks)
     .withPosition(7, 3).withSize(2, 2);
 
-    display.addBoolean("Limit Swich works", intake::isActiviated);
+    //display.addBoolean("Limit Swich works", intake::isActiviated);
   
     display.addNumber("Left Voltage", driveTrain::getVoltage);
   }
@@ -123,7 +123,7 @@ public class RobotContainer {
    * @return the command to run in autonomous
    */
   public Command getAutonomousCommand() {
-    driveTrain.getGyro().reset();
+    driveTrain.getGyro().zeroYaw();
     // An ExampleCommand will run in autonomous
     DifferentialDriveVoltageConstraint autoVoltageConstraint = 
     new DifferentialDriveVoltageConstraint(
@@ -166,8 +166,6 @@ public class RobotContainer {
         new PIDController(RobotMap.DriveTrainMap.kPDriveVel, 0, 0),
          driveTrain::tankDriveVolts, 
          driveTrain);
-
-         System.out.println("I AM RUNNING AUTO COMMAND");
 
     driveTrain.resetOdometry(exampleTrajectory.getInitialPose());
 

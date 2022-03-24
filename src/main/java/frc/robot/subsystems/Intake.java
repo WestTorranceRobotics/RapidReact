@@ -11,7 +11,7 @@ public class Intake extends SubsystemBase {
   DigitalInput limitSwitch;
   /** Creates a new Intake. */
   public Intake() {
-    limitSwitch = new DigitalInput(2);
+    //limitSwitch = new DigitalInput(2);
   }
 
   public boolean isActiviated(){
