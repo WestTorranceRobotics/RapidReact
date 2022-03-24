@@ -221,7 +221,7 @@ public class DriveTrain extends SubsystemBase {
   public double getDistanceFromTarget() {
     // ideal ty is -1.13 for shooting
     // hub is 8' 8" tall
-    double ty = NetworkTableInstance.getDefault().getTable("limelight").getEntry("ty").getDouble(0);
+    double ty = NetworkTableInstance.getDefault().getTable("limelight").getEntry("ty").getDouble(-999);
     double radiansTY = ty * (3.14159 / 180.0);
     double h2 = 37.5;
     double angleLL = Math.atan(55.0 / 113.0);

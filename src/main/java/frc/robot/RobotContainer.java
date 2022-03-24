@@ -220,32 +220,36 @@ public class RobotContainer {
     
     // Correct Controls
     // Joystick controls
-    driverRightTrigger.whenHeld(new ShootingUsingLQR(shooter, 2));
-    // driverRightTrigger.whenHeld(new ShootingUsingLQR(shooter, 3350));
-    // driverRightTrigger.whenHeld(new RunLoader(loader, -0.4)); // only run load
-    driverRightThumb.whenHeld(new RunIntake(intake)); // intake and load
-    driverLeftTrigger.whenHeld(new ParallelCommandGroup( // aim and start up shooter
+    driverRightTrigger.whenHeld(new RunLoader(loader, -0.4));   // only run load
+    driverRightThumb.whenHeld(new RunIntake(intake));           // only run intake
+    driverLeftTrigger.whenHeld(new ParallelCommandGroup(        // aim and start up shooter
       new StayOnTarget(driveTrain),
-      new ShootingUsingLQR(shooter, 2)
+      new ShootUsingLQRDistanceFunction(shooter)
     ));
 
     driverLeftButton5.whenHeld(new ShootBallBasedOnPower(shooter, 0.3)); // for lower goal just in case
-    driverRightButton3.whenHeld(new ParallelCommandGroup( // aim and start up shooter
+    driverLeftButton4.whenHeld(new ShootingUsingLQR(shooter, 3250)); // shoot at tarmac in case tracking and distance function doesn't work
+    driverRightButton3.whenHeld(new ParallelCommandGroup(
       new StayOnTarget(driveTrain),
       new ShootBallBasedOnPower(shooter, 0.6)
     ));
-    driverRightButton5.whenHeld(new ParallelCommandGroup( // aim and start up shooter
+    driverRightButton5.whenHeld(new ParallelCommandGroup(
       new StayOnTarget(driveTrain),
       new ShootBallBasedOnPower(shooter, 1)
     ));
 
     //Intake
-    operatorBack.whenHeld(new ParallelCommandGroup(new ReverseLoader(loader), new ReverseIntake(intake)));
+    operatorBack.whenHeld(new ParallelCommandGroup(
+      new ReverseLoader(loader),
+      new ReverseIntake(intake))
+    );
     operatorA.whenHeld(new RunIntake(intake));
-    operatorB.whenPressed(new ConditionalCommand(new UndeployIntake(intake), new DeployIntake(intake), intake::isDeployed));
-    //operatorB.whenPressed(new TurnToDirection(driveTrain, 90));
+    operatorB.whenPressed(new ConditionalCommand(
+      new UndeployIntake(intake),
+      new DeployIntake(intake),
+      intake::isDeployed)
+    );
     operatorStart.whenPressed(new SetStartingPosition(intake));
-    //operatorBack.whenHeld(new ShootingUsingLQR(shooter, 3500));
 
     //Loader
     operatorX.whenHeld(new RunLoader(loader, -0.3));

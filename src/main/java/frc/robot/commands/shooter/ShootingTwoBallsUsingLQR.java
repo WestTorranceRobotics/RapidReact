@@ -18,13 +18,15 @@ public class ShootingTwoBallsUsingLQR extends CommandBase {
   Loader mLoader;
   double m_rpm;
   boolean timeStart = false;
+  boolean isEnd = false;
   int shotBall = 0;
   private Timer shootTimer;
   /** Creates a new ShootingTwoBallsUsingLQR. */
-  public ShootingTwoBallsUsingLQR(Shooter shooter, Loader loader, double rpm) {
+  public ShootingTwoBallsUsingLQR(Shooter shooter, Loader loader, double rpm, boolean end) {
     mShooter = shooter;
     m_rpm = rpm;
     mLoader = loader;
+    isEnd = end;
     shootTimer = new Timer();
     addRequirements(mShooter, mLoader);
     // Use addRequirements() here to declare subsystem dependencies.
@@ -69,20 +71,19 @@ public class ShootingTwoBallsUsingLQR extends CommandBase {
     if (mShooter.atSpeed()) {
       mLoader.runLoader(-0.40);
       if(mShooter.getVelocity() <= m_rpm-200){
+        System.out.println(shotBall);
         mLoader.stopLoader();
         mShooter.atSpeed(false);
         shotBall += 1;
       }
     }
     
-    // if(mShooter.atSpeed() && !timeStart) {
-    //   //shootTimer.start();
-    //   timeStart = true;
-    // }
-
-    if (shotBall == 2 || shootTimer.hasElapsed(1.50)) {
-      System.out.println(shotBall);
-      System.out.println(shootTimer.hasElapsed(1.50));
+    if (isEnd) {
+      if (shootTimer.hasElapsed(1.50)) {
+        isDone = true;
+      }
+    }
+    else if (shotBall == 2 || shootTimer.hasElapsed(1.50)) {
       isDone = true;
     }
   }

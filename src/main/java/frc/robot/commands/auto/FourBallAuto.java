@@ -49,7 +49,7 @@ public class FourBallAuto extends SequentialCommandGroup {
       new TurnToDirection(driveTrain, -5),
       // shoot while continuously aiming and intaking, stop when finished shooting
       new ParallelDeadlineGroup(
-        new ShootingTwoBallsUsingLQR(shooter, loader, 3350),
+        new ShootingTwoBallsUsingLQR(shooter, loader, 3500, false),
         //new ShootOneBallUsingDirectPower(shooter, loader, 0.65, 2500),
         new StayOnTarget(driveTrain),
         new StopIntake(intake)
@@ -99,7 +99,7 @@ public class FourBallAuto extends SequentialCommandGroup {
 
       // shoot while continuously aiming and intaking, stop when finished shooting
       new ParallelDeadlineGroup(
-        new ShootingTwoBallsUsingLQR(shooter, loader, 3350),
+        new ShootingTwoBallsUsingLQR(shooter, loader, 3500, true),
         new StayOnTarget(driveTrain),
         new RunIntake(intake)
       )

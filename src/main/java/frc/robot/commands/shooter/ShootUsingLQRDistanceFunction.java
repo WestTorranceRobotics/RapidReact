@@ -12,15 +12,15 @@ import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.subsystems.Shooter;
 
-public class ShootingUsingLQR extends CommandBase {
+public class ShootUsingLQRDistanceFunction extends CommandBase {
   Shooter mShooter;
   double m_rpm = 0;
   boolean isStartedShooting = false;
   Timer timer = new Timer();
   /** Creates a new ShootingUsingLQR. */
-  public ShootingUsingLQR(Shooter shooter, double rpm) {
+  public ShootUsingLQRDistanceFunction(Shooter shooter) {
     mShooter = shooter;
-    m_rpm = rpm;
+    m_rpm = 0;
     addRequirements(mShooter);
   }
 
@@ -28,12 +28,24 @@ public class ShootingUsingLQR extends CommandBase {
   @Override
   public void initialize() {
     mShooter.getLinearSystemLoopLeader().reset(VecBuilder.fill(mShooter.getVelocityLeader()));
+    isStartedShooting = false;
+    timer.reset();
+    timer.start();
     //mShooter.getLinearSystemLoopFollower().reset(VecBuilder.fill(mShooter.getVelocityFollower()));
   }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
+    double distance = NetworkTableInstance.getDefault().getTable("Shooter").getEntry("distance").getDouble(0);
+    // debug next two lines
+    // double ty = NetworkTableInstance.getDefault().getTable("limelight").getEntry("ty").getDouble(0);
+    // System.out.println(ty + "\t" + m_rpm + "\t" + distance + "\t" + ((7.3 * distance) + 2100.0));
+    if (timer.hasElapsed(0.23) && !isStartedShooting) {
+      isStartedShooting = true;
+      m_rpm = getSpeed(distance);
+    }
+
      mShooter.setReferenceVelocity(m_rpm);
 
      // Correct our Kalman filter's state vector estimate with encoder data.
@@ -61,6 +73,14 @@ public class ShootingUsingLQR extends CommandBase {
   public void end(boolean interrupted) {
     mShooter.zeroReferenceVelocity();
     mShooter.getShootMotorLeader().setVoltage(0);
+    isStartedShooting = false;
+    timer.stop();
+  }
+
+  // function for inputting speed and getting rpm determined by 
+  // plotting data points and finding a line of best fit
+  private double getSpeed(double distance) {
+    return ((7.3 * distance) + 2100.0);
   }
 
   // Returns true when the command should end.

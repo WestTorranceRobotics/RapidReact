@@ -5,7 +5,7 @@ public class RobotMap {
     public static class DriveTrainMap{
         public static final double angleKP = 0.1945392;
         public static final double angleKI = 0;
-        public static final double angleKD = 0.00323242;
+        public static final double angleKD = 0.00223242;
         public static int leftLeaderCANID = 1;
         public static int leftFollowerCANID = 2;
         public static int rightLeaderCANID = 3;
