@@ -12,7 +12,9 @@ import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.kinematics.DifferentialDriveKinematics;
 import edu.wpi.first.math.kinematics.DifferentialDriveOdometry;
 import edu.wpi.first.math.kinematics.DifferentialDriveWheelSpeeds;
+import edu.wpi.first.wpilibj.Encoder;
 import edu.wpi.first.wpilibj.SPI;
+import edu.wpi.first.wpilibj.CounterBase.EncodingType;
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
 import edu.wpi.first.wpilibj.motorcontrol.MotorControllerGroup;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -23,6 +25,9 @@ public class DriveTrain extends SubsystemBase {
   private WPI_TalonFX rightFollower;
   private WPI_TalonFX leftLeader;
   private WPI_TalonFX leftFollower;
+
+  Encoder leftEncoder = new Encoder(0, 1, false, EncodingType.k4X);
+  Encoder rightEncoder = new Encoder(2, 3, false, EncodingType.k4X);
 
   private AHRS gyro;
 
@@ -63,10 +68,16 @@ public class DriveTrain extends SubsystemBase {
     differentialDrive = new DifferentialDrive(leftSide, rightSide);
     differentialDrive.setSafetyEnabled(true);
 
+    rightEncoder.setReverseDirection(true);
+    leftEncoder.setDistancePerPulse(RobotMap.DriveTrainMap.inchesPerPulse);
+    rightEncoder.setDistancePerPulse(RobotMap.DriveTrainMap.inchesPerPulse);
+
     differentialDriveKinematics = new DifferentialDriveKinematics(RobotMap.DriveTrainMap.kTrackwidthMeters);
     resetEncoders();
     gyro.reset();
   }
+
+
 
   @Override
   public void periodic() {
@@ -85,7 +96,7 @@ public class DriveTrain extends SubsystemBase {
   }
 
   public void tankDrive(double left, double right) {
-    differentialDrive.tankDrive(left, -right);   
+    differentialDrive.tankDrive(left, right);   
  }
 
  public double getAngle(){
@@ -122,8 +133,8 @@ public double getRightFollowerEncoderTicks(){
 
  public DifferentialDriveWheelSpeeds getWheelSpeeds() {
   return new DifferentialDriveWheelSpeeds(
-    leftLeader.getSelectedSensorVelocity() * 1000 * RobotMap.DriveTrainMap.ticksToMeters, 
-    rightLeader.getSelectedSensorVelocity() * 1000 * RobotMap.DriveTrainMap.ticksToMeters
+    leftEncoder.getRate(),
+    rightEncoder.getRate()
     );
 
 }
@@ -134,11 +145,8 @@ public void resetOdometry(Pose2d pose) {
 }
 
 public void resetEncoders(){
-  leftLeader.setSelectedSensorPosition(0);
-  rightLeader.setSelectedSensorPosition(0);
-  rightFollower.setSelectedSensorPosition(0);
-  leftFollower.setSelectedSensorPosition(0);
-
+    leftEncoder.reset();
+    rightEncoder.reset();
 }
 
 public void tankDriveVolts(double leftVolts, double rightVolts) {
