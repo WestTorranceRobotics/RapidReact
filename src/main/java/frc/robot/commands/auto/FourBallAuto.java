@@ -16,6 +16,7 @@ import frc.robot.commands.driveTrain.TurnToDirection;
 import frc.robot.commands.intake.DeployIntake;
 import frc.robot.commands.intake.RunIntake;
 import frc.robot.commands.intake.RunIntakeAndLoaderUntilProxSee;
+import frc.robot.commands.intake.RunIntakeForTime;
 import frc.robot.commands.intake.RunIntakeUntilProxSee;
 import frc.robot.commands.intake.StopIntake;
 import frc.robot.commands.loader.RunLoader;
@@ -49,30 +50,32 @@ public class FourBallAuto extends SequentialCommandGroup {
       new TurnToDirection(driveTrain, -5),
       // shoot while continuously aiming and intaking, stop when finished shooting
       new ParallelDeadlineGroup(
-        new ShootingTwoBallsUsingLQR(shooter, loader, 3500, false),
+        new ShootingTwoBallsUsingLQR(shooter, loader, 3400, false),
         //new ShootOneBallUsingDirectPower(shooter, loader, 0.65, 2500),
         new StayOnTarget(driveTrain),
-        new StopIntake(intake)
-        //new RunIntake(intake)
-      ),
-      new TurnToDirection(driveTrain, 6), // turn towards player station
-      new DriveDistance(driveTrain, 115, 0.90),
-      new ParallelDeadlineGroup(
-        new TurnToAngleWithVisionTakeover(driveTrain, 1),
+        // new StopIntake(intake)
         new RunIntake(intake)
       ),
+      new TurnToDirection(driveTrain, 6), // turn towards player station
+      new DriveDistance(driveTrain, 130, 0.90),
+      new TurnToAngleWithVisionTakeover(driveTrain, 1),
+      new DriveDistanceWithVisionTakeover(driveTrain),
+      // new ParallelDeadlineGroup(
+      //   new TurnToAngleWithVisionTakeover(driveTrain, 1),
+      //   new RunIntake(intake)
+      // ),
 
       // make a leap for the ball
       new ParallelDeadlineGroup(
-        new DriveDistance(driveTrain, 25, 1),
+        new DriveDistance(driveTrain, 12, 0.65),
         new RunIntake(intake),
         new SeeBallRunLoader(loader)
       ),
 
+      // new Wait(1.5),
       // wait at human player station and run intake continuously
       new ParallelDeadlineGroup(
-        new Wait(1.5),
-        new RunIntake(intake),
+        new RunIntakeForTime(intake, 2),
         // new SeeBallRunLoader(loader)
         new SeeBallRunLoaderLonger(loader)
       ),
@@ -98,6 +101,7 @@ public class FourBallAuto extends SequentialCommandGroup {
       ),
 
       // shoot while continuously aiming and intaking, stop when finished shooting
+      new RunIntakeForTime(intake, 1.0),
       new ParallelDeadlineGroup(
         new ShootingTwoBallsUsingLQR(shooter, loader, 3500, true),
         new StayOnTarget(driveTrain),

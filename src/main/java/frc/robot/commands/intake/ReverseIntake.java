@@ -23,7 +23,7 @@ public class ReverseIntake extends CommandBase
   @Override
   public void initialize() 
   {
-    intake.ReverseIntake();
+    intake.reverseIntake();
   }
 
   // Called every time the scheduler runs while the command is scheduled.
@@ -34,7 +34,7 @@ public class ReverseIntake extends CommandBase
   @Override
   public void end(boolean interrupted) 
   {
-    intake.StopIntake();
+    intake.stopIntake();
   }
 
   // Returns true when the command should end.

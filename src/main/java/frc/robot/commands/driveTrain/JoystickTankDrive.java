@@ -36,6 +36,7 @@ public class JoystickTankDrive extends CommandBase {
     leftHandIn = Math.pow(leftHand.getY(), 1);
     rightHandIn = Math.pow(rightHand.getY(), 1);
     driveTrain.tankDrive(-leftHandIn, -rightHandIn);
+    // driveTrain.arcadeDrive(-rightHand.getY(), rightHand.getX());
   }
 
   // Called once the command ends or is interrupted.

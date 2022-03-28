@@ -14,45 +14,46 @@ public class DeployIntake extends CommandBase {
   Intake mIntake;
   boolean isDeployed;
   boolean isFinished = false;
+  double deployedValue = 0;
   /** Creates a new DeployIntake. */
   public DeployIntake(Intake intake) {
     mIntake = intake;
 
     addRequirements(mIntake);
-    // Use addRequirements() here to declare subsystem dependencies.
   }
 
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    if(mIntake.getAnalogIntakeValue() >= RobotMap.IntakeMap.voltageValueForDeployedLower && mIntake.getAnalogIntakeValue() <= RobotMap.IntakeMap.voltageValueForDeployedUpper)
-      {
-        isDeployed = true;
-      }
-    else{
+    if(mIntake.getDeployMotor().getEncoder().getPosition() <= RobotMap.IntakeMap.encoderValueForUndeployed) {
       isDeployed = false;
+      //mIntake.getDeployMotor().getEncoder().getPosition();
+    }
+    else {
+      isDeployed = true;
     }
   }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    System.out.println(isDeployed);
+    // System.out.println(isDeployed);
     if(!isDeployed && isFinished == false){
       mIntake.deployIntake();
      // mIntake.getAnalogIntakeValue() >= RobotMap.IntakeMap.voltageValueForDeployedLower && 
-    if(mIntake.getAnalogIntakeValue() <= RobotMap.IntakeMap.voltageValueForDeployedUpper)
+    if(mIntake.getDeployMotor().getEncoder().getPosition() >= RobotMap.IntakeMap.encoderValueForDeployed)
       {
         mIntake.stopIntake();
         isFinished = true;
       }
     }
 
+    //mIntake.deployIntake();
   }
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-    mIntake.getDeployMotor().set(ControlMode.PercentOutput, 0);
+    mIntake.stopDeployMotors();
     isFinished = false;
   }
 

@@ -31,7 +31,7 @@ public class RunIntakeUntilProxSee extends CommandBase {
   @Override
   public void execute() {
     if(!mLoader.seeBall()){
-      mIntake.RunIntake();
+      mIntake.runIntake();
       if(mLoader.seeBall()){
         mIntake.stopIntake();
         isDone = true;

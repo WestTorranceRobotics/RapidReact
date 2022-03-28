@@ -25,6 +25,7 @@ public class TurnToAngle extends CommandBase {
     this.driveTrain = driveTrain;
     this.targetAngle = targetAngle;
     gyro = driveTrain.getGyro();
+    addRequirements(driveTrain);
   }
 
   // Called when the command is initially scheduled.

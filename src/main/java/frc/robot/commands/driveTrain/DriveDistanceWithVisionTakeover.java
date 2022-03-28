@@ -32,6 +32,7 @@ public class DriveDistanceWithVisionTakeover extends CommandBase {
 
   /** Creates a new DriveDistanceWithVisionTakeover. */
   public DriveDistanceWithVisionTakeover(DriveTrain driveTrain) {
+    this.driveTrain = driveTrain;
     anglePID = driveTrain.getAngleController();
     distancePID = driveTrain.getDistanceController();
     gyro = driveTrain.getGyro();
@@ -45,68 +46,69 @@ public class DriveDistanceWithVisionTakeover extends CommandBase {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
+    ballFound = false;
     // gyro.reset();
     // gyro.zeroYaw();
-    startingAngle = gyro.getAngle();
+    // startingAngle = gyro.getAngle();
 
-    anglePID.setSetpoint(0);
-    anglePID.reset();
-    driveTrain.enablePID();
+    // anglePID.setSetpoint(0);
+    // anglePID.reset();
+    // driveTrain.enablePID();
   }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
+    System.out.println("driivng");
     double vx = NetworkTableInstance.getDefault().getTable("Vision").getEntry("vx").getDouble(-999);
     double vy = NetworkTableInstance.getDefault().getTable("Vision").getEntry("vy").getDouble(-999);
     boolean targetAcquired = NetworkTableInstance.getDefault().getTable("Vision").getEntry("Ball Found").getBoolean(false);
-    // if (vx != -999 && vy != -999) {
-    //   ballFound = true;
-    // }
+    if (vx != -999 && vy != -999) {
+      ballFound = true;
+    }
 
-    // if (ballFound) {
-    if (targetAcquired) {
+    if (ballFound) {
+    // if (targetAcquired) {
       double leftCommand = 0;
       double rightCommand = 0;
 
-      /* turn to face the target  */
-      double steeringAdjust = 0;
-      anglePID.setP(0.01772);
-      anglePID.setI(0.011);
+      // /* turn to face the target  */
+      // double steeringAdjust = 0;
+      // anglePID.setP(0.01772);
+      // anglePID.setI(0.011);
       
-      steeringAdjust = MathUtil.clamp(anglePID.calculate(vx), -1, 1);
+      // steeringAdjust = MathUtil.clamp(anglePID.calculate(vx), -1, 1);
       
-      leftCommand -= steeringAdjust;
-      rightCommand += steeringAdjust;
+      // leftCommand -= steeringAdjust;
+      // rightCommand += steeringAdjust;
       /* moves towards the ball until the ball stops being seen, meaning the ball has been intaked (hopefully) 
       after the ball goes past a vy value, a timer will start. Once it finishes, the command will end. The next command
       will be drive distance with constant intaking. Then the shooter will aim and shoot. */
-      double distAdjust = 0.7;
 
-      leftCommand += distAdjust;
-      rightCommand += distAdjust;
+      driveTrain.tankDrive(0.7, 0.7);
 
-      driveTrain.tankDrive(leftCommand, rightCommand);
-
-      if (vy <= -35) {
+      if (vy <= -20) {
+        System.out.println("DONE");
         isDone = true;
       }
     }
-    else {
-      // just drive 
-      double speed = 0.7;
-      driveTrain.tankDrive(speed, speed);
-    }
+    // else {
+    //   // just drive 
+    //   double speed = 0.7;
+    //   driveTrain.tankDrive(speed, speed);
+    // }
   }
 
   // Called once the command ends or is interrupted.
   @Override
-  public void end(boolean interrupted) {}
+  public void end(boolean interrupted) {
+    driveTrain.tankDrive(0, 0);
+  }
 
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return false;
+    return isDone;
   }
 
   public double GetAngleTurned()

@@ -59,17 +59,24 @@ public class RobotMap {
     public static class IntakeMap {
         public static int intakeMotorCANID = 5;
         public static int intakeDeployMotorCANID = 8;
-        public static double intakeMotorPower = -1;
+        public static int intakeDeployFollowerCANID = -0;
+        public static double intakeMotorPower = -0.6;
         public static int deployEncoderChannel1 = 4;
         public static int deployEncoderChannel2 = 5;
         public static double deployMotorPower = 1;
 
+        public static double intakeDeployKp = 0;
+        public static double intakeDeployKi = 0;
+        public static double intakeDeployKd = 0;
+
         //0.735-0.745 Start
         public static double voltageValueForUndeployedLower = 0.735;
+        public static double encoderValueForUndeployed = 0.1;
         public static double voltageValueForUndeployedUpper = 0.75;
 
         //0.37-0.38
         public static double voltageValueForDeployedLower = 0.40;
+        public static double encoderValueForDeployed = 46;
         public static double voltageValueForDeployedUpper = 0.410;
     }
 

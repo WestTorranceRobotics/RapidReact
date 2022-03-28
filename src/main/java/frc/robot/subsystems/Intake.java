@@ -4,14 +4,14 @@
 
 package frc.robot.subsystems;
 
-import com.ctre.phoenix.motorcontrol.ControlMode;
-import com.ctre.phoenix.motorcontrol.NeutralMode;
-import com.ctre.phoenix.motorcontrol.can.TalonSRX;
 import com.revrobotics.CANSparkMax;
+import com.revrobotics.CANSparkMax.ControlType;
+import com.revrobotics.CANSparkMax.IdleMode;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.wpilibj.AnalogPotentiometer;
+import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.Encoder;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.RobotMap;
@@ -22,64 +22,99 @@ public class Intake extends SubsystemBase
   private CANSparkMax intakeMotor;
 
   //Variables for deploying intake
-  private TalonSRX deployMotor;
+  private CANSparkMax deployMotor;
+  private CANSparkMax deployMotorFollower;
   private Encoder deployEncoder;
   private boolean isDeployed;
+  private DigitalInput limitSwitch;
 
-  private double setpoint = 0.50;
   private PIDController controller;
 
   /** Creates a new Intake. */
-  public Intake() 
-  {
+  public Intake() {
     intakeMotor = new CANSparkMax(RobotMap.IntakeMap.intakeMotorCANID, MotorType.kBrushless);
     intakeMotor.setInverted(true);
+    limitSwitch = new DigitalInput(4);
 
-    deployMotor = new TalonSRX(RobotMap.IntakeMap.intakeDeployMotorCANID);
-    deployMotor.setNeutralMode(NeutralMode.Brake);
+    deployMotor = new CANSparkMax(RobotMap.IntakeMap.intakeDeployMotorCANID, MotorType.kBrushless);
+    deployMotor.setInverted(true);
+    deployMotorFollower = new CANSparkMax(RobotMap.IntakeMap.intakeDeployFollowerCANID, MotorType.kBrushless);
 
+    deployMotorFollower.follow(deployMotor, false);
+
+    deployMotor.setIdleMode(IdleMode.kBrake);
+    deployMotorFollower.setIdleMode(IdleMode.kBrake);
+    
+    deployMotor.getEncoder().setPosition(0);
+    deployMotorFollower.getEncoder().setPosition(0);
+
+    // deployMotor.getPIDController().setP(RobotMap.IntakeMap.intakeDeployKp);
+    // deployMotor.getPIDController().setI(RobotMap.IntakeMap.intakeDeployKi);
+    // deployMotor.getPIDController().setD(RobotMap.IntakeMap.intakeDeployKd);
+    // deployMotor.getPIDController().setOutputRange(-0.5, 0.5);
+    
+    //deployMotorFollower.setInverted(true);
+    
     controller = new PIDController(0, 0, 0);
   }
 
-  public void RunIntake()
-  {
+  public boolean isActivated(){
+    return limitSwitch.get();
+    //The limit switched is pressed when limitswitch.get() is false.
+  }
+
+  public void runIntake() {
     intakeMotor.set(RobotMap.IntakeMap.intakeMotorPower);
   }
 
-  public void ReverseIntake()
-  {
+  public void reverseIntake() {
     intakeMotor.set(-RobotMap.IntakeMap.intakeMotorPower);
   }
 
-  public void StopIntake()
-  {
+  public void stopIntake() {
     intakeMotor.set(0);
   }
 
-  public TalonSRX getDeployMotor(){
+  public void deployIntake() {
+    deployMotor.set(0.4); // 0.5
+  }
+
+  public void unDeployIntake() {
+    deployMotor.set(-0.4); // -0.6
+  }
+
+  public void stopDeployMotors() {
+    deployMotor.set(0);
+  }
+
+  public void setIntake(double angle){
+    deployMotor.getPIDController().setReference(angle, ControlType.kPosition);
+  }
+
+  public double getIntake() {
+    return deployMotor.getEncoder().getPosition();
+  }
+
+  public CANSparkMax getDeployMotor() {
     return deployMotor;
   }
 
-  public void deployIntake(){
-    deployMotor.set(ControlMode.PercentOutput, 0.5);
+  public CANSparkMax getFollowerMotor() {
+    return deployMotorFollower;
   }
 
-  public void unDeployIntake(){
-    deployMotor.set(ControlMode.PercentOutput, -0.6);
-  }
-
-  public void stopIntake() {
-    deployMotor.set(ControlMode.PercentOutput, 0);
+  public PIDController getController() {
+    return controller;
   }
 
   public boolean isDeployed() {
-    if (getAnalogIntakeValue() >= RobotMap.IntakeMap.voltageValueForDeployedLower && getAnalogIntakeValue() <= RobotMap.IntakeMap.voltageValueForDeployedUpper)
+    if (getDeployMotor().getEncoder().getPosition() >= RobotMap.IntakeMap.encoderValueForUndeployed)
       {
         return true;
       }
-    if (getAnalogIntakeValue() < RobotMap.IntakeMap.voltageValueForDeployedLower) {
-      return true;
-    }
+    // if (getDeployMotor().getEncoder().getPosition() <= RobotMap.IntakeMap.encoderValueForUndeployed) {
+    //   return true;
+    // }
     else {
       return false;
     }
@@ -89,7 +124,7 @@ public class Intake extends SubsystemBase
     return intakeMotor.getOutputCurrent() != 0;
   }
 
-  public boolean ToggleIsDeployed() {
+  public boolean toggleIsDeployed() {
     isDeployed = !isDeployed;//toggles the value of is deployed
     return !isDeployed;//returns the initial value
   }

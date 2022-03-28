@@ -4,6 +4,7 @@
 
 package frc.robot.commands.intake;
 
+import javax.sound.midi.MidiChannel;
 import javax.sound.midi.SysexMessage;
 
 import com.ctre.phoenix.motorcontrol.ControlMode;
@@ -28,12 +29,12 @@ public class UndeployIntake extends CommandBase {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    if(mIntake.getAnalogIntakeValue() >= RobotMap.IntakeMap.voltageValueForUndeployedLower && mIntake.getAnalogIntakeValue() <= RobotMap.IntakeMap.voltageValueForUndeployedUpper)
+    if(mIntake.getDeployMotor().getEncoder().getPosition() >= RobotMap.IntakeMap.encoderValueForUndeployed)
       {
-        isDeployed = false;
+        isDeployed = true;
       }
     else{
-      isDeployed = true;
+      isDeployed = false;
     }
   }
 
@@ -42,21 +43,22 @@ public class UndeployIntake extends CommandBase {
   public void execute() {
     if(isDeployed && isFinished == false){
       mIntake.unDeployIntake();
-    if(mIntake.getAnalogIntakeValue() >= RobotMap.IntakeMap.voltageValueForUndeployedLower)
+    if(mIntake.getDeployMotor().getEncoder().getPosition() <= 0)
       {
         mIntake.stopIntake();
         isFinished = true;
       }
     }
 
+    // mIntake.unDeployIntake();
+
   }
 
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-    mIntake.stopIntake();
+    mIntake.stopDeployMotors();
     isFinished = false;
-    
   }
 
   // Returns true when the command should end.

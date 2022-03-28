@@ -53,8 +53,10 @@ public class DriveTrain extends SubsystemBase {
     leftFollower.follow(leftLeader);
 
     leftLeader.setInverted(false);
+    //leftFollower.setInverted(false);
     leftFollower.setInverted(InvertType.FollowMaster);
     rightLeader.setInverted(true);
+    //rightFollower.setInverted(true);
     rightFollower.setInverted(InvertType.FollowMaster);
 
     leftLeader.setNeutralMode(NeutralMode.Brake);
@@ -83,8 +85,8 @@ public class DriveTrain extends SubsystemBase {
 
   public void tankDrive(double leftPower, double rightPower){
     differentialDrive.tankDrive(leftPower, rightPower);
-    // leftLeader.set(-leftPower);
-    // leftFollower.set(-leftPower);
+    // leftLeader.set(leftPower);
+    // leftFollower.set(leftPower);
     // rightLeader.set(rightPower);
     // rightFollower.set(rightPower);
   }

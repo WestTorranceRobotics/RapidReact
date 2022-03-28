@@ -9,18 +9,21 @@ import javax.management.openmbean.TabularType;
 import com.kauailabs.navx.IMUProtocol.GyroUpdate;
 import com.kauailabs.navx.frc.AHRS;
 
+import edu.wpi.first.math.MathUtil;
+import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.subsystems.DriveTrain;
 
-public class TurnToDirection extends CommandBase {
-  DriveTrain driveTrain;
-  double targetDirection;
+public class TurnToDirectionTest extends CommandBase {
+  private DriveTrain driveTrain;
+  private double targetDirection;
   private AHRS gyro;
-  private double speed = 0.7;
-  private boolean isDone;
+  private double speed = 0.55;
+  private boolean isDone = false;
+  private PIDController pidController = new PIDController(0, 0, 0);
 
   /** Creates a new TurnToAngle. */
-  public TurnToDirection(DriveTrain driveTrain, double targetDirection) {
+  public TurnToDirectionTest(DriveTrain driveTrain, double targetDirection) {
     this.driveTrain = driveTrain;
     this.targetDirection = targetDirection;
     gyro = driveTrain.getGyro();
@@ -29,29 +32,33 @@ public class TurnToDirection extends CommandBase {
 
   // Called when the command is initially scheduled.
   @Override
-  public void initialize() {
-    isDone = false;
+  public void initialize() 
+  {
+    pidController.setP(0.01);
+    pidController.setI(0.01);
+    pidController.setD(0.00153242);
   }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
     double angleError = GetAngleError();
-    System.out.println(angleError);
-    if (angleError >= 1) { // counterclockwise
-      driveTrain.tankDrive(-speed, speed);
-    } else if (angleError <= -1) { // clockwise
-      driveTrain.tankDrive(speed, -speed);
-    } else {
-      isDone = true;
-    }
+
+    double spd = MathUtil.clamp(pidController.calculate(angleError), -.85, .85);
+    System.out.println("PID Speed is " + spd + " Error is " + angleError);
+
+    driveTrain.tankDrive(spd, -spd);
+
+    // System.out.println("Updating");
+    // driveTrain.tankDrive(0.6, -0.6);
+
   }
 
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-    driveTrain.tankDrive(0, 0);
     isDone = false;
+    driveTrain.tankDrive(0, 0);
   }
 
   // Returns true when the command should end.

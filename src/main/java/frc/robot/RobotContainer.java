@@ -6,6 +6,8 @@ package frc.robot;
 
 import java.util.HashMap;
 
+import javax.swing.plaf.TreeUI;
+
 import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.Timer;
@@ -19,6 +21,7 @@ import edu.wpi.first.wpilibj2.command.ConditionalCommand;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.ParallelDeadlineGroup;
+import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.POVButton;
 import frc.robot.commands.loader.ReverseLoader;
@@ -27,18 +30,24 @@ import frc.robot.commands.loader.SeeBallRunLoader;
 import frc.robot.commands.auto.DriveOffAimAndShootTwoBalls;
 import frc.robot.commands.auto.FourBallAuto;
 import frc.robot.commands.auto.ShootAndDriveOff;
+import frc.robot.commands.auto.Wait;
 import frc.robot.commands.driveTrain.DriveDistanceWithVisionTakeover;
 import frc.robot.commands.driveTrain.JoystickTankDrive;
+import frc.robot.commands.driveTrain.MotorTest;
 import frc.robot.commands.driveTrain.TurnToAngleWithVisionTakeover;
 import frc.robot.commands.driveTrain.TurnToDirection;
+import frc.robot.commands.driveTrain.TurnToDirectionTest;
 import frc.robot.commands.elevator.LiftDown;
 import frc.robot.commands.elevator.LiftUp;
 import frc.robot.commands.intake.DeployIntake;
+import frc.robot.commands.intake.DeployIntakeDebug;
 import frc.robot.commands.intake.ReverseIntake;
 import frc.robot.commands.intake.RunIntake;
 import frc.robot.commands.intake.RunIntakeAndLoaderUntilProxSee;
+import frc.robot.commands.intake.RunIntakeForTime;
 import frc.robot.commands.intake.SetStartingPosition;
 import frc.robot.commands.intake.UndeployIntake;
+import frc.robot.commands.intake.UndeployIntakeDebug;
 import frc.robot.commands.shooter.*;
 import frc.robot.subsystems.*;
 
@@ -106,7 +115,7 @@ public class RobotContainer {
     // NetworkTableInstance.getDefault().getTable("Vision").getEntry("shootF").setDouble(0);
     NetworkTableInstance.getDefault().getTable("Shooter").getEntry("RPM").setDouble(0);
 
-    NetworkTableInstance.getDefault().getTable("Vision").getEntry("isRed").setBoolean(false);
+    NetworkTableInstance.getDefault().getTable("Vision").getEntry("isRed").setBoolean(true);
     NetworkTableInstance.getDefault().getTable("Vision").getEntry("aimbot").setBoolean(true);
 
     NetworkTableInstance.getDefault().getTable("Vision").getEntry("kP").setDouble(0.1945392);
@@ -137,6 +146,7 @@ public class RobotContainer {
 
     // // for finding the range of distances from target that we can shoot from
     display.addNumber("Distance From Target", driveTrain::getDistanceFromTarget).withPosition(1, 1);
+    display.addNumber("Intake Deploy Encoder", intake::getIntake);
 
     // // gets current current of shooter
     // display.addNumber("Current current of shooter", shooter::getCurrent).withPosition(2, 1);
@@ -164,8 +174,9 @@ public class RobotContainer {
     screen.addBoolean("SHOOTER RUNNING?", shooter::active).withPosition(0, 4).withSize(2, 1);
     screen.addNumber("Shooter", shooter::getVelocity);
     screen.addNumber("Shooter current", shooter::getCurrent);
-    screen.addNumber("Proximity voltage", intake::getAnalogIntakeValue);
+    screen.addNumber("Proximity voltage", loader::getProxVoltage);
     screen.addBoolean("CAN SEE BALL", loader::seeBall);
+    screen.addBoolean("Limit Switch Activated", intake::isActivated);
     screen.addBoolean("BOTTOM LIMIT HIT", () -> elevator.getElevatorMotor().getEncoder().getPosition() <= RobotMap.ElevatorMap.elevatorMinHeight)
     .withPosition(2, 0).withSize(2, 1);
     screen.addBoolean("TOP LIMIT HIT", () -> elevator.getElevatorMotor().getEncoder().getPosition() >= RobotMap.ElevatorMap.elevatorMaxHeight)
@@ -195,7 +206,7 @@ public class RobotContainer {
 
   private void configureDefaultCommands() {
     driveTrain.setDefaultCommand(new JoystickTankDrive(driverLeft, driverRight, driveTrain));
-    //loader.setDefaultCommand(new SeeBallRunLoader(loader));
+    // loader.setDefaultCommand(new SeeBallRunLoader(loader));
   }
 
   private void toggleColorBallTracking() {
@@ -217,15 +228,22 @@ public class RobotContainer {
 
     // driverLeftButton4.whenPressed(new ConditionalCommand(new UndeployIntake(intake), new DeployIntake(intake), intake::isDeployed));
     // driverLeftButton3.whenPressed(new DriveOffAimAndShootTwoBalls(driveTrain, intake, loader, shooter));
-    
+    driverRightTrigger.whenPressed(new TurnToAngleWithVisionTakeover(driveTrain, 1)
+    );
+    driverLeftTrigger.whenPressed(new DriveDistanceWithVisionTakeover(driveTrain));
     // Correct Controls
     // Joystick controls
-    driverRightTrigger.whenHeld(new RunLoader(loader, -0.4));   // only run load
-    driverRightThumb.whenHeld(new RunIntake(intake));           // only run intake
-    driverLeftTrigger.whenHeld(new ParallelCommandGroup(        // aim and start up shooter
-      new StayOnTarget(driveTrain),
-      new ShootUsingLQRDistanceFunction(shooter)
-    ));
+    // driverRightTrigger.whenHeld(new RunLoader(loader, -0.4));   // only run load
+    // driverRightThumb.whenHeld(new ParallelCommandGroup( // run intake and loader when ball has passed prox
+    //     new RunIntake(intake),
+    //     new SeeBallRunLoader(loader)
+    //   )
+    // );          
+    // driverLeftTrigger.whenHeld(new ParallelCommandGroup(        // aim and start up shooter
+    //   new StayOnTarget(driveTrain),
+    //   new ShootingUsingLQR(shooter, 3250)
+    //   // new ShootUsingLQRDistanceFunction(shooter)
+    // ));
 
     driverLeftButton5.whenHeld(new ShootBallBasedOnPower(shooter, 0.3)); // for lower goal just in case
     driverLeftButton4.whenHeld(new ShootingUsingLQR(shooter, 3250)); // shoot at tarmac in case tracking and distance function doesn't work
@@ -243,12 +261,23 @@ public class RobotContainer {
       new ReverseLoader(loader),
       new ReverseIntake(intake))
     );
-    operatorA.whenHeld(new RunIntake(intake));
+    operatorA.whenHeld(new ParallelCommandGroup(
+        new RunIntake(intake),
+        new SeeBallRunLoader(loader)
+      )
+    );
     operatorB.whenPressed(new ConditionalCommand(
       new UndeployIntake(intake),
       new DeployIntake(intake),
       intake::isDeployed)
     );
+
+    operatorLeft.whenHeld(new DeployIntakeDebug(intake));
+    operatorRight.whenHeld(new UndeployIntakeDebug(intake));
+
+    // operatorA.whenPressed(new TurnToDirectionTest(driveTrain, 270));
+    // operatorB.whenPressed(new TurnToDirectionTest(driveTrain, 90));
+
     operatorStart.whenPressed(new SetStartingPosition(intake));
 
     //Loader

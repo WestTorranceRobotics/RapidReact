@@ -16,6 +16,7 @@ public class Wait extends CommandBase {
     timer = new Timer();
     this.timeToWait = timeToWait;
     isDone = false;
+    System.out.println("TIMER CREATED");
   }
 
   // Called when the command is initially scheduled.
@@ -23,11 +24,15 @@ public class Wait extends CommandBase {
   public void initialize() {
     timer.reset();
     timer.start();
+    isDone = false;
+    System.out.println("TIMER INIT");
   }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
+    System.out.println("started\t" + timer.hasElapsed(0.2));
+    System.out.println(timer.hasElapsed(timeToWait));
     if (timer.hasElapsed(timeToWait)) {
       isDone = true;
       System.out.println("DONE");
