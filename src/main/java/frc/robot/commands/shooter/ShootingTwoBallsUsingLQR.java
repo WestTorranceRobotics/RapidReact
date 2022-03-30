@@ -63,13 +63,13 @@ public class ShootingTwoBallsUsingLQR extends CommandBase {
      //mShooter.getShootFollowerLeader().setVoltage(nextVoltageFollower);
 
 
-    if (Math.abs(mShooter.getVelocity()) >= (m_rpm-20) && !mShooter.atSpeed()) {
+    if (Math.abs(mShooter.getVelocity()) >= (m_rpm-5) && !mShooter.atSpeed()) {
       mShooter.atSpeed(true);
       shootTimer.start();
     }
 
     if (mShooter.atSpeed()) {
-      mLoader.runLoader(-0.40);
+      mLoader.runLoader(-0.35);
       if(mShooter.getVelocity() <= m_rpm-200){
         System.out.println(shotBall);
         mLoader.stopLoader();
