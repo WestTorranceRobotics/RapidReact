@@ -115,7 +115,7 @@ public class RobotContainer {
     // NetworkTableInstance.getDefault().getTable("Vision").getEntry("shootF").setDouble(0);
     NetworkTableInstance.getDefault().getTable("Shooter").getEntry("RPM").setDouble(0);
 
-    NetworkTableInstance.getDefault().getTable("Vision").getEntry("isRed").setBoolean(true);
+    NetworkTableInstance.getDefault().getTable("Vision").getEntry("isRed").setBoolean(false);
     NetworkTableInstance.getDefault().getTable("Vision").getEntry("aimbot").setBoolean(true);
 
     NetworkTableInstance.getDefault().getTable("Vision").getEntry("kP").setDouble(0.1945392);
@@ -176,7 +176,7 @@ public class RobotContainer {
     screen.addNumber("Shooter current", shooter::getCurrent);
     screen.addNumber("Proximity voltage", loader::getProxVoltage);
     screen.addBoolean("CAN SEE BALL", loader::seeBall);
-    screen.addBoolean("Limit Switch Activated", intake::isActivated);
+    screen.addNumber("Intake Motor Deploy Value", () -> intake.getDeployMotor().getEncoder().getPosition());
     screen.addBoolean("BOTTOM LIMIT HIT", () -> elevator.getElevatorMotor().getEncoder().getPosition() <= RobotMap.ElevatorMap.elevatorMinHeight)
     .withPosition(2, 0).withSize(2, 1);
     screen.addBoolean("TOP LIMIT HIT", () -> elevator.getElevatorMotor().getEncoder().getPosition() >= RobotMap.ElevatorMap.elevatorMaxHeight)
@@ -228,9 +228,12 @@ public class RobotContainer {
 
     // driverLeftButton4.whenPressed(new ConditionalCommand(new UndeployIntake(intake), new DeployIntake(intake), intake::isDeployed));
     // driverLeftButton3.whenPressed(new DriveOffAimAndShootTwoBalls(driveTrain, intake, loader, shooter));
-    driverRightTrigger.whenPressed(new TurnToAngleWithVisionTakeover(driveTrain, 1)
-    );
-    driverLeftTrigger.whenPressed(new DriveDistanceWithVisionTakeover(driveTrain));
+    // driverRightTrigger.whenPressed(new SequentialCommandGroup(
+    //   new TurnToAngleWithVisionTakeover(driveTrain, 1),
+    //   new DriveDistanceWithVisionTakeover(driveTrain)
+    // ));
+    driverLeftTrigger.whenPressed(new TurnToDirection(driveTrain, 12));
+    driverRightTrigger.whenPressed(new InstantCommand(driveTrain::resetGyro));
     // Correct Controls
     // Joystick controls
     // driverRightTrigger.whenHeld(new RunLoader(loader, -0.4));   // only run load

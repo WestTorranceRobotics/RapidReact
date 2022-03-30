@@ -16,7 +16,7 @@ public class TurnToDirection extends CommandBase {
   DriveTrain driveTrain;
   double targetDirection;
   private AHRS gyro;
-  private double speed = 0.7;
+  private double speed = 0.6;
   private boolean isDone;
 
   /** Creates a new TurnToAngle. */

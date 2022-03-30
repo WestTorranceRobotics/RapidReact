@@ -76,11 +76,11 @@ public class Intake extends SubsystemBase
   }
 
   public void deployIntake() {
-    deployMotor.set(0.4); // 0.5
+    deployMotor.set(0.5); // 0.5
   }
 
   public void unDeployIntake() {
-    deployMotor.set(-0.4); // -0.6
+    deployMotor.set(-0.5); // -0.6
   }
 
   public void stopDeployMotors() {

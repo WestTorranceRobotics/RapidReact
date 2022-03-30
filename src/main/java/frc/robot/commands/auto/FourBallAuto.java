@@ -47,7 +47,7 @@ public class FourBallAuto extends SequentialCommandGroup {
         //new SeeBallRunLoader(loader),
         new RunIntakeUntilProxSee(intake, loader)
       ),
-      new TurnToDirection(driveTrain, -5),
+      // new TurnToDirection(driveTrain, -5),
       // shoot while continuously aiming and intaking, stop when finished shooting
       new ParallelDeadlineGroup(
         new ShootingTwoBallsUsingLQR(shooter, loader, 3400, false),
@@ -56,8 +56,10 @@ public class FourBallAuto extends SequentialCommandGroup {
         // new StopIntake(intake)
         new RunIntake(intake)
       ),
-      new TurnToDirection(driveTrain, 6), // turn towards player station
-      new DriveDistance(driveTrain, 130, 0.90),
+      new TurnToDirection(driveTrain, 6), // turn towards player station // 6 at vitruvian
+      new RunIntakeForTime(intake, 0.5),
+      new DriveDistance(driveTrain, 60, 1),
+      new DriveDistance(driveTrain, 30, 0.90),
       new TurnToAngleWithVisionTakeover(driveTrain, 1),
       new DriveDistanceWithVisionTakeover(driveTrain),
       // new ParallelDeadlineGroup(
@@ -75,13 +77,12 @@ public class FourBallAuto extends SequentialCommandGroup {
       // new Wait(1.5),
       // wait at human player station and run intake continuously
       new ParallelDeadlineGroup(
-        new RunIntakeForTime(intake, 2),
+        new RunIntakeForTime(intake, 1.5),
         // new SeeBallRunLoader(loader)
         new SeeBallRunLoaderLonger(loader)
       ),
 
-      // coming back
-      new TurnToDirection(driveTrain, 6), 
+      // coming back 
 
       new ParallelDeadlineGroup(
         new DriveDistance(driveTrain, -160, 1),
@@ -99,9 +100,9 @@ public class FourBallAuto extends SequentialCommandGroup {
           )
         )
       ),
+      new TurnToDirection(driveTrain, 6),
 
       // shoot while continuously aiming and intaking, stop when finished shooting
-      new RunIntakeForTime(intake, 1.0),
       new ParallelDeadlineGroup(
         new ShootingTwoBallsUsingLQR(shooter, loader, 3500, true),
         new StayOnTarget(driveTrain),

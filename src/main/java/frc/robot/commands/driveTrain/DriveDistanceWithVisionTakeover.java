@@ -71,6 +71,7 @@ public class DriveDistanceWithVisionTakeover extends CommandBase {
     // if (targetAcquired) {
       double leftCommand = 0;
       double rightCommand = 0;
+      double steeringAdjust = 0;
 
       // /* turn to face the target  */
       // double steeringAdjust = 0;
@@ -84,10 +85,19 @@ public class DriveDistanceWithVisionTakeover extends CommandBase {
       /* moves towards the ball until the ball stops being seen, meaning the ball has been intaked (hopefully) 
       after the ball goes past a vy value, a timer will start. Once it finishes, the command will end. The next command
       will be drive distance with constant intaking. Then the shooter will aim and shoot. */
+      anglePID.setP(0.021272);
+      anglePID.setI(0.020);
+      // anglePID.setP(VTable.getEntry("kP").getDouble(0.1945392));
+      // anglePID.setI(VTable.getEntry("kI").getDouble(0));
+      steeringAdjust = MathUtil.clamp(anglePID.calculate(vx), -0.1, 0.1);
+      // System.out.println(steeringAdjust);
+      
+      leftCommand -= steeringAdjust;
+      rightCommand += steeringAdjust;
 
-      driveTrain.tankDrive(0.7, 0.7);
+      driveTrain.tankDrive(0.6 + leftCommand, 0.6 + rightCommand);
 
-      if (vy <= -20) {
+      if (vy <= -50) {
         System.out.println("DONE");
         isDone = true;
       }
@@ -102,6 +112,8 @@ public class DriveDistanceWithVisionTakeover extends CommandBase {
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
+    ballFound = false;
+    isDone = false;
     driveTrain.tankDrive(0, 0);
   }
 

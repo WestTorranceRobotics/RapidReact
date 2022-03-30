@@ -20,8 +20,9 @@ public class TurnToAngleWithVisionTakeover extends CommandBase {
   private AHRS gyro;
 
   private double targetAngle;
-  private double initTurningSpeed = 0.69;
+  private double initTurningSpeed = 0.6;
   private boolean ballFound;
+  double steeringAdjust = 0;
   private boolean isAligned;
 
   private boolean isDone;
@@ -71,12 +72,11 @@ public class TurnToAngleWithVisionTakeover extends CommandBase {
       double rightCommand = 0;
 
       /* turn to face the target  */
-      double steeringAdjust = 0;
-      anglePID.setP(0.01672);
-      anglePID.setI(0.011);
+      anglePID.setP(0.021272);
+      anglePID.setI(0.020);
       // anglePID.setP(VTable.getEntry("kP").getDouble(0.1945392));
       // anglePID.setI(VTable.getEntry("kI").getDouble(0));
-      steeringAdjust = MathUtil.clamp(anglePID.calculate(vx), -1, 1);
+      steeringAdjust = MathUtil.clamp(anglePID.calculate(vx), -0.7, 0.7);
       // System.out.println(steeringAdjust);
       
       leftCommand -= steeringAdjust;
@@ -90,7 +90,7 @@ public class TurnToAngleWithVisionTakeover extends CommandBase {
       // rightCommand += distAdjust;
 
       driveTrain.tankDrive(leftCommand, rightCommand);
-      System.out.println("sts");
+      System.out.println("Left Speed" + leftCommand);
       if (Math.abs(vx) <= 5) {
         isDone = true;
       }
