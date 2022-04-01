@@ -45,7 +45,7 @@ public class UndeployIntake extends CommandBase {
       mIntake.unDeployIntake();
     if(mIntake.getDeployMotor().getEncoder().getPosition() <= 0)
       {
-        mIntake.stopIntake();
+        mIntake.stopDeployMotors();
         isFinished = true;
       }
     }

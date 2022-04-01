@@ -10,6 +10,7 @@ import frc.robot.subsystems.Intake;
 public class ReverseIntake extends CommandBase 
 {
   Intake intake;
+  double power = 0;
   /** Creates a new RunIntake. */
   public ReverseIntake(Intake _intake) 
   {
@@ -19,11 +20,22 @@ public class ReverseIntake extends CommandBase
     addRequirements(intake);
   }
 
+  public ReverseIntake(Intake _intake, double power) {
+    intake = _intake;
+    this.power = power;
+    addRequirements(intake);
+  }
+
   // Called when the command is initially scheduled.
   @Override
   public void initialize() 
   {
-    intake.reverseIntake();
+    if (power == 0) {
+      intake.reverseIntake();
+    }
+    else {
+      intake.reverseIntake(power);
+    }
   }
 
   // Called every time the scheduler runs while the command is scheduled.

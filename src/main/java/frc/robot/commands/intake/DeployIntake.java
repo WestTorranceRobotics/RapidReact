@@ -43,7 +43,7 @@ public class DeployIntake extends CommandBase {
      // mIntake.getAnalogIntakeValue() >= RobotMap.IntakeMap.voltageValueForDeployedLower && 
     if(mIntake.getDeployMotor().getEncoder().getPosition() >= RobotMap.IntakeMap.encoderValueForDeployed)
       {
-        mIntake.stopIntake();
+        mIntake.stopDeployMotors();
         isFinished = true;
       }
     }

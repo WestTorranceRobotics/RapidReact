@@ -59,7 +59,7 @@ public class DriveDistanceWithVisionTakeover extends CommandBase {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    System.out.println("driivng");
+    System.out.println("driivng with Drive distance");
     double vx = NetworkTableInstance.getDefault().getTable("Vision").getEntry("vx").getDouble(-999);
     double vy = NetworkTableInstance.getDefault().getTable("Vision").getEntry("vy").getDouble(-999);
     boolean targetAcquired = NetworkTableInstance.getDefault().getTable("Vision").getEntry("Ball Found").getBoolean(false);
@@ -89,7 +89,7 @@ public class DriveDistanceWithVisionTakeover extends CommandBase {
       anglePID.setI(0.020);
       // anglePID.setP(VTable.getEntry("kP").getDouble(0.1945392));
       // anglePID.setI(VTable.getEntry("kI").getDouble(0));
-      steeringAdjust = MathUtil.clamp(anglePID.calculate(vx), -0.1, 0.1);
+      steeringAdjust = MathUtil.clamp(anglePID.calculate(vx), -0.2, 0.2);
       // System.out.println(steeringAdjust);
       
       leftCommand -= steeringAdjust;

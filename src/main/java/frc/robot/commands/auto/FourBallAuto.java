@@ -23,6 +23,7 @@ import frc.robot.commands.loader.RunLoader;
 import frc.robot.commands.loader.SeeBallRunLoader;
 import frc.robot.commands.loader.SeeBallRunLoaderLonger;
 import frc.robot.commands.shooter.ShootOneBallUsingDirectPower;
+import frc.robot.commands.shooter.ShootUsingLQRDistanceFunction;
 import frc.robot.commands.shooter.ShootingTwoBallsUsingLQR;
 import frc.robot.commands.shooter.StayOnTarget;
 import frc.robot.subsystems.DriveTrain;
@@ -57,9 +58,12 @@ public class FourBallAuto extends SequentialCommandGroup {
         new RunIntake(intake)
       ),
       new TurnToDirection(driveTrain, 6), // turn towards player station // 6 at vitruvian
+      
       new RunIntakeForTime(intake, 0.5),
+
       new DriveDistance(driveTrain, 60, 1),
-      new DriveDistance(driveTrain, 50, 0.90),
+      new DriveDistance(driveTrain, 30, 0.90),
+
       new TurnToAngleWithVisionTakeover(driveTrain, 1),
       new ParallelDeadlineGroup(
         new DriveDistanceWithVisionTakeover(driveTrain),
@@ -72,7 +76,7 @@ public class FourBallAuto extends SequentialCommandGroup {
 
       // make a leap for the ball
       new ParallelDeadlineGroup(
-        new DriveDistance(driveTrain, 18, 0.65),
+        new DriveDistance(driveTrain, 20, 0.65),
         new RunIntake(intake),
         new SeeBallRunLoader(loader)
       ),
@@ -107,9 +111,15 @@ public class FourBallAuto extends SequentialCommandGroup {
 
       // shoot while continuously aiming and intaking, stop when finished shooting
       new ParallelDeadlineGroup(
-        new ShootingTwoBallsUsingLQR(shooter, loader, 3500, true),
+        // new ShootingTwoBallsUsingLQR(shooter, loader, 3500, true),
+        new RunIntakeForTime(intake, 4.0),
+        new ShootUsingLQRDistanceFunction(shooter),
         new StayOnTarget(driveTrain),
-        new RunIntake(intake)
+        new RunIntake(intake),
+        new SequentialCommandGroup(
+          new RunIntakeForTime(intake, 1.5),
+          new RunLoader(loader, -0.4)
+        )
       )
     );
   }

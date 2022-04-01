@@ -98,6 +98,8 @@ public class RobotContainer {
 
   Timer timer = new Timer();
 
+  private boolean isRed = false;
+
   public RobotContainer() {
     configureSubsystems();
     configureDefaultCommands();
@@ -115,7 +117,7 @@ public class RobotContainer {
     // NetworkTableInstance.getDefault().getTable("Vision").getEntry("shootF").setDouble(0);
     NetworkTableInstance.getDefault().getTable("Shooter").getEntry("RPM").setDouble(0);
 
-    NetworkTableInstance.getDefault().getTable("Vision").getEntry("isRed").setBoolean(false);
+    NetworkTableInstance.getDefault().getTable("Vision").getEntry("isRed").setBoolean(isRed);
     NetworkTableInstance.getDefault().getTable("Vision").getEntry("aimbot").setBoolean(true);
 
     NetworkTableInstance.getDefault().getTable("Vision").getEntry("kP").setDouble(0.1945392);
@@ -177,6 +179,7 @@ public class RobotContainer {
     screen.addNumber("Proximity voltage", loader::getProxVoltage);
     screen.addBoolean("CAN SEE BALL", loader::seeBall);
     screen.addNumber("Intake Motor Deploy Value", () -> intake.getDeployMotor().getEncoder().getPosition());
+    screen.addNumber("Intake Motor Follower Deploy Value", () -> intake.getFollowerMotor().getEncoder().getPosition());
     screen.addBoolean("BOTTOM LIMIT HIT", () -> elevator.getElevatorMotor().getEncoder().getPosition() <= RobotMap.ElevatorMap.elevatorMinHeight)
     .withPosition(2, 0).withSize(2, 1);
     screen.addBoolean("TOP LIMIT HIT", () -> elevator.getElevatorMotor().getEncoder().getPosition() >= RobotMap.ElevatorMap.elevatorMaxHeight)
@@ -232,21 +235,21 @@ public class RobotContainer {
     //   new TurnToAngleWithVisionTakeover(driveTrain, 1),
     //   new DriveDistanceWithVisionTakeover(driveTrain)
     // ));
-    driverLeftTrigger.whenPressed(new TurnToDirection(driveTrain, 12));
-    driverRightTrigger.whenPressed(new InstantCommand(driveTrain::resetGyro));
+    // driverLeftTrigger.whenPressed(new TurnToDirection(driveTrain, 12));
+    // driverRightTrigger.whenPressed(new InstantCommand(driveTrain::resetGyro));
     // Correct Controls
     // Joystick controls
-    // driverRightTrigger.whenHeld(new RunLoader(loader, -0.4));   // only run load
-    // driverRightThumb.whenHeld(new ParallelCommandGroup( // run intake and loader when ball has passed prox
-    //     new RunIntake(intake),
-    //     new SeeBallRunLoader(loader)
-    //   )
-    // );          
-    // driverLeftTrigger.whenHeld(new ParallelCommandGroup(        // aim and start up shooter
-    //   new StayOnTarget(driveTrain),
-    //   new ShootingUsingLQR(shooter, 3250)
-    //   // new ShootUsingLQRDistanceFunction(shooter)
-    // ));
+    driverRightTrigger.whenHeld(new RunLoader(loader, -0.4));   // only run load
+    driverRightThumb.whenHeld(new ParallelCommandGroup( // run intake and loader when ball has passed prox
+        new RunIntake(intake),
+        new SeeBallRunLoader(loader)
+      )
+    );          
+    driverLeftTrigger.whenHeld(new ParallelCommandGroup(        // aim and start up shooter
+      new StayOnTarget(driveTrain),
+      // new ShootingUsingLQR(shooter, 3250)
+      new ShootUsingLQRDistanceFunction(shooter)
+    ));
 
     driverLeftButton5.whenHeld(new ShootBallBasedOnPower(shooter, 0.3)); // for lower goal just in case
     driverLeftButton4.whenHeld(new ShootingUsingLQR(shooter, 3250)); // shoot at tarmac in case tracking and distance function doesn't work
@@ -315,11 +318,11 @@ public class RobotContainer {
   }  
 
   public Command getAutonomousCommand() {
-    // if (autoSelector.getSelected() == null) {
-    //   return new DriveOffAimAndShootTwoBalls(driveTrain, intake, loader, shooter);
-    // }
-    // return autonomousCommandHashMap.get(autoSelector.getSelected());
+    if (autoSelector.getSelected() == null) {
+      return new DriveOffAimAndShootTwoBalls(driveTrain, intake, loader, shooter);
+    }
+    return autonomousCommandHashMap.get(autoSelector.getSelected());
     // return new FourBallAuto(driveTrain, intake, loader, shooter);
-    return new DriveOffAimAndShootTwoBalls(driveTrain, intake, loader, shooter);
+    // return new DriveOffAimAndShootTwoBalls(driveTrain, intake, loader, shooter);
   }
 }

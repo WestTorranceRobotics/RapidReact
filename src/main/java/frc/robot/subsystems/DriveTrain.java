@@ -225,9 +225,9 @@ public class DriveTrain extends SubsystemBase {
     // hub is 8' 8" tall
     double ty = NetworkTableInstance.getDefault().getTable("limelight").getEntry("ty").getDouble(-999);
     double radiansTY = ty * (3.14159 / 180.0);
-    double h2 = 37.5;
-    double angleLL = Math.atan(55.0 / 113.0);
-    return (104 - h2) / Math.tan(angleLL + radiansTY);
+    double h2 = 36.5;
+    double angleLL = Math.atan(35.5 / 59.0);
+    return ((104 - h2) / Math.tan(angleLL + radiansTY)) - 30;
   }
 
   @Override

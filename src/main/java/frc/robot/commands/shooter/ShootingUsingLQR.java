@@ -28,7 +28,7 @@ public class ShootingUsingLQR extends CommandBase {
   @Override
   public void initialize() {
     mShooter.getLinearSystemLoopLeader().reset(VecBuilder.fill(mShooter.getVelocityLeader()));
-    // m_rpm = NetworkTableInstance.getDefault().getTable("Shooter").getEntry("RPM").getDouble(0);
+    m_rpm = NetworkTableInstance.getDefault().getTable("Shooter").getEntry("RPM").getDouble(0);
     //mShooter.getLinearSystemLoopFollower().reset(VecBuilder.fill(mShooter.getVelocityFollower()));
   }
 

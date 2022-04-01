@@ -80,7 +80,9 @@ public class ShootUsingLQRDistanceFunction extends CommandBase {
   // function for inputting speed and getting rpm determined by 
   // plotting data points and finding a line of best fit
   private double getSpeed(double distance) {
-    return ((7.3 * distance) + 2170.0);
+    double inside = 52000.0 * distance;
+    return Math.sqrt(inside) + 790.0;
+    // return ((7.3 * distance) + 2170.0);
   }
 
   // Returns true when the command should end.

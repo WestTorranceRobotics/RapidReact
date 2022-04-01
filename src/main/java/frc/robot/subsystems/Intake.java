@@ -30,6 +30,8 @@ public class Intake extends SubsystemBase
 
   private PIDController controller;
 
+  private double deploySpeed = 0.4;
+
   /** Creates a new Intake. */
   public Intake() {
     intakeMotor = new CANSparkMax(RobotMap.IntakeMap.intakeMotorCANID, MotorType.kBrushless);
@@ -40,7 +42,8 @@ public class Intake extends SubsystemBase
     deployMotor.setInverted(true);
     deployMotorFollower = new CANSparkMax(RobotMap.IntakeMap.intakeDeployFollowerCANID, MotorType.kBrushless);
 
-    deployMotorFollower.follow(deployMotor, false);
+    // deployMotorFollower.follow(deployMotor, true);
+    deployMotorFollower.setInverted(false);
 
     deployMotor.setIdleMode(IdleMode.kBrake);
     deployMotorFollower.setIdleMode(IdleMode.kBrake);
@@ -71,20 +74,31 @@ public class Intake extends SubsystemBase
     intakeMotor.set(-RobotMap.IntakeMap.intakeMotorPower);
   }
 
+  public void runIntake(double power) {
+    intakeMotor.set(power);
+  }
+
+  public void reverseIntake(double power) {
+    intakeMotor.set(-power);
+  }
+
   public void stopIntake() {
     intakeMotor.set(0);
   }
 
   public void deployIntake() {
-    deployMotor.set(0.75); // 0.5
+    deployMotor.set(deploySpeed); // 0.75
+    deployMotorFollower.set(deploySpeed);
   }
 
   public void unDeployIntake() {
-    deployMotor.set(-0.75); // -0.6
+    deployMotor.set(-deploySpeed); // -0.75
+    deployMotorFollower.set(-deploySpeed);
   }
 
   public void stopDeployMotors() {
     deployMotor.set(0);
+    deployMotorFollower.set(0);
   }
 
   public void setIntake(double angle){

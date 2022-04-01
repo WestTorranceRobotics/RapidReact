@@ -60,6 +60,7 @@ public class TurnToAngleWithVisionTakeover extends CommandBase {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
+    System.out.println("TURNING");
     double vx = NetworkTableInstance.getDefault().getTable("Vision").getEntry("vx").getDouble(-999);
     double vy = NetworkTableInstance.getDefault().getTable("Vision").getEntry("vy").getDouble(-999);
     boolean targetAcquired = NetworkTableInstance.getDefault().getTable("Vision").getEntry("Ball Found").getBoolean(false);
@@ -72,13 +73,13 @@ public class TurnToAngleWithVisionTakeover extends CommandBase {
       double rightCommand = 0;
 
       /* turn to face the target  */
-      anglePID.setP(0.021272);
+      anglePID.setP(0.019072);
       anglePID.setI(0.020);
       // anglePID.setP(VTable.getEntry("kP").getDouble(0.1945392));
       // anglePID.setI(VTable.getEntry("kI").getDouble(0));
-      steeringAdjust = MathUtil.clamp(anglePID.calculate(vx), -0.7, 0.7);
+      steeringAdjust = MathUtil.clamp(anglePID.calculate(vx), -0.9, 0.9);
       // System.out.println(steeringAdjust);
-      
+      System.out.println(steeringAdjust);
       leftCommand -= steeringAdjust;
       rightCommand += steeringAdjust;
       /* moves towards the ball until the ball stops being seen, meaning the ball has been intaked (hopefully) 
@@ -90,7 +91,7 @@ public class TurnToAngleWithVisionTakeover extends CommandBase {
       // rightCommand += distAdjust;
 
       driveTrain.tankDrive(leftCommand, rightCommand);
-      System.out.println("Left Speed" + leftCommand);
+      // System.out.println("Left Speed" + leftCommand);
       if (Math.abs(vx) <= 5) {
         isDone = true;
       }
