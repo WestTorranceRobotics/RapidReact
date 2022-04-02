@@ -130,8 +130,6 @@ public class RobotContainer {
     ShuffleboardTab display = Shuffleboard.getTab("RobotVision");
     // Shuffleboard.selectTab("RobotVision");
 
-    // display.addNumber("hi", () -> NetworkTableInstance.getDefault().getTable("Vision").getEntry("Xposition").getDouble(0));
-
     // display.addNumber("Left Encoder", driveTrain::getLeftEncoderTicks).withPosition(8, 2);
     // display.addNumber("Right Encoder", driveTrain::getRightEncoderTicks).withPosition(9, 2);
 
@@ -149,6 +147,19 @@ public class RobotContainer {
     // // for finding the range of distances from target that we can shoot from
     display.addNumber("Distance From Target", driveTrain::getDistanceFromTarget).withPosition(1, 1);
     display.addNumber("Intake Deploy Encoder", intake::getIntake);
+
+    // NetworkTableInstance.getDefault().getTable("Vision").getEntry("lh").setDouble(0);
+    // display.addNumber("lh", () -> NetworkTableInstance.getDefault().getTable("Vision").getEntry("lh").getDouble(0));
+    // NetworkTableInstance.getDefault().getTable("Vision").getEntry("lh").setDouble(0);
+    // display.addNumber("ls", () -> NetworkTableInstance.getDefault().getTable("Vision").getEntry("ls").getDouble(150));
+    // NetworkTableInstance.getDefault().getTable("Vision").getEntry("lh").setDouble(0);
+    // display.addNumber("lv", () -> NetworkTableInstance.getDefault().getTable("Vision").getEntry("lv").getDouble(140));
+    // NetworkTableInstance.getDefault().getTable("Vision").getEntry("lh").setDouble(0);
+    // display.addNumber("uh", () -> NetworkTableInstance.getDefault().getTable("Vision").getEntry("uh").getDouble(63));
+    // NetworkTableInstance.getDefault().getTable("Vision").getEntry("lh").setDouble(0);
+    // display.addNumber("us", () -> NetworkTableInstance.getDefault().getTable("Vision").getEntry("us").getDouble(255));
+    // NetworkTableInstance.getDefault().getTable("Vision").getEntry("lh").setDouble(0);
+    // display.addNumber("uv", () -> NetworkTableInstance.getDefault().getTable("Vision").getEntry("uv").getDouble(255));
 
     // // gets current current of shooter
     // display.addNumber("Current current of shooter", shooter::getCurrent).withPosition(2, 1);
@@ -169,7 +180,7 @@ public class RobotContainer {
     // add limelight camera from cameraserver (might just have to open networktables tab and drag it in)
     // add intake camera as well (might also have to drag it in from network tables)
 
-    configureAutonomousSelector(screen);
+    // configureAutonomousSelector(screen);
     screen.addBoolean("INTAKE DEPLOYED?", intake::isDeployed).withPosition(0, 1).withSize(2, 1);
     screen.addBoolean("INTAKE RUNNING?", intake::isRunning).withPosition(0, 2).withSize(2, 1);
     screen.addBoolean("LOADER RUNNING?", loader::isRunning).withPosition(0, 3).withSize(2, 1);
@@ -196,20 +207,20 @@ public class RobotContainer {
     return 150 - (int) Timer.getMatchTime();
   }
 
-  private void configureAutonomousSelector(ShuffleboardTab display) {
-    autoSelector.addOption("2 Ball", "2 Ball");
-    autoSelector.addOption("Simple Drive Off", "Simple Drive Off");
-    autoSelector.addOption("4 Ball Red", "4 Ball Red");
-    autoSelector.addOption("4 Ball Blue", "4 Ball Blue");
+  // private void configureAutonomousSelector(ShuffleboardTab display) {
+  //   autoSelector.addOption("2 Ball", "2 Ball");
+  //   autoSelector.addOption("Simple Drive Off", "Simple Drive Off");
+  //   autoSelector.addOption("4 Ball Red", "4 Ball Red");
+  //   autoSelector.addOption("4 Ball Blue", "4 Ball Blue");
 
-    display.add("Auto Selector", autoSelector)
-    .withPosition(0, 0).withSize(2, 1).withWidget(BuiltInWidgets.kComboBoxChooser);
+  //   display.add("Auto Selector", autoSelector)
+  //   .withPosition(0, 0).withSize(2, 1).withWidget(BuiltInWidgets.kComboBoxChooser);
     
-    autonomousCommandHashMap.put("2 Ball", new DriveOffAimAndShootTwoBalls(driveTrain, intake, loader, shooter));
-    autonomousCommandHashMap.put("ShootAndDriveOff", new ShootAndDriveOff(driveTrain, loader, intake, shooter));
-    autonomousCommandHashMap.put("4 Ball Red", new FourBallAuto(driveTrain, intake, loader, shooter, true));
-    autonomousCommandHashMap.put("4 Ball Blue", new FourBallAuto(driveTrain, intake, loader, shooter, false));
-  }
+  //   autonomousCommandHashMap.put("2 Ball", new DriveOffAimAndShootTwoBalls(driveTrain, intake, loader, shooter));
+  //   autonomousCommandHashMap.put("ShootAndDriveOff", new ShootAndDriveOff(driveTrain, loader, intake, shooter));
+  //   autonomousCommandHashMap.put("4 Ball Red", new FourBallAuto(driveTrain, intake, loader, shooter, true));
+  //   autonomousCommandHashMap.put("4 Ball Blue", new FourBallAuto(driveTrain, intake, loader, shooter, false));
+  // }
 
   private void configureDefaultCommands() {
     driveTrain.setDefaultCommand(new JoystickTankDrive(driverLeft, driverRight, driveTrain));
@@ -310,9 +321,9 @@ public class RobotContainer {
     // }
     // return autonomousCommandHashMap.get(autoSelector.getSelected());
 
-    //return new FourBallAuto(driveTrain, intake, loader, shooter, false); // blue 4 ball
-    return new FourBallAuto(driveTrain, intake, loader, shooter, true); // red 4 ball
-    // return new DriveOffAimAndShootTwoBalls(driveTrain, intake, loader, shooter); // two ball
+    // return new FourBallAuto(driveTrain, intake, loader, shooter, false); // blue 4 ball
+    // return new FourBallAuto(driveTrain, intake, loader, shooter, true); // red 4 ball
+    return new DriveOffAimAndShootTwoBalls(driveTrain, intake, loader, shooter); // two ball
     // return new ShootAndDriveOff(driveTrain, loader, intake, shooter); // drive off and shoot
   }
 }

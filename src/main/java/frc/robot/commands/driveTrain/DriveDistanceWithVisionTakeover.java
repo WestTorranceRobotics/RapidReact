@@ -85,7 +85,7 @@ public class DriveDistanceWithVisionTakeover extends CommandBase {
       /* moves towards the ball until the ball stops being seen, meaning the ball has been intaked (hopefully) 
       after the ball goes past a vy value, a timer will start. Once it finishes, the command will end. The next command
       will be drive distance with constant intaking. Then the shooter will aim and shoot. */
-      anglePID.setP(0.021272);
+      anglePID.setP(0.021072);
       anglePID.setI(0.020);
       // anglePID.setP(VTable.getEntry("kP").getDouble(0.1945392));
       // anglePID.setI(VTable.getEntry("kI").getDouble(0));
@@ -102,11 +102,11 @@ public class DriveDistanceWithVisionTakeover extends CommandBase {
         isDone = true;
       }
     }
-    else {
-      System.out.println("blindly driving");
-      double speed = 0.7;
-      driveTrain.tankDrive(speed, speed);
-    }
+    // else {
+    //   System.out.println("blindly driving");
+    //   double speed = 0.7;
+    //   driveTrain.tankDrive(speed, speed);
+    // }
   }
 
   // Called once the command ends or is interrupted.
