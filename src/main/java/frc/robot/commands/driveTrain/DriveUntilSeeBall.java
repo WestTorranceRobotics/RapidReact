@@ -2,46 +2,41 @@
 // Open Source Software; you can modify and/or share it under the terms of
 // the WPILib BSD license file in the root directory of this project.
 
-package frc.robot.commands.intake;
+package frc.robot.commands.driveTrain;
 
-import com.fasterxml.jackson.databind.ser.std.StdArraySerializers.BooleanArraySerializer;
+import java.security.KeyStore.LoadStoreParameter;
 
 import edu.wpi.first.wpilibj2.command.CommandBase;
-import frc.robot.subsystems.Intake;
+import frc.robot.subsystems.DriveTrain;
 import frc.robot.subsystems.Loader;
 
-public class RunIntakeUntilProxSee extends CommandBase {
-  Intake mIntake;
+public class DriveUntilSeeBall extends CommandBase {
+  DriveTrain mDriveTrain;
   Loader mLoader;
   boolean isDone = false;
-
-  /** Creates a new RunIntakeUntilProxSee. */
-  public RunIntakeUntilProxSee(Intake intake, Loader loader) {
+  /** Creates a new DriveUntilSeeBall. */
+  public DriveUntilSeeBall(DriveTrain driveTrain, Loader loader) {
+    mDriveTrain = driveTrain;
     mLoader = loader;
-    mIntake = intake;
-    addRequirements(mIntake, mLoader);
+    addRequirements(mDriveTrain,mLoader);
     // Use addRequirements() here to declare subsystem dependencies.
   }
 
   // Called when the command is initially scheduled.
   @Override
-  public void initialize() {}
+  public void initialize() {
+    System.out.println("\tdriving until see ball");
+  }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    if(!mLoader.seeBall()){
-      mIntake.runIntake();
-      // mLoader.runLoader(-0.4);
-      if(mLoader.seeBall()){
-        mIntake.stopIntake();
-        // mLoader.stopLoader();
-        isDone = true;
-      }
-    }
-    else{
-      mIntake.stopIntake();
-      mLoader.stopLoader();
+    mDriveTrain.tankDrive(0.7, 0.7);
+    System.out.println("driving until see ball");
+    if(mLoader.seeBall()){
+      System.out.println("DONE with driving until see ball");
+      isDone = true;
+      mDriveTrain.tankDrive(0, 0);
     }
   }
 
@@ -49,8 +44,7 @@ public class RunIntakeUntilProxSee extends CommandBase {
   @Override
   public void end(boolean interrupted) {
     isDone = false;
-    mIntake.stopIntake();
-    // mLoader.stopLoader();
+    mDriveTrain.tankDrive(0, 0);
   }
 
   // Returns true when the command should end.

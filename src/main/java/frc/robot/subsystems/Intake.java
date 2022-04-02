@@ -71,7 +71,7 @@ public class Intake extends SubsystemBase
   }
 
   public void reverseIntake() {
-    intakeMotor.set(-RobotMap.IntakeMap.intakeMotorPower);
+    intakeMotor.set(0.4);
   }
 
   public void runIntake(double power) {

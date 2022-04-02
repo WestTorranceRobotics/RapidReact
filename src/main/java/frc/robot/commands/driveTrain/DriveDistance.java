@@ -30,16 +30,17 @@ public class DriveDistance extends CommandBase {
   @Override
   public void initialize() {
     isFinished = false;
-    driveTrain.getLeftEncoder().reset();
+    driveTrain.getRightEncoder().reset();
   }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    double distanceTraveled = driveTrain.getLeftEncoder().getDistance();
+    double distanceTraveled = driveTrain.getRightEncoder().getDistance();
 
     if (Math.abs(distanceTraveled) >= Math.abs(distanceToTravel)) {
       isFinished = true;
+      driveTrain.tankDrive(0, 0);
     }
     else if (distanceToTravel > 0) {
       driveTrain.tankDrive(speed, speed);

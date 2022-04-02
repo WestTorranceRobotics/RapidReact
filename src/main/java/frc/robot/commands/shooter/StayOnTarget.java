@@ -49,6 +49,7 @@ public class StayOnTarget extends CommandBase {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
+    System.out.println("STAYING ON TARGET");
     double leftCommand = 0;
     double rightCommand = 0;
 

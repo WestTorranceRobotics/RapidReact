@@ -46,6 +46,7 @@ public class DriveDistanceWithVisionTakeover extends CommandBase {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
+    System.out.println("\tdriivng with Drive distance");
     ballFound = false;
     // gyro.reset();
     // gyro.zeroYaw();
@@ -59,7 +60,6 @@ public class DriveDistanceWithVisionTakeover extends CommandBase {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    System.out.println("driivng with Drive distance");
     double vx = NetworkTableInstance.getDefault().getTable("Vision").getEntry("vx").getDouble(-999);
     double vy = NetworkTableInstance.getDefault().getTable("Vision").getEntry("vy").getDouble(-999);
     boolean targetAcquired = NetworkTableInstance.getDefault().getTable("Vision").getEntry("Ball Found").getBoolean(false);
@@ -90,23 +90,23 @@ public class DriveDistanceWithVisionTakeover extends CommandBase {
       // anglePID.setP(VTable.getEntry("kP").getDouble(0.1945392));
       // anglePID.setI(VTable.getEntry("kI").getDouble(0));
       steeringAdjust = MathUtil.clamp(anglePID.calculate(vx), -0.2, 0.2);
-      // System.out.println(steeringAdjust);
+      System.out.println("driving with vision with " + steeringAdjust);
       
       leftCommand -= steeringAdjust;
       rightCommand += steeringAdjust;
 
       driveTrain.tankDrive(0.6 + leftCommand, 0.6 + rightCommand);
 
-      if (vy <= -50) {
+      if (vy <= -45) {
         System.out.println("DONE");
         isDone = true;
       }
     }
-    // else {
-    //   // just drive 
-    //   double speed = 0.7;
-    //   driveTrain.tankDrive(speed, speed);
-    // }
+    else {
+      System.out.println("blindly driving");
+      double speed = 0.7;
+      driveTrain.tankDrive(speed, speed);
+    }
   }
 
   // Called once the command ends or is interrupted.

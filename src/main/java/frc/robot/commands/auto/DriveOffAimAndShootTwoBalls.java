@@ -10,9 +10,11 @@ import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import frc.robot.commands.driveTrain.DriveDistance;
 import frc.robot.commands.intake.DeployIntake;
 import frc.robot.commands.intake.RunIntake;
+import frc.robot.commands.intake.RunIntakeForTime;
 import frc.robot.commands.intake.RunIntakeUntilProxSee;
 import frc.robot.commands.shooter.ShootOneBallUsingDirectPower;
 import frc.robot.commands.shooter.ShootingTwoBallsUsingLQR;
+import frc.robot.commands.shooter.ShootingTwoBallsUsingLQRUsingTime;
 import frc.robot.commands.shooter.StayOnTarget;
 import frc.robot.subsystems.DriveTrain;
 import frc.robot.subsystems.Intake;
@@ -31,14 +33,14 @@ public class DriveOffAimAndShootTwoBalls extends SequentialCommandGroup {
       new DeployIntake(intake),
       // drive while continuously intaking, stop when finished driving
       new ParallelDeadlineGroup(
+        //new RunIntakeForTime(intake, 2.5),
         new DriveDistance(driveTrain, 75, 0.70),
-        //new SeeBallRunLoader(loader),
         new RunIntakeUntilProxSee(intake, loader)
       ),
       new DriveDistance(driveTrain, -30, 0.7),
       // shoot while continuously aiming and intaking, stop when finished shooting
       new ParallelDeadlineGroup(
-        new ShootingTwoBallsUsingLQR(shooter, loader, 3500, false),
+        new ShootingTwoBallsUsingLQRUsingTime(shooter, loader, 3600, false, 4.50),
         //new ShootOneBallUsingDirectPower(shooter, loader, 0.65, 2500),
         new StayOnTarget(driveTrain),
         // new StopIntake(intake)

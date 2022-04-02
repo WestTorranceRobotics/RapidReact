@@ -24,7 +24,9 @@ public class SeeBallRunLoaderLonger extends CommandBase {
 
   // Called when the command is initially scheduled.
   @Override
-  public void initialize() {}
+  public void initialize() {
+    System.out.println("\tSeeing ball run longer at player station");
+  }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
@@ -36,6 +38,7 @@ public class SeeBallRunLoaderLonger extends CommandBase {
     else{
       
       if (timer.hasElapsed(0.2)) {
+        System.out.println("DONE with se ball runloader");
         mLoader.stopLoader();
       }
       

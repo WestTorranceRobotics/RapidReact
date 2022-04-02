@@ -36,7 +36,7 @@ public void initialize() {
 @Override
 public void execute() {
   intake.runIntake();
-  System.out.println("started\t" + timer.hasElapsed(0.2));
+  System.out.println("started run intake for time\t" + timer.hasElapsed(0.2));
   System.out.println(timer.hasElapsed(timeToWait));
 
   if (timer.hasElapsed(timeToWait)) {

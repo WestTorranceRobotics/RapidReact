@@ -4,11 +4,14 @@
 
 package frc.robot.commands.auto;
 
+import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.ParallelDeadlineGroup;
+import edu.wpi.first.wpilibj2.command.ParallelRaceGroup;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import frc.robot.commands.driveTrain.DriveDistance;
 import frc.robot.commands.driveTrain.DriveDistanceWithVisionTakeover;
+import frc.robot.commands.driveTrain.DriveUntilSeeBall;
 import frc.robot.commands.driveTrain.Print;
 import frc.robot.commands.driveTrain.TurnToAngle;
 import frc.robot.commands.driveTrain.TurnToAngleWithVisionTakeover;
@@ -36,52 +39,49 @@ import frc.robot.subsystems.Shooter;
 // https://docs.wpilib.org/en/stable/docs/software/commandbased/convenience-features.html
 public class FourBallAuto extends SequentialCommandGroup {
   /** Creates a new FourBallAuto. */
-  public FourBallAuto(DriveTrain driveTrain, Intake intake, Loader loader, Shooter shooter) {
-    System.out.println("4 Ball Auto");
+  public FourBallAuto(DriveTrain driveTrain, Intake intake, Loader loader, Shooter shooter, boolean isRed) {
     addCommands(
+      new InstantCommand(() -> NetworkTableInstance.getDefault().getTable("Vision").getEntry("isRed").setBoolean(isRed)),
       new InstantCommand(driveTrain::resetGyro),
       // original two ball auto
       new DeployIntake(intake),
       // drive while continuously intaking, stop when finished driving
       new ParallelDeadlineGroup(
-        new DriveDistance(driveTrain, 75, 0.70),
+        new DriveDistance(driveTrain, 60, 0.70),
         //new SeeBallRunLoader(loader),
         new RunIntakeUntilProxSee(intake, loader)
       ),
-      // new TurnToDirection(driveTrain, -5),
       // shoot while continuously aiming and intaking, stop when finished shooting
       new ParallelDeadlineGroup(
-        new ShootingTwoBallsUsingLQR(shooter, loader, 3700, false),
+        new ShootingTwoBallsUsingLQR(shooter, loader, 3800, false),
         //new ShootOneBallUsingDirectPower(shooter, loader, 0.65, 2500),
         new StayOnTarget(driveTrain),
         // new StopIntake(intake)
         new RunIntake(intake)
       ),
-      new TurnToDirection(driveTrain, 6), // turn towards player station // 6 at vitruvian
+      new TurnToDirection(driveTrain, 3), // turn towards player station // 6 at vitruvian
       
       new RunIntakeForTime(intake, 0.5),
 
       new DriveDistance(driveTrain, 60, 1),
-      new DriveDistance(driveTrain, 30, 0.90),
+      new DriveDistance(driveTrain, 50, 0.90),
 
-      new TurnToAngleWithVisionTakeover(driveTrain, 1),
+      // new TurnToAngleWithVisionTakeover(driveTrain, 1),
       new ParallelDeadlineGroup(
         new DriveDistanceWithVisionTakeover(driveTrain),
         new RunIntake(intake)
       ),
-      // new ParallelDeadlineGroup(
-      //   new TurnToAngleWithVisionTakeover(driveTrain, 1),
-      //   new RunIntake(intake)
-      // ),
 
       // make a leap for the ball
-      new ParallelDeadlineGroup(
-        new DriveDistance(driveTrain, 20, 0.65),
-        new RunIntake(intake),
-        new SeeBallRunLoader(loader)
+      // new ParallelDeadlineGroup(
+      //   new DriveUntilSeeBall(driveTrain, loader),
+      //   new RunIntake(intake)
+      // ),
+      new ParallelRaceGroup(
+        new RunIntakeForTime(intake, 2.0),
+        new DriveUntilSeeBall(driveTrain, loader)
       ),
 
-      // new Wait(1.5),
       // wait at human player station and run intake continuously
       new ParallelDeadlineGroup(
         new RunIntakeForTime(intake, 1.5),
@@ -97,12 +97,10 @@ public class FourBallAuto extends SequentialCommandGroup {
         new SequentialCommandGroup(
           new ParallelDeadlineGroup(
             new Wait(0.5),
-            // new RunLoader(loader, -0.15)),
             new RunIntakeUntilProxSee(intake, loader)
-            // new RunIntake(intake)
           ),
           new ParallelDeadlineGroup(
-            new Wait(0.7), 
+            new Wait(0.6), 
             new RunLoader(loader, -0.25)
           )
         )
@@ -115,9 +113,8 @@ public class FourBallAuto extends SequentialCommandGroup {
         new RunIntakeForTime(intake, 4.0),
         new ShootUsingLQRDistanceFunction(shooter),
         new StayOnTarget(driveTrain),
-        new RunIntake(intake),
         new SequentialCommandGroup(
-          new RunIntakeForTime(intake, 1.5),
+          new Wait(1.0),
           new RunLoader(loader, -0.4)
         )
       )

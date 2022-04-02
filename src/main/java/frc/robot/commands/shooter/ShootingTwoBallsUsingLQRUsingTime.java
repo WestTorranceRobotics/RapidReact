@@ -4,16 +4,13 @@
 
 package frc.robot.commands.shooter;
 
-import java.security.Timestamp;
-
 import edu.wpi.first.math.VecBuilder;
-import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.subsystems.Loader;
 import frc.robot.subsystems.Shooter;
 
-public class ShootingTwoBallsUsingLQR extends CommandBase {
+public class ShootingTwoBallsUsingLQRUsingTime extends CommandBase {
   boolean isDone = false;
   Shooter mShooter;
   Loader mLoader;
@@ -22,13 +19,15 @@ public class ShootingTwoBallsUsingLQR extends CommandBase {
   boolean isEnd = false;
   int shotBall = 0;
   private Timer shootTimer;
+  double m_time;
   /** Creates a new ShootingTwoBallsUsingLQR. */
-  public ShootingTwoBallsUsingLQR(Shooter shooter, Loader loader, double rpm, boolean end) {
+  public ShootingTwoBallsUsingLQRUsingTime(Shooter shooter, Loader loader, double rpm, boolean end, double time) {
     mShooter = shooter;
     m_rpm = rpm;
     mLoader = loader;
     isEnd = end;
     shootTimer = new Timer();
+    m_time = time;
     addRequirements(mShooter, mLoader);
     // Use addRequirements() here to declare subsystem dependencies.
   }
@@ -43,9 +42,6 @@ public class ShootingTwoBallsUsingLQR extends CommandBase {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-
-    NetworkTableInstance.getDefault().getTable("Shooter").getEntry("BALL COUNT").setDouble(shotBall);
-    
     mShooter.setReferenceVelocity(m_rpm);
 
      // Correct our Kalman filter's state vector estimate with encoder data.
@@ -67,7 +63,7 @@ public class ShootingTwoBallsUsingLQR extends CommandBase {
      //mShooter.getShootFollowerLeader().setVoltage(nextVoltageFollower);
 
 
-    if (Math.abs(mShooter.getVelocity()) >= (m_rpm+100) && !mShooter.atSpeed()) {
+    if (Math.abs(mShooter.getVelocity()) >= (m_rpm+50) && !mShooter.atSpeed()) {
       mShooter.atSpeed(true);
       shootTimer.start();
     }
@@ -80,21 +76,21 @@ public class ShootingTwoBallsUsingLQR extends CommandBase {
       }
       else {
         mLoader.runLoader(-0.35);
-        if(mShooter.getVelocity() <= m_rpm){
-          // System.out.println(shotBall);
-          mLoader.stopLoader();
-          mShooter.atSpeed(false);
-          shotBall+=1;
-        }
+      }
+      if(mShooter.getVelocity() <= m_rpm-100){
+        // System.out.println(shotBall);
+        mLoader.stopLoader();
+        mShooter.atSpeed(false);
+        shotBall += 1;
       }
     }
     
     if (isEnd) {
-      if (shootTimer.hasElapsed(4.50)) {
+      if (shootTimer.hasElapsed(m_time)) {
         isDone = true;
       }
     }
-    else if (shotBall == 2 || shootTimer.hasElapsed(2)) {
+    else if (shotBall == 2 || shootTimer.hasElapsed(m_time)) {
       isDone = true;
     }
   }
