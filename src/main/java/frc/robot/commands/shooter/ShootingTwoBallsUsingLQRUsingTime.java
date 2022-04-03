@@ -63,7 +63,7 @@ public class ShootingTwoBallsUsingLQRUsingTime extends CommandBase {
      //mShooter.getShootFollowerLeader().setVoltage(nextVoltageFollower);
 
 
-    if (Math.abs(mShooter.getVelocity()) >= (m_rpm+50) && !mShooter.atSpeed()) {
+    if (Math.abs(mShooter.getVelocity()) >= (m_rpm) && !mShooter.atSpeed()) {
       mShooter.atSpeed(true);
       shootTimer.start();
     }

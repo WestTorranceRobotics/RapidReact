@@ -37,16 +37,17 @@ public class DriveOffAimAndShootTwoBalls extends SequentialCommandGroup {
         new DriveDistance(driveTrain, 75, 0.70),
         new RunIntakeUntilProxSee(intake, loader)
       ),
-      new DriveDistance(driveTrain, -30, 0.7),
+      new DriveDistance(driveTrain, -35, 0.7),
+      new Wait(2.0),
       // shoot while continuously aiming and intaking, stop when finished shooting
       new ParallelDeadlineGroup(
-        new ShootingTwoBallsUsingLQRUsingTime(shooter, loader, 3200, false, 4.50),
+        new ShootingTwoBallsUsingLQRUsingTime(shooter, loader, 3300, false, 4.50),
         //new ShootOneBallUsingDirectPower(shooter, loader, 0.65, 2500),
         new StayOnTarget(driveTrain),
         // new StopIntake(intake)
         new RunIntake(intake)
       ),
-      new DriveDistance(driveTrain, 30, 0.7),
+      new DriveDistance(driveTrain, 40, 0.7),
       new InstantCommand(loader::enableProxSensor, loader)
     );
   }

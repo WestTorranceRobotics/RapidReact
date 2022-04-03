@@ -67,7 +67,7 @@ public class ShootingTwoBallsUsingLQR extends CommandBase {
      //mShooter.getShootFollowerLeader().setVoltage(nextVoltageFollower);
 
 
-    if (Math.abs(mShooter.getVelocity()) >= (m_rpm+100) && !mShooter.atSpeed()) {
+    if (Math.abs(mShooter.getVelocity()) >= (m_rpm) && !mShooter.atSpeed()) {
       mShooter.atSpeed(true);
       shootTimer.start();
     }
@@ -84,7 +84,7 @@ public class ShootingTwoBallsUsingLQR extends CommandBase {
           // System.out.println(shotBall);
           mLoader.stopLoader();
           mShooter.atSpeed(false);
-          shotBall+=1;
+          //shotBall+=1;
         }
       }
     }
@@ -94,7 +94,7 @@ public class ShootingTwoBallsUsingLQR extends CommandBase {
         isDone = true;
       }
     }
-    else if (shotBall == 2 || shootTimer.hasElapsed(2)) {
+    else if (shotBall == 2 || shootTimer.hasElapsed(2.0)) {
       isDone = true;
     }
   }

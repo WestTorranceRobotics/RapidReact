@@ -95,7 +95,7 @@ public class DriveDistanceWithVisionTakeover extends CommandBase {
       leftCommand -= steeringAdjust;
       rightCommand += steeringAdjust;
 
-      driveTrain.tankDrive(0.6 + leftCommand, 0.6 + rightCommand);
+      driveTrain.tankDrive(0.5 + leftCommand, 0.5 + rightCommand);
 
       if (vy <= -45) {
         System.out.println("DONE");

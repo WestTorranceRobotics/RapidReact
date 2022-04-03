@@ -243,6 +243,7 @@ public class RobotContainer {
         new SeeBallRunLoader(loader)
       )
     );
+    
     driverLeftTrigger.whenHeld(new ParallelCommandGroup(        // aim and start up shooter
       new StayOnTarget(driveTrain),
       new ShootingUsingLQR(shooter, 3250)
@@ -321,9 +322,9 @@ public class RobotContainer {
     // }
     // return autonomousCommandHashMap.get(autoSelector.getSelected());
 
-    // return new FourBallAuto(driveTrain, intake, loader, shooter, false); // blue 4 ball
-    // return new FourBallAuto(driveTrain, intake, loader, shooter, true); // red 4 ball
-    return new DriveOffAimAndShootTwoBalls(driveTrain, intake, loader, shooter); // two ball
+     return new FourBallAuto(driveTrain, intake, loader, shooter, false); // blue 4 ball
+    //return new FourBallAuto(driveTrain, intake, loader, shooter, true); // red 4 ball
+    // return new DriveOffAimAndShootTwoBalls(driveTrain, intake, loader, shooter); // two ball
     // return new ShootAndDriveOff(driveTrain, loader, intake, shooter); // drive off and shoot
   }
 }
