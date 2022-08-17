@@ -220,22 +220,25 @@ public class RobotContainer {
     //Intake
     operatorBack.whenHeld(new ParallelCommandGroup(new ReverseLoader(loader), new ReverseIntake(intake)));
     operatorA.whenHeld(new RunIntake(intake));
-    operatorB.whenPressed(new ConditionalCommand(new UndeployIntake(intake), new DeployIntake(intake), intake::isDeployed));
+    operatorB.whenHeld(new InstantCommand(turningArms::leftArmForwards), false)
+    .whenReleased(new InstantCommand(turningArms::stopLeftArm), false);
     operatorStart.whenPressed(new SetStartingPosition(intake));
 
     //Loader
-    operatorX.whenHeld(new RunLoader(loader));
-    operatorY.whenHeld(new ReverseLoader(loader));
+    operatorX.whenHeld(new InstantCommand(turningArms::rightArmForwards), false)
+    .whenReleased(new InstantCommand(turningArms::stopRightArm), false);
+    operatorY.whenHeld(new InstantCommand(turningArms::FastBothForwards), false)
+    .whenReleased(new InstantCommand(turningArms::StopBothArms), false);
   
     //Elevator
     operatorUp.whileHeld(new LiftUp(elevator));
     operatorDown.whileHeld(new LiftDown(elevator));
 
     // Pivot Arms
-    operatorRT.whenHeld(new InstantCommand(turningArms::leftArmForwards), false)
+    operatorRT.whenHeld(new InstantCommand(turningArms::FastLeftForwards), false)
     .whenReleased(new InstantCommand(turningArms::stopLeftArm), false);
 
-    operatorLT.whenHeld(new InstantCommand(turningArms::rightArmForwards), false)
+    operatorLT.whenHeld(new InstantCommand(turningArms::FastRightForwards), false)
     .whenReleased(new InstantCommand(turningArms::stopRightArm), false);
 
     operatorRB.whenHeld(new InstantCommand(turningArms::leftArmBackwards), false)

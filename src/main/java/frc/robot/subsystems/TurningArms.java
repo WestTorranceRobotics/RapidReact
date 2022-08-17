@@ -78,4 +78,22 @@ public class TurningArms extends SubsystemBase {
     leftTurningArm.set(leftPower);
     rightTurningArm.set(rightPower);
   }
+
+  //CandyLauncher Code
+  Double speed = 1.0;
+
+  public void FastRightForwards() {
+    rightTurningArm.set(speed);
+  }
+  public void FastLeftForwards() {
+    leftTurningArm.set(speed);
+  }
+  public void FastBothForwards() {
+    rightTurningArm.set(speed);
+    leftTurningArm.set(speed);
+  }
+  public void StopBothArms() {
+    rightTurningArm.set(0);
+    leftTurningArm.set(0);
+  }
 }
